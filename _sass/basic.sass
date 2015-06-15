@@ -1,0 +1,87 @@
+body
+    font-family: "Source Sans Pro", "Calibri", "Helvetica", sans-serif
+    font-weight: 300
+    font-size: 1.4em
+    font-size: calc(.6vw + .8em)
+    line-height: 1.6
+    color: $black
+    margin: 0
+
+h1, h2, h3, h4, h5, h6
+    font-weight: 300
+    line-height: 1.5em
+    a
+        font-size: 1.2em
+
+a
+    $anchor: $teal
+    font-weight: 400
+    color: $anchor
+    text-decoration: inherit
+    transition: color .2s ease-out
+    border-bottom: 1px dotted $anchor
+    &:hover
+        $anchor-hover: adjust_hue($anchor, -45)
+        color: $anchor-hover
+        border-bottom: 1px dotted $anchor-hover
+
+strong, b, th
+    font-weight: 400
+
+iframe, img, embed, object, video
+    max-width: 100%
+    border-radius: 2px
+
+table
+    border-collapse: collapse
+    width: 100%
+    th, td
+        padding: .5em 1em
+        border: 1px solid
+
+pre
+    overflow: auto
+    padding: 1em
+    font-size: .8em
+
+blockquote
+    border-left: 5px solid #46e
+    margin: 0
+    padding-left: 1.5em
+
+nav
+    ul
+        padding-left: 0
+    li
+        display: inline-block
+        margin-right: 10%
+
+article
+    border-top: 1px solid
+    overflow-x: auto
+    header
+        text-align: center
+    > div
+        margin-bottom: 2em
+    footer a
+        border: 1px solid
+        border-radius: 3px
+        padding: .3em .6em
+        transition: background-color .2s ease-out
+
+body > header h1
+    margin-top: .25em
+    margin-bottom: 1em
+
+body > footer
+    display: flex
+    justify-content: space-between
+    color: $gray-dark
+
+hr
+    border: 1px solid $gray-lighter
+
+code
+    background-color: $almost-white
+    color: $black
+    padding: 4px

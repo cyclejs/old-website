@@ -1,0 +1,8 @@
+title: "Cycle.js"
+author: "Andre Staltz"
+description: "A fully reactive JavaScript framework for Human-Computer Interaction"
+more: "read more"
+url: "http://cyclejs.github.io"
+
+excerpt_separator: "\n\n\n"
+defaults: [{scope: {path: ""}, values: {layout: "default"}}, {scope: {path: "", type: "posts"}, values: {comments: true}}]

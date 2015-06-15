@@ -1,0 +1,41 @@
+---
+---
+
+@import colors
+@import basic
+@import mixins
+
+$body: $white
+$padding: 33%
+$anchor: $teal
+$nav: $gray-dark
+$headline: $teal
+$description: $white
+
+body
+    +body_background($body, $padding)
+    > div
+        +contrast($description)
+
+body > header h1
+    font-weight: bold
+
+h1, h2, h3, h4, h5, h6
+    font-family: "Lora", serif
+    letter-spacing: 2px
+    header &
+        text-transform: uppercase
+
+body > div:first-of-type
+    +contrast($headline)
+    h1
+        padding-top: 1em
+        padding-bottom: 1em
+
+nav ul
+    margin: 0
+
+article
+    +article_background($white, $anchor)
+
+@import vendor
