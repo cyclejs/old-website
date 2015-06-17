@@ -5,13 +5,13 @@
     &:hover
         border-bottom: 1px solid $anchor-color
 
-=box_link()
-    color: $teal
-    border: 1px solid $teal
+=box_link($base-color: $teal, $hover-fg: $white, $hover-bg: $green-light)
+    color: $base-color
+    border: 1px solid $base-color
     border-radius: 5px
     padding: 5px 15px
     transition: background-color .2s ease-out, color .2s ease-out
     &:hover
-        border: 1px solid $green-light
-        background-color: $green-light
-        color: $white
+        border: 1px solid $hover-bg
+        background-color: $hover-bg
+        color: $hover-fg
