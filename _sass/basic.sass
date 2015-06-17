@@ -20,12 +20,10 @@ a
     transition: color .2s ease-out
     border-bottom: 1px dotted $anchor
     &:hover
-        $anchor-hover: adjust_hue($anchor, -45)
-        color: $anchor-hover
-        border-bottom: 1px dotted $anchor-hover
+        border-bottom: 1px solid $anchor
 
 strong, b, th
-    font-weight: 400
+    font-weight: bold
 
 iframe, img, embed, object, video
     max-width: 100%
@@ -51,12 +49,8 @@ blockquote
 nav
     ul
         padding-left: 0
-    li
-        display: inline-block
-        margin-right: 10%
 
 article
-    border-top: 1px solid
     overflow-x: auto
     header
         text-align: center

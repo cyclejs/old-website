@@ -1,12 +1,23 @@
 ---
 layout: blank
 ---
-    <article>
-      <header>
-        <h2><a href="{{ page.url | prepend: site.baseur }}">{{ page.title }}</a></h2>
-        <!--<p>{% if page.categories %}{{ page.categories | array_to_sentence_string }}{% endif %}</p>-->
-      </header>
-      <div>
+    <div class="page-body">
+      <nav class="side-menu">
+        <a href="/" class="cycle-home-link">Cycle.js</a>
+        <ul>
+          <li>Dialogue abstraction</li>
+          <li>Observables</li>
+          <li>Basic examples</li>
+          <li>Rx patterns</li>
+        </ul>
+      </nav>
+      <article>
+        <header>
+          <h2><a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a></h2>
+          <!--<p>{% if page.categories %}{{ page.categories | array_to_sentence_string }}{% endif %}</p>-->
+        </header>
+        <div>
 {{ content }}
-      </div>
-    </article>
+        </div>
+      </article>
+    </div>
