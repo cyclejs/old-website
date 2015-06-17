@@ -1,4 +1,5 @@
 body
+    background: $white
     font-family: "Source Sans Pro", "Calibri", "Helvetica", sans-serif
     font-weight: 400
     font-size: 1.4em
@@ -7,11 +8,54 @@ body
     color: $black
     margin: 0
 
+body > header h1
+    font-weight: bold
+    margin-top: .25em
+    margin-bottom: 1em
+
+body > footer
+    display: flex
+    justify-content: space-between
+    color: $gray-dark
+
 h1, h2, h3, h4, h5, h6
     font-weight: 300
     line-height: 1.5em
+    font-family: "Merriweather", serif
+    letter-spacing: 2px
+    header &
+        text-transform: uppercase
     a
         font-size: 1.2em
+
+.cycle-home-link
+    font-family: "Merriweather", serif
+    font-weight: bold
+
+.page-body, footer
+    padding: $default-padding
+    margin: 0 auto
+    max-width: 880px
+
+.side-menu
+    position: fixed
+    top: $default-padding
+    width: $side-menu-width
+    height: 100%
+    overflow: hidden
+
+@media only screen and (max-width: 680px)
+    .side-menu
+        position: relative
+        width: inherit
+        height: inherit
+        top: inherit
+    article
+        margin-left: 0
+
+nav ul
+    margin: 0
+    padding-left: 0
 
 a
     $anchor: $teal
@@ -22,8 +66,49 @@ a
     &:hover
         border-bottom: 1px solid $anchor
 
+article
+    min-height: 500px
+    margin-left: calc(#{$side-menu-width} + #{$default-padding})
+    tr:hover
+        background-color: darken($white, 7%)
+    th
+        border-bottom-width: 2px
+    th, td
+        border-color: darken($white, 14%)
+    header p
+        color: darken($white, 60%)
+    footer a
+        border-color: $black
+        border-width: 2px
+        &:hover
+            background-color: $black
+            color: $white
+    overflow-x: auto
+    header
+        text-align: center
+    > div
+        margin-bottom: 2em
+    footer a
+        border: 1px solid
+        border-radius: 3px
+        padding: .3em .6em
+        transition: background-color .2s ease-out
+
 strong, b, th
     font-weight: bold
+
+hr
+    border: 1px solid $gray-lighter
+
+pre
+    overflow: auto
+    padding: 1em
+    font-size: .8em
+
+code
+    background-color: $almost-white
+    color: $black
+    padding: 4px
 
 iframe, img, embed, object, video
     max-width: 100%
@@ -36,45 +121,8 @@ table
         padding: .5em 1em
         border: 1px solid
 
-pre
-    overflow: auto
-    padding: 1em
-    font-size: .8em
-
 blockquote
     border-left: 5px solid #46e
     margin: 0
     padding-left: 1.5em
 
-nav
-    ul
-        padding-left: 0
-
-article
-    overflow-x: auto
-    header
-        text-align: center
-    > div
-        margin-bottom: 2em
-    footer a
-        border: 1px solid
-        border-radius: 3px
-        padding: .3em .6em
-        transition: background-color .2s ease-out
-
-body > header h1
-    margin-top: .25em
-    margin-bottom: 1em
-
-body > footer
-    display: flex
-    justify-content: space-between
-    color: $gray-dark
-
-hr
-    border: 1px solid $gray-lighter
-
-code
-    background-color: $almost-white
-    color: $black
-    padding: 4px

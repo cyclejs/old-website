@@ -2,58 +2,6 @@
 ---
 
 @import colors
+@import dimens
 @import basic
-@import mixins
-
-$padding: 33%
-$default-padding: 2em
-$anchor: $teal
-$nav: $gray-dark
-$side-menu-width: 220px
-
-body
-    background: $white
-
-body > header h1
-    font-weight: bold
-
-h1, h2, h3, h4, h5, h6
-    font-family: "Merriweather", serif
-    letter-spacing: 2px
-    header &
-        text-transform: uppercase
-
-.cycle-home-link
-    font-family: "Merriweather", serif
-    font-weight: bold
-
-.page-body, footer
-    padding: $default-padding
-    margin: 0 auto
-    max-width: 880px
-
-.side-menu
-    position: fixed
-    top: $default-padding
-    width: $side-menu-width
-    height: 100%
-    overflow: hidden
-
-article
-    min-height: 500px
-    margin-left: calc(#{$side-menu-width} + #{$default-padding})
-    +article_background($white, $anchor)
-
-@media only screen and (max-width: 680px)
-    .side-menu
-        position: relative
-        width: inherit
-        height: inherit
-        top: inherit
-    article
-        margin-left: 0
-
-nav ul
-    margin: 0
-
 @import vendor
