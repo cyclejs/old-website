@@ -3,7 +3,12 @@ layout: blank
 ---
     <div class="page-body">
       <nav class="side-menu">
-        <a href="/" class="cycle-home-link">Cycle.js</a>
+        <a href="/" class="cycle-home-link">
+          <img class="cycle-home-logo" src="/img/cyclejs_logo.svg" alt="Cycle.js logo"/>
+        </a>
+        <h3>
+          <a href="/" class="cycle-home-link">Cycle.js</a>
+        </h3>
         <ul>
           {% assign articles = site.tags.top-articles | sort: 'sort-order' %}
           {% for page in articles %}
@@ -15,11 +20,11 @@ layout: blank
       </nav>
       <article>
         <header>
-          <h2><a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a></h2>
-          <!--<p>{% if page.categories %}{{ page.categories | array_to_sentence_string }}{% endif %}</p>-->
+          <h2>{{ page.title }}</h2>
         </header>
         <div>
 {{ content }}
         </div>
+{% include footer.html %}
       </article>
     </div>
