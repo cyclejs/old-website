@@ -5,10 +5,12 @@ layout: blank
       <nav class="side-menu">
         <a href="/" class="cycle-home-link">Cycle.js</a>
         <ul>
-          <li>Dialogue abstraction</li>
-          <li>Observables</li>
-          <li>Basic examples</li>
-          <li>Rx patterns</li>
+          {% assign articles = site.tags.top-articles | sort: 'sort-order' %}
+          {% for page in articles %}
+          <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+          {% endfor %}
+          <li><a href="https://github.com/staltz/cycle" target="_blank"><i class="fa fa-github"></i>
+          </a></li>
         </ul>
       </nav>
       <article>
