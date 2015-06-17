@@ -1,7 +1,6 @@
 ---
-title: "Drivers"
+title: "Server-side rendering"
 tags: top-articles
-sort-order: 9
 ---
 
 TODO
