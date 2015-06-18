@@ -25,3 +25,17 @@
             margin-top: $normal-space
             display: inline-block
             +box_link()
+
+@media only screen and (max-width: 680px)
+    .hero
+        height: inherit
+        min-height: inherit
+        .page-body
+            padding: $normal-space 0
+        img.hero-logo
+            width: 3em
+            top: 12px
+        h1
+            font-size: 2em
+        h2
+            font-size: 1.2em
