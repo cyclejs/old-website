@@ -1,6 +1,6 @@
 body
     background: $white
-    font-family: "Source Sans Pro", "Calibri", "Helvetica", sans-serif
+    font-family: $body-font
     font-weight: 400
     font-size: 1.4em
     font-size: calc(.6vw + .8em)
@@ -22,36 +22,22 @@ footer
 h1, h2, h3, h4, h5, h6
     font-weight: 300
     line-height: 1.5em
-    font-family: "Merriweather", serif
+    font-family: $header-font
     letter-spacing: 2px
     header &
         text-transform: uppercase
     a
         font-size: 1.2em
 
-img.cycle-home-logo
-    width: 5em
-    display: block
-    margin-bottom: $small-space
-
-.cycle-home-link
-    font-family: "Merriweather", serif
-    font-weight: bold
-
-.page-body
+.wide-page-body, .page-body
     padding: $normal-space
     margin: 0 auto
-    max-width: 880px
 
-.side-menu
-    position: fixed
-    top: $normal-space
-    width: $side-menu-width
-    height: 100%
-    overflow: hidden
-    font-size: 3vh
-    a
-        +anchor_style($black)
+.wide-page-body
+    max-width: $total-page-width
+
+.page-body
+    max-width: $max-article-width
 
 nav ul
     margin: 0
@@ -59,26 +45,6 @@ nav ul
 
 a
     +anchor_style($teal)
-
-article
-    min-height: 500px
-    margin-left: calc(#{$side-menu-width} + #{$normal-space})
-    tr:hover
-        background-color: darken($white, 7%)
-    th
-        border-bottom-width: 2px
-    th, td
-        border-color: darken($white, 14%)
-    header p
-        color: darken($white, 60%)
-    overflow-x: auto
-    header
-        text-align: center
-    > div
-        margin-bottom: 2em
-    .paginator
-        display: flex
-        justify-content: space-between
 
 strong, b, th
     font-weight: bold
@@ -112,21 +78,9 @@ blockquote
     margin: 0
     padding-left: 1.5em
 
-.paginator
-    a
-        +box_link()
-
-@media only screen and (max-width: 680px)
-    .side-menu
-        position: relative
-        width: inherit
-        height: inherit
-        top: inherit
-        font-size: 150%
-        padding-bottom: $normal-space
-        border-bottom: 2px solid $gray-lighter
-        margin-bottom: $normal-space
-        ul > li
-            padding-top: 0.5em
-    article
-        margin-left: 0
+p > img
+    margin: 0 auto
+    display: block
+    width: 60%
+    max-width: 30em
+    min-width: 20em

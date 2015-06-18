@@ -10,7 +10,11 @@ layout: blank
       </div>
     </div>
     <div class="page-body">
-      {% capture homepage %}{% include homepage-content.md %}{% endcapture %}
-      {{ homepage | markdownify }}
+      <div class="features">
+        {% capture homepage %}{% include homepage-content.md %}{% endcapture %}
+        {{ homepage | markdownify }}
+        <h2><a href="/getting-started.html">Read the docs</a></h2>
+      </div>
+
       {% include footer.html %}
     </div>

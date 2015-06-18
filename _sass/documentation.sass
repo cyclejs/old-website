@@ -1,0 +1,58 @@
+img.cycle-home-logo
+    width: 5em
+    display: block
+    margin-bottom: $small-space
+
+.cycle-home-link
+    font-family: $header-font
+    font-weight: bold
+
+.side-menu
+    position: fixed
+    top: $normal-space
+    width: $side-menu-width
+    height: 100%
+    overflow: hidden
+    font-size: 3vh
+    a
+        +anchor_style($black)
+
+.paginator
+    a
+        +box_link()
+
+article
+    min-height: 500px
+    max-width: $max-article-width
+    margin-left: calc(#{$side-menu-width} + #{$normal-space})
+    tr:hover
+        background-color: darken($white, 7%)
+    th
+        border-bottom-width: 2px
+    th, td
+        border-color: darken($white, 14%)
+    header p
+        color: darken($white, 60%)
+    overflow-x: auto
+    header
+        text-align: center
+    > div
+        margin-bottom: 2em
+    .paginator
+        display: flex
+        justify-content: space-between
+
+@media only screen and (max-width: 680px)
+    .side-menu
+        position: relative
+        width: inherit
+        height: inherit
+        top: inherit
+        font-size: 150%
+        padding-bottom: $normal-space
+        border-bottom: 2px solid $gray-lighter
+        margin-bottom: $normal-space
+        ul > li
+            padding-top: 0.5em
+    article
+        margin-left: 0
