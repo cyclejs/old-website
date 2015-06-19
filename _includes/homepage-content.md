@@ -2,7 +2,7 @@
 
 ![Human-Computer Interaction in Cycle.js](/img/human-computer-diagram.svg)
 
-Cycle's core abstraction is Human-Computer Interaction modelled as an interplay between two pure functions: `human()` and `computer()`. The computer outputs what the human takes as input, and vice-versa, leading to the fixed point equation `x = human(computer(x))`, where `x` is an event stream. The human and the computer are mutually observed. This is what we call "Functional Unidirectional Dataflow", or "Reactive Dialogue", and as an app developer you only need to specify the `computer()` function.
+Cycle's core abstraction is Human-Computer Interaction modelled as an interplay between two pure functions: `human()` and `computer()`. The computer outputs what the human takes as input, and vice-versa, leading to the fixed point equation `x = human(computer(x))`, where `x` is an Observable. The human and the computer are mutually observed. This is what we call "Functional Unidirectional Dataflow", or "Reactive Dialogue", and as an app developer you only need to specify the `computer()` function.
 
 - - -
 
