@@ -52,7 +52,7 @@ Most frameworks claim to provide Separation of Concerns, but often they prescrib
 ## Supports...
 
 - **Virtual DOM rendering**: Cycle comes with a driver to interface with the DOM through [virtual-dom](https://github.com/Matt-Esch/virtual-dom), a fast diff & patch library.
-- **Isomorphism**: In relation to the *virtual-dom* driver, there is a related HTML-generating driver function for server-side rendering, enabling code reuse.
+- **Universal JavaScript**: In relation to the *virtual-dom* driver, there is a related HTML-generating driver function for server-side rendering, enabling code reuse.
 - **thisless JavaScript**: The use of functions and RxJS Observables allow for a JavaScript programming style without the pitfalling `this`. Code is clearer and less prone to `this`-related bugs. See it for yourself, `this` cannot be found in [Cycle.js TodoMVC](https://github.com/staltz/todomvc-cycle/tree/master/js).
 - **Good testability**: With functions and Observables, testing is mostly a matter of feeding input and inspecting the output. You can also trivially mock the `human()` function, or any driver function.
 - **Extensibility**: write your own driver or use community-built drivers to make use of React, React Native, AJAX, Web Sockets, or other side effects.
