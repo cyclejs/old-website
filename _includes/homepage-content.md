@@ -9,8 +9,8 @@ Cycle's core abstraction is Human-Computer Interaction modelled as an interplay 
 ## Example
 
 {% highlight js %}
-import Cycle from 'cyclejs';
-let {h} = Cycle;
+import {run} from '@cycle/core';
+import {h, makeDOMDriver} from '@cycle/web';
 
 function main(drivers) {
   return {
@@ -28,12 +28,10 @@ function main(drivers) {
   };
 }
 
-Cycle.run(main, {
-  DOM: Cycle.makeDOMDriver('.js-container')
-});
+run(main, { DOM: makeDOMDriver('.js-container') });
 {% endhighlight %}
 
-The input of `main` is `drivers`, a collection of Observables from the "external world". `drivers.DOM` is a queryable collection of Observable user events happening on elements on the DOM. Query it using a getter: `get(selector, eventType)` returns an Observable of `eventType` events happening on elements specified by `selector`. This goes through a series of RxJS operations to produce an Observable of virtual DOM elements created with the `h()` helper, which is returned and tagged as `DOM`. Function `Cycle.run()` will take your `main` function and circularly connect it to the specified "driver functions". The DOM driver function acts on behalf of the user: takes the tagged `DOM` Observable of virtual elements returned from `main()`, shows that on the screen as a side effect, and outputs Observables of user interaction events. The result of this is Human-Computer Interaction, i.e. a dialogue between `main()` and the DOM driver function, happening under the container element selected by `'.js-container'`.
+The computer function is `main()`, with input `drivers` as a collection of Response Observables, and outputs a collection of Request Observables. The human function is represented by the DOM Driver in the code above, because in the context of a web application, the DOM is a proxy to the user. The responsibility of `main()` is to transform DOM Response Observables to DOM Request Observables, through a chain of RxJS operators. To learn more about this approach, the [documentation](/getting-started.html) will guide you through more details.
 
 - - -
 
@@ -52,7 +50,7 @@ Most frameworks claim to provide Separation of Concerns, but often they prescrib
 ## Supports...
 
 - **Virtual DOM rendering**: Cycle comes with a driver to interface with the DOM through [virtual-dom](https://github.com/Matt-Esch/virtual-dom), a fast diff & patch library.
-- **Universal JavaScript**: In relation to the *virtual-dom* driver, there is a related HTML-generating driver function for server-side rendering, enabling code reuse.
+- **Universal JavaScript**: In relation to the *virtual-dom* driver, there is a HTML-generating driver function for server-side rendering, enabling code reuse.
 - **thisless JavaScript**: The use of functions and RxJS Observables allow for a JavaScript programming style without the pitfalling `this`. Code is clearer and less prone to `this`-related bugs. See it for yourself, `this` cannot be found in [Cycle.js TodoMVC](https://github.com/staltz/todomvc-cycle/tree/master/js).
 - **Good testability**: With functions and Observables, testing is mostly a matter of feeding input and inspecting the output. You can also trivially mock the `human()` function, or any driver function.
 - **Extensibility**: write your own driver or use community-built drivers to make use of React, React Native, AJAX, Web Sockets, or other side effects.
