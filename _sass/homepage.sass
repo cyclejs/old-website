@@ -1,8 +1,6 @@
 .hero
     background-color: $black
     color: $white
-    height: 80vh
-    min-height: 600px
     padding: 0 4em
     img.hero-logo
         width: 7em
@@ -17,6 +15,8 @@
         margin-bottom: $normal-space
     a
         +box_link($lime-light, $black, $lime-light)
+    h3
+        margin-bottom: $normal-space
 
 .features
     h1, h2, h3
@@ -28,8 +28,6 @@
 
 @media only screen and (max-width: 680px)
     .hero
-        height: inherit
-        min-height: inherit
         .page-body
             padding: $normal-space 0
         img.hero-logo
