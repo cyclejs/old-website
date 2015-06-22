@@ -1,6 +1,6 @@
 ---
 title: "Model-View-Intent"
-tags: top-articles
+tags: chapters
 ---
 
 TODO

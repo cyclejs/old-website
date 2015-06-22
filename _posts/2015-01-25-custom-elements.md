@@ -1,6 +1,6 @@
 ---
 title: "Custom elements"
-tags: top-articles
+tags: chapters
 ---
 
 TODO

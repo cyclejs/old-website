@@ -1,6 +1,6 @@
 ---
 title:  "Getting Started"
-tags: top-articles
+tags: chapters
 ---
 
 ## npm

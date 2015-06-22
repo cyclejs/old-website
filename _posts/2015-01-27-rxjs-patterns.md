@@ -1,6 +1,6 @@
 ---
 title: "RxJS patterns"
-tags: top-articles
+tags: chapters
 ---
 
 TODO

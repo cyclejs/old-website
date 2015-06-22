@@ -1,6 +1,6 @@
 ---
 title:  "Documentation"
-tags: top-articles
+tags: chapters
 ---
 
 TODO

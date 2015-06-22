@@ -1,6 +1,6 @@
 ---
 title:  "Basic examples"
-tags: top-articles
+tags: chapters
 ---
 
 TODO

@@ -10,8 +10,8 @@ layout: blank
           <a href="/" class="cycle-home-link">Cycle.js</a>
         </h3>
         <ul>
-          {% for page in site.tags.top-articles %}
-          <li><a href="{{ page.url }}">{{ page.title }}</a></li>
+          {% for chapter in site.tags.chapters %}
+          <li>{% if page.id == chapter.id %}<strong><a href="{{ chapter.url }}">{{ chapter.title }}</a></strong>{% else %}<a href="{{ chapter.url }}">{{ chapter.title }}{% endif %}</a></li>
           {% endfor %}
           <li><a href="https://github.com/staltz/cycle" target="_blank"><i class="fa fa-github"></i>
           </a></li>

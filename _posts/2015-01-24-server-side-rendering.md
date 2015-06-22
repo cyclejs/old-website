@@ -1,6 +1,6 @@
 ---
 title: "Server-side rendering"
-tags: top-articles
+tags: chapters
 ---
 
 TODO

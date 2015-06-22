@@ -1,6 +1,6 @@
 ---
 title:  "Observables"
-tags: top-articles
+tags: chapters
 ---
 
 TODO
