@@ -31,7 +31,7 @@ The imported `Cycle` object on the first line contains one important function: `
 
 > #### RxJS Dependency
 > 
-> Notice the `rx` import. [RxJS](https://github.com/Reactive-Extensions/RxJS) is the only required dependency in Cycle *Core*. It is defined as an [npm peer dependency TODO URL](), which means Cycle *Core* will automatically import `rx` when your project depends on `@cycle/core`. If, however, you specify `rx` alongside with `@cycle/core`, then Cycle *Core* will not attempt to automatically import `rx`. This allows you to specify a specific version of `rx` if you so wish.
+> Notice the `rx` import. [RxJS](https://github.com/Reactive-Extensions/RxJS) is the only required dependency in Cycle *Core*. It is defined as an [npm peer dependency](http://blog.nodejs.org/2013/02/07/peer-dependencies/), which means Cycle *Core* will automatically import `rx` when your project depends on `@cycle/core`. If, however, you specify `rx` alongside with `@cycle/core`, then Cycle *Core* will not attempt to automatically import `rx`. This allows you to specify a specific version of `rx` if you so wish.
 
 
 **Create the `main` function and the `drivers` record:**
@@ -113,18 +113,18 @@ This example portrays the most common problem-solving pattern in Cycle.js: formu
 
 ## Cycle.js as a script
 
-In the rare occasion you need Cycle.js as a standalone JavaScript file, you can download them on the [Releases TODO URL]() page at GitHub.
+In the rare occasion you need Cycle.js as a standalone JavaScript file, you can download them on the [Releases](https://github.com/cyclejs/cycle-core/releases) page at GitHub.
 
-- Download [Cycle Core v1.0 TODO URL]()
-- Download [Cycle Web v1.0 TODO URL]()
-- Get the latest [RxJS version TODO URL]() (required dependency!)
+- Download the latest [Cycle Core](https://github.com/cyclejs/cycle-core/releases)
+- Download the latest [Cycle Web](https://github.com/cyclejs/cycle-web/releases)
+- Get the latest [RxJS version](https://github.com/Reactive-Extensions/RxJS/releases) (required dependency!)
 
 ## Community
 
 To engage with the community around Cycle.js, follow these resources:
 
-* Ask "_how do I...?_" questions in Gitter: <br />[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/staltz/cycle)
-* Report bugs, propose and discuss significant changes as a [GitHub issues TODO URL]()
+* Ask "_how do I...?_" questions in Gitter: [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/staltz/cycle)
+* Report bugs, propose and discuss significant changes as a [GitHub issues](https://github.com/cyclejs/cycle-core/issues)
 
 
 
