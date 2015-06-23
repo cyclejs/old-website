@@ -25,15 +25,11 @@ article
     min-height: 500px
     max-width: $max-article-width
     margin-left: calc(#{$side-menu-width} + #{$normal-space})
-    tr:hover
-        background-color: darken($white, 7%)
+    overflow-x: auto
     th
         border-bottom-width: 2px
     th, td
-        border-color: darken($white, 14%)
-    header p
-        color: darken($white, 60%)
-    overflow-x: auto
+        border-color: $gray-lighter
     header
         text-align: center
     > div
