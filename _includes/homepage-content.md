@@ -14,9 +14,9 @@ Cycle's core abstraction is Human-Computer Interaction modelled as an interplay 
 import {run} from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/web';
 
-function main(drivers) {
+function main(responses) {
   return {
-    DOM: drivers.DOM.get('.field', 'input')
+    DOM: responses.DOM.get('.field', 'input')
       .map(ev => ev.target.value)
       .startWith('')
       .map(name =>
@@ -35,7 +35,7 @@ run(main, {
 });
 {% endhighlight %}
 
-The computer function is `main()`, with input `drivers` as a collection of Response [Observables](http://reactivex.io/intro.html) (event streams from [ReactiveX](http://reactivex.io/)), and outputs a collection of Request Observables. The human function is represented by the DOM Driver in the code above, because in the context of a web application, the DOM is a proxy to the user. The responsibility of `main()` is to transform DOM Response Observables to DOM Request Observables, through a chain of RxJS operators. To learn more about this approach, the [documentation](/getting-started.html) will guide you through more details.
+The computer function is `main()`, with input `responses` as a collection of Response [Observables](http://reactivex.io/intro.html) (event streams from [ReactiveX](http://reactivex.io/)), and outputs a collection of Request Observables. The human function is represented by the DOM Driver in the code above, because in the context of a web application, the DOM is a proxy to the user. The responsibility of `main()` is to transform DOM Response Observables to DOM Request Observables, through a chain of RxJS operators. To learn more about this approach, the [documentation](/getting-started.html) will guide you through more details.
 
 - - -
 
