@@ -22,24 +22,17 @@ We recommend the use of a bundling tool such as [browserify](http://browserify.o
 {% highlight js %} 
 import Cycle from '@cycle/core';
 import CycleWeb from '@cycle/web';
-import Rx from 'rx';
 
 // ...
 {% endhighlight %}
 
 The imported `Cycle` object on the first line contains one important function: `run(main, drivers)`, where `main` is the entry point for our whole application, and `drivers` is a record of driver functions labeled by some name.
 
-> #### RxJS Dependency
-> 
-> Notice the `rx` import. [RxJS](https://github.com/Reactive-Extensions/RxJS) is the only required dependency in Cycle *Core*. It is defined as an [npm peer dependency](http://blog.nodejs.org/2013/02/07/peer-dependencies/), which means Cycle *Core* will automatically import `rx` when your project depends on `@cycle/core`. If, however, you specify `rx` alongside with `@cycle/core`, then Cycle *Core* will not attempt to automatically import `rx`. This allows you to specify a specific version of `rx` if you so wish.
-
-
 **Create the `main` function and the `drivers` record:**
 
 {% highlight js %}
 import Cycle from '@cycle/core';
 import CycleWeb from '@cycle/web';
-import Rx from 'rx';
 
 function main() {
   // ...
@@ -59,11 +52,10 @@ Cycle.run(main, drivers);
 {% highlight js %}
 import Cycle from '@cycle/core';
 import CycleWeb from '@cycle/web';
-import Rx from 'rx';
 
 function main() {
   return {
-    DOM: Rx.Observable.interval(1000)
+    DOM: Cycle.Rx.Observable.interval(1000)
       .map(i => CycleWeb.h(
         'h1', '' + i + ' seconds elapsed'
       ))
@@ -77,14 +69,13 @@ const drivers = {
 Cycle.run(main, drivers);
 {% endhighlight %}
 
-We have filled the `main()` function with some code: returns an object which has an RxJS Observable defined under the name `DOM`. This indicates the main is sending the Observable as messages to the DOM driver. The Observable emits Virtual DOM elements displaying `${i} seconds elapsed` changing over time every second, where `${i}` is replaced by `0`, `1`, `2`, etc.
+We have filled the `main()` function with some code: returns an object which has an RxJS Observable defined under the name `DOM`. This indicates `main()` is sending the Observable as messages to the DOM driver. The Observable emits Virtual DOM elements displaying `${i} seconds elapsed` changing over time every second, where `${i}` is replaced by `0`, `1`, `2`, etc.
 
 **Catch messages from `DOM` into `main` and vice-versa:**
 
 {% highlight js %}
 import Cycle from '@cycle/core';
 import {makeDOMDriver, h} from '@cycle/web';
-import Rx from 'rx';
 
 function main(drivers) {
   return {
@@ -117,7 +108,6 @@ In the rare occasion you need Cycle.js as a standalone JavaScript file, you can 
 
 - Download the latest [Cycle Core](https://github.com/cyclejs/cycle-core/releases)
 - Download the latest [Cycle Web](https://github.com/cyclejs/cycle-web/releases)
-- Get the latest [RxJS version](https://github.com/Reactive-Extensions/RxJS/releases) (required dependency!)
 
 ## Community
 
