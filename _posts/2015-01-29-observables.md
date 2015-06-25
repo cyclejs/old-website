@@ -13,7 +13,9 @@ Observables originated from [ReactiveX](http://reactivex.io/intro.html), a React
 
 Say you have a module Foo and a module Bar. A *module* can be considered to be an object of an [OOP](https://en.wikipedia.org/wiki/Object-oriented_programming) class, or any other mechanism of encapsulating state. Let's assume all code lives in some module. Here we have an arrow from Foo to Bar, indicating that Foo somehow affects state living inside Bar.
 
-![Modules Foo and Bar, where Foo affects state inside Bar](/img/modules-foo-bar.svg)
+<p>
+  {% include img/modules-foo-bar.svg %}
+</p>
 
 A practical example of such arrow would be: *whenever Foo does a network request, increment a counter in B*. If all code lives in some module, **where does this arrow live?** Where is it defined? The typical choice would be to write code inside Foo which calls a method in Bar to increment the counter.
 
@@ -29,13 +31,17 @@ function onNetworkRequest() {
 
 Because Foo owns the relationship "*when network request happens, increment counter in Bar*", we say the arrow lives at the arrow tail, i.e., Foo.
 
-![Foo is Proactive, Bar is Passive](/img/passive-foo-bar.svg)
+<p>
+  {% include img/passive-foo-bar.svg %}
+</p>
 
 Bar is **passive**: it allows other modules to change its state. Foo is proactive: it is responsible for making Bar's state function correctly. The passive module is unaware of the existence of the arrow which affects it.
 
 The alternative to this approach inverts the ownership of the arrow, without inverting the arrow's direction.
 
-![Foo is Listenable, Bar is Reactive](/img/reactive-foo-bar.svg)
+<p>
+  {% include img/reactive-foo-bar.svg %}
+</p>
 
 With this approach, Bar listens to an event happening in Foo, and manages its own state when that event happens.
 
@@ -85,7 +91,9 @@ Observable contract: (OnNext)* (OnCompleted|OnError){0,1}
 
 As an example, here is an typical Observable: it emits some events, then eventually completes.
 
-![A simple, completed, RxJS Observable](/img/completed-observable.svg)
+<p>
+  {% include img/completed-observable.svg %}
+</p>
 
 Observables can be listened, just like EventEmitters and DOM events can.
 
