@@ -1,3 +1,6 @@
+*, *:before, *:after
+    box-sizing: border-box
+
 body
     background: $white
     font-family: $body-font
@@ -29,7 +32,6 @@ h1, h2, h3, h4, h5, h6
         font-size: 1.2em
 
 .wide-page-body, .page-body
-    padding: $normal-space
     margin: 0 auto
 
 .wide-page-body
@@ -60,6 +62,10 @@ code
     background-color: $almost-white
     color: $black
     padding: 2px 4px
+
+a
+    code
+        +anchor_style($teal)
 
 iframe, img, embed, object, video
     max-width: 100%
