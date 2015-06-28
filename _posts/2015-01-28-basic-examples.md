@@ -135,7 +135,7 @@ count$.map(count =>
 
 > #### What does the suffixed dollar sign `$` mean?
 >
-> Notice we used the name `count$` for the Observable of current counter values. The dollar sign `$` *suffixed* to a name is a soft convention to indicate that the variable is an Observable (instance of an RxJS Observable). It is a naming helper to indicate types.
+> Notice we used the name `count$` for the Observable of current counter values. The dollar sign `$` *suffixed* to a name is a soft convention to indicate that the variable is an Observable. It is a naming helper to indicate types.
 >
 > Suppose you have an Observable of VTree depending on an Observable of "name" string
 > {% highlight js %} var vtree$ = name$.map(name => h('h1', name)); {% endhighlight %}
