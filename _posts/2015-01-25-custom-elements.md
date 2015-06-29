@@ -405,3 +405,10 @@ Another good practice is to avoid making custom elements for anything, but inste
 
 Other special behavior can normally be implemented as a function from Observable to Observable. For instance, say you have a `vtree$` Observable. You can wrap it with additional looks or behavior by transforming the `vtree$` Observable with RxJS operators.
 
+#### Recap
+
+- Use `event.detail` to get data sent in the custom event
+- Use `key` when creating VTrees for custom elements
+- Avoid creating custom elements with app business logic
+- Avoid custom elements if you can just use a pure function
+- Avoid custom elements to implement anything else than a Widget
