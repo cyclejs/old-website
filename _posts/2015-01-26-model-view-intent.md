@@ -18,8 +18,8 @@ function main({DOM}) {
     changeWeight$.startWith(70),
     changeHeight$.startWith(170),
     (weight, height) => {
-      const heightMeters = height * 0.01;
-      const bmi = Math.round(weight / (heightMeters * heightMeters));
+      let heightMeters = height * 0.01;
+      let bmi = Math.round(weight / (heightMeters * heightMeters));
       return {weight, height, bmi};
     }
   );
@@ -70,7 +70,7 @@ function renderHeightSlider(height) {
 
 // NEW!
 function calculateBMI(weight, height) {
-  const heightMeters = height * 0.01;
+  let heightMeters = height * 0.01;
   return Math.round(weight / (heightMeters * heightMeters));
 }
 
@@ -124,7 +124,7 @@ function renderHeightSlider(height) {
 }
 
 function calculateBMI(weight, height) {
-  const heightMeters = height * 0.01;
+  let heightMeters = height * 0.01;
   return Math.round(weight / (heightMeters * heightMeters));
 }
 
@@ -183,7 +183,7 @@ function renderHeightSlider(height) {
 }
 
 function calculateBMI(weight, height) {
-  const heightMeters = height * 0.01;
+  let heightMeters = height * 0.01;
   return Math.round(weight / (heightMeters * heightMeters));
 }
 
@@ -246,7 +246,7 @@ function renderHeightSlider(height) {
 }
 
 function calculateBMI(weight, height) {
-  const heightMeters = height * 0.01;
+  let heightMeters = height * 0.01;
   return Math.round(weight / (heightMeters * heightMeters));
 }
 

@@ -116,7 +116,7 @@ Notice there are 3 handlers: one for events, one for errors, and one for "comple
 RxJS Observables become very useful when you can transform them with pure functions, creating new Observables on top of existing ones. Given an Observable of click events, you can make an Observable of "double click" events.
 
 {% highlight js %}
-const doubleClickObservable = clickObservable
+let doubleClickObservable = clickObservable
   // collect an array of events after 250ms of event silence
   .buffer(() => clickObservable.debounce(250))
   // allow only arrays of length 2
@@ -182,14 +182,14 @@ This is where Cycle.js comes in. You only need to specify `main()` and `domDrive
 
 {% highlight js %}
 function main(responses) {
-  var requests = {
+  let requests = {
     DOM: // transform responses.DOM through a series
          // of RxJS operators
   };
   return requests;
 }
 
-const drivers = {
+let drivers = {
   DOM: makeDOMDriver('#app') // a Cycle.js helper factory
 };
 

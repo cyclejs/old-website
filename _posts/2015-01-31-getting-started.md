@@ -38,7 +38,7 @@ function main() {
   // ...
 }
 
-const drivers = {
+let drivers = {
   DOM: CycleWeb.makeDOMDriver('#app')
 };
 
@@ -62,7 +62,7 @@ function main() {
   };
 }
 
-const drivers = {
+let drivers = {
   DOM: CycleWeb.makeDOMDriver('#app')
 };
 
@@ -91,7 +91,7 @@ function main(drivers) {
   };
 }
 
-const drivers = {
+let drivers = {
   DOM: makeDOMDriver('#app')
 };
 

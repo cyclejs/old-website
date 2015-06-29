@@ -7,14 +7,14 @@ Cycle.js apps will always include at least three important components: `main()`,
 
 {% highlight js %}
 function main(driverResponses) {
-  const driverRequests = {
+  let driverRequests = {
     DOM: // transform driverResponses.DOM
          // through a series of RxJS operators
   };
   return driverRequests;
 }
 
-const drivers = {
+let drivers = {
   DOM: makeDOMDriver('#app')
 };
 
@@ -48,7 +48,7 @@ import Cycle from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/web';
 
 function main(responses) {
-  const requests = {DOM: null};
+  let requests = {DOM: null};
   return requests;
 }
 
@@ -66,7 +66,7 @@ import Cycle from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/web';
 
 function main(responses) {
-  const requests = {
+  let requests = {
     DOM: Cycle.Rx.Observable.just(false)
       .map(toggled =>
         h('div', [
@@ -94,7 +94,7 @@ import Cycle from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/web';
 
 function main(responses) {
-  const requests = {
+  let requests = {
     DOM: responses.DOM.get('input', 'change') // NEW!
       .map(ev => ev.target.checked) // NEW!
       .startWith(false) // NEW!
@@ -138,7 +138,7 @@ count$.map(count =>
 > Notice we used the name `count$` for the Observable of current counter values. The dollar sign `$` *suffixed* to a name is a soft convention to indicate that the variable is an Observable. It is a naming helper to indicate types.
 >
 > Suppose you have an Observable of VTree depending on an Observable of "name" string
-> {% highlight js %} var vtree$ = name$.map(name => h('h1', name)); {% endhighlight %}
+> {% highlight js %} let vtree$ = name$.map(name => h('h1', name)); {% endhighlight %}
 >
 > Notice that the function inside `map` takes `name` as argument, while the Observable is named `name$`. The naming convention indicates that `name` is the value being emitted by `name$`. In general, `foobar$` emits `foobar`. Without this convention, if `name$` would be named simply `name`, it would confuse readers about the types involved. Also, `name$` is succinct compared to alternatives like `nameObservable`, `nameStream`, or `nameObs`. This convention can also be extended to arrays: use plurality to indicate the type is an array. Example: `vtrees` is an array of `vtree`, but `vtree$` is an Observable of `vtree`.
 
@@ -217,7 +217,7 @@ let bmi$ = Cycle.Rx.Observable.combineLatest(
   changeWeight$.startWith(70),
   changeHeight$.startWith(170),
   (weight, height) => {
-    const heightMeters = height * 0.01;
+    let heightMeters = height * 0.01;
     return weight / (heightMeters * heightMeters);
   }
 );
@@ -238,7 +238,7 @@ function main({DOM}) {
     changeWeight$.startWith(70),
     changeHeight$.startWith(170),
     (weight, height) => {
-      const heightMeters = height * 0.01;
+      let heightMeters = height * 0.01;
       return Math.round(weight / (heightMeters * heightMeters));
     }
   );
@@ -276,8 +276,8 @@ let state$ = Cycle.Rx.Observable.combineLatest(
   changeWeight$.startWith(70),
   changeHeight$.startWith(170),
   (weight, height) => {
-    const heightMeters = height * 0.01;
-    const bmi = Math.round(weight / (heightMeters * heightMeters));
+    let heightMeters = height * 0.01;
+    let bmi = Math.round(weight / (heightMeters * heightMeters));
     return {weight, height, bmi};
   }
 );
@@ -298,8 +298,8 @@ function main({DOM}) {
     changeWeight$.startWith(70),
     changeHeight$.startWith(170),
     (weight, height) => {
-      const heightMeters = height * 0.01;
-      const bmi = Math.round(weight / (heightMeters * heightMeters));
+      let heightMeters = height * 0.01;
+      let bmi = Math.round(weight / (heightMeters * heightMeters));
       return {weight, height, bmi};
     }
   );
