@@ -349,16 +349,6 @@ The opposite direction should be also a straight-forward translation from the us
 
 Model-View-Intent (MVI) is **reactive**, **funtional**, and follows the **core idea in MVC**. It is reactive because Intent observes the User, Model observes the Intent, View observes the Model, and the User observes the View. It is functional because each of these components is expressed as a [referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency_%28computer_science%29) function over Observables. Is follows the original MVC purpose because View and Intent bridge the gap between the user and the digital model, each in one direction.
 
-MVI is an architecture, but in Cycle it is nothing else than simply a function decomposition of `main()`.
-
-<p>
-  {% include img/main-eq-mvi.svg %}
-</p>
-
-In fact, MVI itself just naturally emerged from our refactoring of `main()` split into functions. This means Model, View, and Intent are not rigorous containers where you should place code. Instead, they are just a convenient way of organizing code, and are very cheap to create because are simply functions. Whenever convenient, you should split a function if it becomes too large. Use MVI as a guide on how to organize code, but don't confine your code within its limits if it doesn't make sense.
-
-This is what it means to say Cycle.js is *sliceable*. MVI is just one way of slicing `main()`.
-
 > #### CSS selectors for querying DOM events
 > 
 > Some programmers get concerned about `DOM.get(selector, eventType)` being a bad practice because it resembles spaghetti code in jQuery-based programs. They would rather prefer the virtual DOM elements to specify handler callbacks for events, such as `onClick={this.handleClick()}`.
@@ -371,6 +361,20 @@ keystrokes.*"
 > **Adding user actions shouldn't affect the View.** If you need to change Intent code to grab new kinds of events from the element, you don't need to modify code in the VTree element. The View stays untouched, and it should, because translation from state to DOM hasn't changed.
 > 
 > The MVI strategy in Cycle Web is to name *all* elements in your View with appropriate semantic classnames. Then you do not need to worry which of those can have event handlers, if all of them can. The classname is the common artifact which the View (DOM request) and the Intent (DOM response) can use to refer to the same element.
+
+MVI is an architecture, but in Cycle it is nothing else than simply a function decomposition of `main()`.
+
+<p>
+  {% include img/main-eq-mvi.svg %}
+</p>
+
+In fact, MVI itself just naturally emerged from our refactoring of `main()` split into functions. This means Model, View, and Intent are not rigorous containers where you should place code. Instead, they are just a convenient way of organizing code, and are very cheap to create because are simply functions. Whenever convenient, you should split a function if it becomes too large. Use MVI as a guide on how to organize code, but don't confine your code within its limits if it doesn't make sense.
+
+This is what it means to say Cycle.js is *sliceable*. MVI is just one way of slicing `main()`.
+
+> #### Sliceability
+> 
+> Sliceability is a feature often found in functional programming languages, specially in LISP-based languages like [Clojure](https://en.wikipedia.org/wiki/Clojure), which use S-expressions to enable treating [*code as data*](https://en.wikipedia.org/wiki/Homoiconicity).
 
 ## Pursuing DRY
 
