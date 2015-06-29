@@ -201,7 +201,7 @@ Now that we got the hang of Cycle.js apps with state, let's tackle something a b
 
 <a class="jsbin-embed" href="http://jsbin.com/qegebu/embed?output">JS Bin on jsbin.com</a>
 
-In the previous example, we had the actions *decrement* and *increment*. In this example, we have "change weight" and "change height". These seem straight-forward to implement.
+In the previous example, we had the actions *decrement* and *increment*. In this example, we have "change weight" and "change height". These seem straightforward to implement.
 
 {% highlight js %}
 let changeWeight$ = DOM.get('#weight', 'input')

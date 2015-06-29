@@ -341,7 +341,7 @@ We can keep the MVC ideal while avoiding a proactive Controller. In fact, if you
   {% include img/view-translation.svg %}
 </p>
 
-The opposite direction should be also a straight-forward translation from the user's actions to *new* digital data. This is precisely what `intent()` does: interprets what the user is trying to affect in the context of the digital model.
+The opposite direction should be also a straightforward translation from the user's actions to *new* digital data. This is precisely what `intent()` does: interprets what the user is trying to affect in the context of the digital model.
 
 <p>
   {% include img/intent-translation.svg %}
@@ -349,7 +349,7 @@ The opposite direction should be also a straight-forward translation from the us
 
 Model-View-Intent (MVI) is **reactive**, **funtional**, and follows the **core idea in MVC**. It is reactive because Intent observes the User, Model observes the Intent, View observes the Model, and the User observes the View. It is functional because each of these components is expressed as a [referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency_%28computer_science%29) function over Observables. Is follows the original MVC purpose because View and Intent bridge the gap between the user and the digital model, each in one direction.
 
-> #### CSS selectors for querying DOM events
+> #### Why CSS selectors for querying DOM events?
 > 
 > Some programmers get concerned about `DOM.get(selector, eventType)` being a bad practice because it resembles spaghetti code in jQuery-based programs. They would rather prefer the virtual DOM elements to specify handler callbacks for events, such as `onClick={this.handleClick()}`.
 > 
@@ -372,9 +372,9 @@ In fact, MVI itself just naturally emerged from our refactoring of `main()` spli
 
 This is what it means to say Cycle.js is *sliceable*. MVI is just one way of slicing `main()`.
 
-> #### Sliceability
+> #### "Sliceable"?
 > 
-> Sliceability is a feature often found in functional programming languages, specially in LISP-based languages like [Clojure](https://en.wikipedia.org/wiki/Clojure), which use S-expressions to enable treating [*code as data*](https://en.wikipedia.org/wiki/Homoiconicity).
+> We mean the ability to refactor the program by extracting pieces of code without having to significantly modify their surroundings. Sliceability is a feature often found in functional programming languages, specially in LISP-based languages like [Clojure](https://en.wikipedia.org/wiki/Clojure), which use S-expressions to enable treating [*code as data*](https://en.wikipedia.org/wiki/Homoiconicity).
 
 ## Pursuing DRY
 

@@ -5,7 +5,7 @@ tags: chapters
 
 Some parts of our UI share the same *looks* and *behavior*. Looks are the rendering of VTrees from state, in other words *View*. Behavior is what happens when the user generates DOM events related to that UI, in other words, *Intent*. Let's call these UI parts as *Widget*.
 
-> #### Definition of a Widget
+> #### What is a "Widget"?
 > 
 > We will refer to "Widget" as a small reusable user interface program with: (1) an interface to interact with a parent UI program, (2) no business logic.
 > 
