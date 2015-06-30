@@ -97,8 +97,10 @@ p > img, p > svg
 .mobile-shown
     display: none
 
-
 @media only screen and (max-width: 680px)
+    body
+        font-size: calc(.6vw + .8em)
+        padding: 0 $small-space
     .mobile-hidden
         display: none
     .mobile-shown
