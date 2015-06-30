@@ -108,10 +108,3 @@ In the rare occasion you need Cycle.js as a standalone JavaScript file, you can 
 
 - Download the latest [Cycle Core](https://github.com/cyclejs/cycle-core/releases)
 - Download the latest [Cycle Web](https://github.com/cyclejs/cycle-web/releases)
-
-## Community
-
-To engage with the community around Cycle.js, follow these resources:
-
-* Ask "_how do I...?_" questions in Gitter: [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/staltz/cycle)
-* Report bugs, propose and discuss significant changes as a [GitHub issues](https://github.com/cyclejs/cycle-core/issues)
