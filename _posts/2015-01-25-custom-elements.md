@@ -5,7 +5,7 @@ tags: chapters
 
 Some parts of our UI share the same *looks* and *behavior*. Looks are the rendering of VTrees from state, in other words *View*. Behavior is what happens when the user generates DOM events related to that UI, in other words, *Intent*. Let's call these UI parts as *Widget*.
 
-> #### What is a "Widget"?
+> <h4 id="what-is-a-widget">What is a "Widget"?</h4>
 > 
 > We will refer to "Widget" as a small reusable user interface program with: (1) an interface to interact with a parent UI program, (2) no business logic.
 > 
@@ -52,9 +52,9 @@ function main(responses) {
 
 Let's learn by doing: how to create custom elements and use them in a Cycle.js application.
 
-## A labeled slider custom element
+<h2 id="a-labeled-slider-custom-element">A labeled slider custom element</h2>
 
-From the [last chapter](/model-view-intent.html) we saw the need to have a labeled slider: a label and slider, side by side, where the label always displays the current dynamic value of the slider.
+From the [last chapter](/model-view-intent.html#pursuing-dry) we saw the need to have a labeled slider: a label and slider, side by side, where the label always displays the current dynamic value of the slider.
 
 <a class="jsbin-embed" href="http://jsbin.com/fuwowe/embed?output">JS Bin on jsbin.com</a>
 
@@ -294,7 +294,7 @@ Cycle.run(main, {
 
 <a class="jsbin-embed" href="http://jsbin.com/vanelo/embed?output">JS Bin on jsbin.com</a>
 
-## Custom element with `children` property
+<h2 id="custom-element-with-children-property">Custom element with `children` property</h2>
 
 The interface for your custom element can also get passed a VTree to be embedded as a children. We can change our labeled slider to receive the label as a child VTree instead of a property string `label`.
 
@@ -349,7 +349,7 @@ function labeledSlider(responses) {
 
 <a class="jsbin-embed" href="http://jsbin.com/kiluyi/embed?output">JS Bin on jsbin.com</a>
 
-## Tips and best practices
+<h2 id="tips-and-best-practices">Tips and best practices</h2>
 
 Using a custom element is similar to using typical DOM elements, with a few differences: event data is sent through `event.detail`, and the recommended use of `key` property on the virtual DOM elements.
 
@@ -390,7 +390,7 @@ function view(state) {
 
 Notice `h('labeled-slider', { key: 1, ... })`.
 
-> #### Why use `key`?
+> <h4 id="why-use-key">Why use `key`?</h4>
 > 
 > The use of `key` is necessary for specifying that the element in question is still the same even though its properties might have changed. 
 > 
@@ -405,7 +405,7 @@ Another good practice is to avoid making custom elements for anything, but inste
 
 Other special behavior can normally be implemented as a function from Observable to Observable. For instance, say you have a `vtree$` Observable. You can wrap it with additional looks or behavior by transforming the `vtree$` Observable with RxJS operators.
 
-#### Recap
+<h4 id="recap">Recap</h4>
 
 - Use `event.detail` to get data sent in the custom event
 - Use `key` when creating VTrees for custom elements

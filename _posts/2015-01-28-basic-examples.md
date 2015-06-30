@@ -23,7 +23,7 @@ Cycle.run(main, drivers);
 
 In the case of the DOM Driver, our `main()` will interact with the user through the DOM. Most of our examples will use the DOM Driver, but keep in mind Cycle.js is modular and extensible. You could build an application, targetting native mobile for instance, without using the DOM Driver.
 
-## Toggle a checkbox
+<h2 id="toggle-a-checkbox">Toggle a checkbox</h2>
 
 Let's start from the assumption we have an `index.html` file with an element to contain our app.
 
@@ -117,7 +117,7 @@ Cycle.run(main, {
 
 Notice the lines we changed, with `NEW!`. We now map `change` events on the checkbox to the `checked` value of the element (the first `map()`) to VTrees displaying that value. However, we need a [`.startWith()`](http://reactivex.io/documentation/operators/startwith.html) to give a default value to be converted to a VTree. Without this, nothing would be shown! Why? Because our `requests` is reacting to `responses`, but `responses` is reacting to `requests`. If no one triggers the first event, nothing will happen. It is the same effect as meeting a stranger, and not having anything to say. Someone needs to take the initiative to start the conversation. That is what `main()` doing: kickstarting the interaction, and then letting subsequent actions be mutual reactions between `main()` and the DOM Driver.
 
-## Increment and decrement a counter
+<h2 id="increment-and-decrement-a-counter">Increment and decrement a counter</h2>
 
 We saw how to use the *dialogue* pattern of building user interfaces, but our case didn't have state: the label just reacted to the checkbox event. Normally applications have state in memory, so let's see how to build a Cycle.js for app that case.
 
@@ -133,7 +133,7 @@ count$.map(count =>
 )
 {% endhighlight %}
 
-> #### What does the suffixed dollar sign `$` mean?
+> <h4 id="what-does-the-suffixed-dollar-sign-mean">What does the suffixed dollar sign `$` mean?</h4>
 >
 > Notice we used the name `count$` for the Observable of current counter values. The dollar sign `$` *suffixed* to a name is a soft convention to indicate that the variable is an Observable. It is a naming helper to indicate types.
 >
@@ -195,7 +195,7 @@ Cycle.run(main, {
 
 <a class="jsbin-embed" href="http://jsbin.com/cavujo/embed?output">JS Bin on jsbin.com</a>
 
-## Body mass index calculator
+<h2 id="body-mass-index-calculator">Body mass index calculator</h2>
 
 Now that we got the hang of Cycle.js apps with state, let's tackle something a bit larger. Consider the following [BMI](https://en.wikipedia.org/wiki/Body_mass_index) calculator: it has a slider to select the weight, a slider to select the height, and a text indicates the calculated BMI from those weight and height values selected.
 

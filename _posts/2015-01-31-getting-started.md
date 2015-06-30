@@ -3,7 +3,7 @@ title:  "Getting Started"
 tags: chapters
 ---
 
-## npm
+<h2 id="npm">npm</h2>
 
 The recommended channel for downloading Cycle.js as a package is through [npm](http://npmjs.org/), which follows the [CommonJS](http://wiki.commonjs.org/wiki/CommonJS) spec. Create a new directory and run this inside that directory:
 
@@ -15,7 +15,7 @@ This installs Cycle *Core*, and Cycle *Web*. The former is the minimum required 
 
 In case you are not dealing with a DOM-interfacing web application, you can omit `@cycle/web` when installing.
 
-## First steps
+<h2 id="first-steps">First steps</h2>
 
 We recommend the use of a bundling tool such as [browserify](http://browserify.org/) or [webpack](http://webpack.github.io/), in combination with ES6 (a.k.a. ES2015) through a transpiler (e.g. [Babel](http://babeljs.io/)). Most of the code examples in this documentation assume some basic familiarity with ES6. Once your build system is set up, **write your main JavaScript source file like**:
 
@@ -102,7 +102,7 @@ Function `main()` now takes `drivers` as input. Just like the output `main()` pr
 
 This example portrays the most common problem-solving pattern in Cycle.js: formulate the computer's behavior as a function of Observables: continuously listen to driver events and continuously provide messages (in our case, Virtual DOM elements) to the drivers. Read the next chapter to get familiar with this pattern.
 
-## Cycle.js as a script
+<h2 id="cyclejs-as-a-script">Cycle.js as a script</h2>
 
 In the rare occasion you need Cycle.js as a standalone JavaScript file, you can download them on the [Releases](https://github.com/cyclejs/cycle-core/releases) page at GitHub.
 

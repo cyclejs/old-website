@@ -3,7 +3,7 @@ title: "Model-View-Intent"
 tags: chapters
 ---
 
-In the [previous chapter](/basic-examples.html) we wrote a program entirely inside the `main()` function. This isn't a good idea, and we need to do something about it.
+In the [previous chapter](/basic-examples.html#body-mass-index-calculator) we wrote a program entirely inside the `main()` function. This isn't a good idea, and we need to do something about it.
 
 {% highlight js %}
 import Cycle from '@cycle/core';
@@ -162,7 +162,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-Now, `main` is much smaller. But is it doing *one thing*? We have `changeWeight$`, `changeHeight$`, `state$`, and the return using `view(state$)`. Normally when we work with a *View*, we also have a *Model*. What Models normally do is **manage state**. In our case, however, we have `state$` which is self-responsible for its own changes, because it is [reactive](/observables.html). But anyway we have code that defines how `state$` depends on `changeWeight$` and `changeHeight$`. We can put that code inside a `model()` function.
+Now, `main` is much smaller. But is it doing *one thing*? We have `changeWeight$`, `changeHeight$`, `state$`, and the return using `view(state$)`. Normally when we work with a *View*, we also have a *Model*. What Models normally do is **manage state**. In our case, however, we have `state$` which is self-responsible for its own changes, because it is [reactive](/observables.html#reactive-programming). But anyway we have code that defines how `state$` depends on `changeWeight$` and `changeHeight$`. We can put that code inside a `model()` function.
 
 {% highlight js %}
 import Cycle from '@cycle/core';
@@ -225,7 +225,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-`main` still defines `changeWeight$` and `changeHeight$`. What are these Observables? They are event streams of *Actions*. In the [previous chapter about basic examples](/basic-examples.html) we had an `action$` Observable for incrementing and decrementing a counter. These Actions are deduced or interpreted from DOM events. Their names indicate the user's *intentions*. We can group these Observable definitions in an `intent()` function:
+`main` still defines `changeWeight$` and `changeHeight$`. What are these Observables? They are event streams of *Actions*. In the [previous chapter about basic examples](/basic-examples.html#increment-and-decrement-a-counter) we had an `action$` Observable for incrementing and decrementing a counter. These Actions are deduced or interpreted from DOM events. Their names indicate the user's *intentions*. We can group these Observable definitions in an `intent()` function:
 
 {% highlight js %}
 import Cycle from '@cycle/core';
@@ -304,7 +304,7 @@ function main({DOM}) {
 
 Seems like we cannot achieve a simpler format for `main`. 
 
-#### Recap
+<h4 id="recap">Recap</h4>
 
 - `intent()` function 
   - Purpose: interpret DOM events as user's intended actions
@@ -321,7 +321,7 @@ Seems like we cannot achieve a simpler format for `main`.
 
 **Is Model-View-Intent an architecture?** Is this a new architecture? If so, how is it different to Model-View-Controller?
 
-## What MVC is really about
+<h2 id="what-mvc-is-really-about">What MVC is really about</h2>
 
 [Model-View-Controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (MVC) has existed since the 80s as the cornerstone architecture for user interfaces. It has inspired multiple other important architectures such as [MVVM](https://en.wikipedia.org/wiki/Model_View_ViewModel) and [MVP](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter).
 
@@ -349,7 +349,7 @@ The opposite direction should be also a straightforward translation from the use
 
 Model-View-Intent (MVI) is **reactive**, **funtional**, and follows the **core idea in MVC**. It is reactive because Intent observes the User, Model observes the Intent, View observes the Model, and the User observes the View. It is functional because each of these components is expressed as a [referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency_%28computer_science%29) function over Observables. Is follows the original MVC purpose because View and Intent bridge the gap between the user and the digital model, each in one direction.
 
-> #### Why CSS selectors for querying DOM events?
+> <h4 id="why-css-selectors-for-querying-dom-events">Why CSS selectors for querying DOM events?</h4>
 > 
 > Some programmers get concerned about `DOM.get(selector, eventType)` being a bad practice because it resembles spaghetti code in jQuery-based programs. They would rather prefer the virtual DOM elements to specify handler callbacks for events, such as `onClick={this.handleClick()}`.
 > 
@@ -372,11 +372,11 @@ In fact, MVI itself just naturally emerged from our refactoring of `main()` spli
 
 This is what it means to say Cycle.js is *sliceable*. MVI is just one way of slicing `main()`.
 
-> #### "Sliceable"?
+> <h4 id="sliceable">"Sliceable"?</h4>
 > 
 > We mean the ability to refactor the program by extracting pieces of code without having to significantly modify their surroundings. Sliceability is a feature often found in functional programming languages, specially in LISP-based languages like [Clojure](https://en.wikipedia.org/wiki/Clojure), which use S-expressions to enable treating [*code as data*](https://en.wikipedia.org/wiki/Homoiconicity).
 
-## Pursuing DRY
+<h2 id="pursuing-dry">Pursuing DRY</h2>
 
 As good programmers writing good codebases, we must follow [DRY: Don't Repeat Yourself](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself). The MVI code we wrote is not entirely DRY.
 
