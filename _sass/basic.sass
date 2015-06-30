@@ -91,3 +91,15 @@ p > img, p > svg
     max-width: 30em
     min-width: 20em
     max-height: 15em
+
+.mobile-hidden
+    display: inherit
+.mobile-shown
+    display: none
+
+
+@media only screen and (max-width: 680px)
+    .mobile-hidden
+        display: none
+    .mobile-shown
+        display: inherit
