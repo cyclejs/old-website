@@ -3,6 +3,7 @@
     color: $white
     margin: 0 calc(0px - #{$normal-space})
     padding: 0 $normal-space 1px
+    position: relative
     .hero-title
         img.hero-logo
             width: 7em
@@ -23,6 +24,10 @@
             +box_link($lime-light, $black, $lime-light)
             letter-spacing: 0
             display: inline-block
+    .hero-gh-star
+        position: absolute
+        top: $large-space
+        right: 0
 
 .homepage-bottom-cta
     margin: $normal-space 0
@@ -39,6 +44,8 @@
 
 @media only screen and (max-width: 680px)
     .hero
+        .hero-gh-star
+            top: $normal-space
         .page-body
             padding-top: $normal-space
         .hero-title
