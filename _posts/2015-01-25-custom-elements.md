@@ -56,7 +56,7 @@ Let's learn by doing: how to create custom elements and use them in a Cycle.js a
 
 From the [last chapter](/model-view-intent.html#pursuing-dry) we saw the need to have a labeled slider: a label and slider, side by side, where the label always displays the current dynamic value of the slider.
 
-<a class="jsbin-embed" href="http://jsbin.com/fuwowe/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/sigofi/embed?output">JS Bin on jsbin.com</a>
 
 Every labeled slider has some properties:
 
@@ -292,7 +292,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/vanelo/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/muwilu/embed?output">JS Bin on jsbin.com</a>
 
 <h2 id="custom-element-with-children-property">Custom element with `children` property</h2>
 
@@ -347,7 +347,7 @@ function labeledSlider(responses) {
 }
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/kiluyi/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/xuvepa/embed?output">JS Bin on jsbin.com</a>
 
 <h2 id="tips-and-best-practices">Tips and best practices</h2>
 

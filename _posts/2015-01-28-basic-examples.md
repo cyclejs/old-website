@@ -83,7 +83,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/qekuni/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/yusope/embed?output">JS Bin on jsbin.com</a>
 
 We just added an Observable of a `false` mapped to a VTree. [`Observable.just(x)`](http://reactivex.io/documentation/operators/just.html) creates a simple Observable which simply emits `x` once, then we used [`map()`](http://reactivex.io/documentation/operators/map.html) to convert that to the `virtual-dom` VTree containing an `<input type="checkbox">` and a `<p>` element displaying `off` if the `toggled` boolean was `false`, and displaying `ON` otherwise.
 
@@ -113,7 +113,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/zewune/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/qomenu/embed?output">JS Bin on jsbin.com</a>
 
 Notice the lines we changed, with `NEW!`. We now map `change` events on the checkbox to the `checked` value of the element (the first `map()`) to VTrees displaying that value. However, we need a [`.startWith()`](http://reactivex.io/documentation/operators/startwith.html) to give a default value to be converted to a VTree. Without this, nothing would be shown! Why? Because our `requests` is reacting to `responses`, but `responses` is reacting to `requests`. If no one triggers the first event, nothing will happen. It is the same effect as meeting a stranger, and not having anything to say. Someone needs to take the initiative to start the conversation. That is what `main()` doing: kickstarting the interaction, and then letting subsequent actions be mutual reactions between `main()` and the DOM Driver.
 
@@ -193,13 +193,13 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/cavujo/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/pefuga/embed?output">JS Bin on jsbin.com</a>
 
 <h2 id="body-mass-index-calculator">Body mass index calculator</h2>
 
 Now that we got the hang of Cycle.js apps with state, let's tackle something a bit larger. Consider the following [BMI](https://en.wikipedia.org/wiki/Body_mass_index) calculator: it has a slider to select the weight, a slider to select the height, and a text indicates the calculated BMI from those weight and height values selected.
 
-<a class="jsbin-embed" href="http://jsbin.com/qegebu/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/vikaga/embed?output">JS Bin on jsbin.com</a>
 
 In the previous example, we had the actions *decrement* and *increment*. In this example, we have "change weight" and "change height". These seem straightforward to implement.
 
@@ -265,7 +265,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/yatexu/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/subiru/embed?output">JS Bin on jsbin.com</a>
 
 This code works, we can get the calculated BMI when we move the slider. However, if you have noticed, the labels for weight and height do not show what the slider is selecting. Instead, they just show e.g. `Weight ___kg`, which is useless since we do not know what value we are choosing for the weight.
 
@@ -326,7 +326,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/qegebu/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/vikaga/embed?output">JS Bin on jsbin.com</a>
 
 Great, this program functions exactly like we want it to. Weight and height labels react to the sliders being dragged, and the BMI result gets recalculated as well.
 
