@@ -13,7 +13,7 @@ To engage with the community around Cycle.js, follow these resources:
 
 - [RxMarbles is written in Cycle.js](https://github.com/staltz/rxmarbles)
 - [A presentation about Cycle.js](http://slides.com/eryknapierala/cycle) by Eryk Napierała
-- [Cycle-React](https://github.com/pH200/cycle-react) use React instead of virtual-dom with a Cycle-like API, by [https://github.com/pH200](pH200)
+- [Cycle-React](https://github.com/pH200/cycle-react) use React instead of virtual-dom with a Cycle-like API, by [@pH200](https://github.com/pH200)
 - [Slack trend searching written in Cycle.js](https://github.com/grozen/trends-cycle) by [@grozen](https://github.com/grozen)
 - [Cycle.js examples using JSX and ES6](https://github.com/ivan-kleshnin/cyclejs-examples) by [@ivan-kleshnin](https://github.com/ivan-kleshnin)
 - [TodoMVP, an example webapp written in Cycle.js](https://github.com/cgeorg/todomvp) by [@cgeorg](https://github.com/cgeorg)
