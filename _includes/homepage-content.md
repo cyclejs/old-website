@@ -41,7 +41,7 @@ The computer function is `main()`, with input `responses` as a collection of Res
 
 ## Fully Reactive
 
-The building blocks in Cycle are Observables from [RxJS](https://github.com/Reactive-Extensions/RxJS), which simplify code related to events, asynchrony, and errors. Structuring the application with RxJS also separates concerns, because Observables decouple data production from data consumption. As a result, apps in Cycle have nothing comparable to imperative calls such as `setState()`, `forceUpdate()`, `replaceProps()`, `handleClick()`, etc. In the [reactive pattern](/observables.html), no module has methods of the type `foo.update()`, which normally leak responsibility of handling state living in `foo`. You can write code with single responsibilities throughout.
+The building blocks in Cycle are Observables from [RxJS](https://github.com/Reactive-Extensions/RxJS), which simplify code related to events, asynchrony, and errors. Structuring the application with RxJS also separates concerns, because Observables decouple data production from data consumption. As a result, apps in Cycle have nothing comparable to imperative calls such as `setState()`, `forceUpdate()`, `replaceProps()`, `handleClick()`, etc. In the [reactive pattern](/observables.html#reactive-programming), no module has methods of the type `foo.update()`, which normally leak responsibility of handling state living in `foo`. You can write code with single responsibilities throughout.
 
 - - -
 
@@ -55,6 +55,6 @@ Most frameworks claim to provide Separation of Concerns, but often they prescrib
 
 - **Virtual DOM rendering**: Cycle comes with a driver to interface with the DOM through [virtual-dom](https://github.com/Matt-Esch/virtual-dom), a fast diff & patch library.
 - **Universal JavaScript**: In relation to the *virtual-dom* driver, there is a HTML-generating driver function for server-side rendering, enabling code reuse.
-- **thisless JavaScript**: The use of functions and RxJS Observables allow for a JavaScript programming style without the `this` keyword. Cycle.js encourages you to create apps with functional practices. Without `this`, you can write more reusable code and define logic without tightly coupling it to data. See it for yourself, `this` cannot be found in [Cycle.js TodoMVC](https://github.com/staltz/todomvc-cycle/tree/master/js).
+- **thisless JavaScript**: The use of functions and RxJS Observables allow for a JavaScript programming style without the `this` keyword. Cycle.js encourages you to create apps with functional practices. Without `this`, you can write more reusable code and define logic without tightly coupling it to data. See it for yourself, `this` cannot be found in [Cycle.js TodoMVC](https://github.com/staltz/todomvc-cycle/tree/master/src).
 - **Good testability**: With functions and Observables, testing is mostly a matter of feeding input and inspecting the output.
 - **Extensibility**: write your own driver or use community-built drivers to make use of React, React Native, AJAX, Web Sockets, or other side effects.
