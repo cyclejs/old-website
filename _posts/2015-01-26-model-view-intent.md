@@ -83,7 +83,7 @@ function main({DOM}) {
   let state$ = Cycle.Rx.Observable.combineLatest(
     changeWeight$.startWith(70),
     changeHeight$.startWith(170),
-    (weight, height) => 
+    (weight, height) =>
       ({weight, height, bmi: calculateBMI(weight, height)})
   );
 
@@ -148,7 +148,7 @@ function main({DOM}) {
   let state$ = Cycle.Rx.Observable.combineLatest(
     changeWeight$.startWith(70),
     changeHeight$.startWith(170),
-    (weight, height) => 
+    (weight, height) =>
       ({weight, height, bmi: calculateBMI(weight, height)})
   );
 
@@ -192,7 +192,7 @@ function model(changeWeight$, changeHeight$) {
   return Cycle.Rx.Observable.combineLatest(
     changeWeight$.startWith(70),
     changeHeight$.startWith(170),
-    (weight, height) => 
+    (weight, height) =>
       ({weight, height, bmi: calculateBMI(weight, height)})
   );
 }
@@ -265,7 +265,7 @@ function model(actions) {
   return Cycle.Rx.Observable.combineLatest(
     actions.changeWeight$.startWith(70),
     actions.changeHeight$.startWith(170),
-    (weight, height) => 
+    (weight, height) =>
       ({weight, height, bmi: calculateBMI(weight, height)})
   );
 }
@@ -302,11 +302,11 @@ function main({DOM}) {
 }
 {% endhighlight %}
 
-Seems like we cannot achieve a simpler format for `main`. 
+Seems like we cannot achieve a simpler format for `main`.
 
 <h4 id="recap">Recap</h4>
 
-- `intent()` function 
+- `intent()` function
   - Purpose: interpret DOM events as user's intended actions
   - Input: DOM Driver responses
   - Output: Action Observables
@@ -317,7 +317,7 @@ Seems like we cannot achieve a simpler format for `main`.
 - `view()` function
   - Purpose: visually represent state from the Model
   - Input: `state$` Observable
-  - Output: Observable of VTree as the DOM Driver request 
+  - Output: Observable of VTree as the DOM Driver request
 
 **Is Model-View-Intent an architecture?** Is this a new architecture? If so, how is it different to Model-View-Controller?
 
@@ -347,19 +347,19 @@ The opposite direction should be also a straightforward translation from the use
   {% include img/intent-translation.svg %}
 </p>
 
-Model-View-Intent (MVI) is **reactive**, **funtional**, and follows the **core idea in MVC**. It is reactive because Intent observes the User, Model observes the Intent, View observes the Model, and the User observes the View. It is functional because each of these components is expressed as a [referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency_%28computer_science%29) function over Observables. Is follows the original MVC purpose because View and Intent bridge the gap between the user and the digital model, each in one direction.
+Model-View-Intent (MVI) is **reactive**, **funtional**, and follows the **core idea in MVC**. It is reactive because Intent observes the User, Model observes the Intent, View observes the Model, and the User observes the View. It is functional because each of these components is expressed as a [referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency_%28computer_science%29) function over Observables. It follows the original MVC purpose because View and Intent bridge the gap between the user and the digital model, each in one direction.
 
 > <h4 id="why-css-selectors-for-querying-dom-events">Why CSS selectors for querying DOM events?</h4>
-> 
+>
 > Some programmers get concerned about `DOM.get(selector, eventType)` being a bad practice because it resembles spaghetti code in jQuery-based programs. They would rather prefer the virtual DOM elements to specify handler callbacks for events, such as `onClick={this.handleClick()}`.
-> 
+>
 > The choice for selector-based event querying in Cycle *Web* is an informed and rational decision. This strategy enables MVI to be reactive and is inspired by the [open-closed principle](https://en.wikipedia.org/wiki/Open/closed_principle).
-> 
+>
 > **Important for reactivity and MVI.** If we would have Views with `onClick={this.handleClick()}`, it would means Views would *not* be anymore a simple translation from digital model to user mental model, because we also specify what happens as a consequence of the user's actions. To keep all parts in a Cycle.js app reactive, we need the View to simply declare how the visual representation of the Model is. Otherwise the View becomes a Proactive component. It is beneficial to keep the View responsible only for declaring how state is visually represented: it has a [single responsibility](https://en.wikipedia.org/wiki/Single_responsibility_principle) and is friendly to UI designers. It is also conceptually aligned with the [original View in MVC](http://heim.ifi.uio.no/~trygver/1979/mvc-2/1979-12-MVC.pdf): "*... a view should never know about user input, such as mouse operations and
 keystrokes.*"
-> 
+>
 > **Adding user actions shouldn't affect the View.** If you need to change Intent code to grab new kinds of events from the element, you don't need to modify code in the VTree element. The View stays untouched, and it should, because translation from state to DOM hasn't changed.
-> 
+>
 > The MVI strategy in Cycle Web is to name *all* elements in your View with appropriate semantic classnames. Then you do not need to worry which of those can have event handlers, if all of them can. The classname is the common artifact which the View (DOM request) and the Intent (DOM response) can use to refer to the same element.
 
 MVI is an architecture, but in Cycle it is nothing else than simply a function decomposition of `main()`.
@@ -368,19 +368,19 @@ MVI is an architecture, but in Cycle it is nothing else than simply a function d
   {% include img/main-eq-mvi.svg %}
 </p>
 
-In fact, MVI itself just naturally emerged from our refactoring of `main()` split into functions. This means Model, View, and Intent are not rigorous containers where you should place code. Instead, they are just a convenient way of organizing code, and are very cheap to create because are simply functions. Whenever convenient, you should split a function if it becomes too large. Use MVI as a guide on how to organize code, but don't confine your code within its limits if it doesn't make sense.
+In fact, MVI itself just naturally emerged from our refactoring of `main()` split into functions. This means Model, View, and Intent are not rigorous containers where you should place code. Instead, they are just a convenient way of organizing code, and are very cheap to create because they are simply functions. Whenever convenient, you should split a function if it becomes too large. Use MVI as a guide on how to organize code, but don't confine your code within its limits if it doesn't make sense.
 
 This is what it means to say Cycle.js is *sliceable*. MVI is just one way of slicing `main()`.
 
 > <h4 id="sliceable">"Sliceable"?</h4>
-> 
+>
 > We mean the ability to refactor the program by extracting pieces of code without having to significantly modify their surroundings. Sliceability is a feature often found in functional programming languages, specially in LISP-based languages like [Clojure](https://en.wikipedia.org/wiki/Clojure), which use S-expressions to enable treating [*code as data*](https://en.wikipedia.org/wiki/Homoiconicity).
 
 <h2 id="pursuing-dry">Pursuing DRY</h2>
 
 As good programmers writing good codebases, we must follow [DRY: Don't Repeat Yourself](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself). The MVI code we wrote is not entirely DRY.
 
-For instance, the View rendering of the sliders share a significant amount of code. And in the Intent, we have some duplication of the `DOM.get()` Observables. 
+For instance, the View rendering of the sliders share a significant amount of code. And in the Intent, we have some duplication of the `DOM.get()` Observables.
 
 {% highlight js %}
 function renderWeightSlider(weight) {
