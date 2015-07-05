@@ -19,7 +19,7 @@ In case you are not dealing with a DOM-interfacing web application, you can omit
 
 We recommend the use of a bundling tool such as [browserify](http://browserify.org/) or [webpack](http://webpack.github.io/), in combination with ES6 (a.k.a. ES2015) through a transpiler (e.g. [Babel](http://babeljs.io/)). Most of the code examples in this documentation assume some basic familiarity with ES6. Once your build system is set up, **write your main JavaScript source file like**:
 
-{% highlight js %} 
+{% highlight js %}
 import Cycle from '@cycle/core';
 import CycleWeb from '@cycle/web';
 
@@ -98,7 +98,7 @@ let drivers = {
 Cycle.run(main, drivers);
 {% endhighlight %}
 
-Function `main()` now takes `drivers` as input. Just like the output `main()` produces, the input `drivers` follows the same structure: an object containing `DOM` as a property. `drivers.DOM` is a queryable collection of Observables. Use `drivers.DOM.get(selector, eventType)` to get an Observable of `eventType` DOM events happening on the element(s) specified by `selector`. This `main()` function takes the Observable of clicks happening on `.checkbox` elements, and maps those toggling events to Virtual DOM elements displaying a togglable checkbox.
+Function `main()` now takes `drivers` as input. Just like the output `main()` produces, the input `drivers` follow the same structure: an object containing `DOM` as a property. `drivers.DOM` is a queryable collection of Observables. Use `drivers.DOM.get(selector, eventType)` to get an Observable of `eventType` DOM events happening on the element(s) specified by `selector`. This `main()` function takes the Observable of clicks happening on `.checkbox` elements, and maps those toggling events to Virtual DOM elements displaying a togglable checkbox.
 
 This example portrays the most common problem-solving pattern in Cycle.js: formulate the computer's behavior as a function of Observables: continuously listen to driver events and continuously provide messages (in our case, Virtual DOM elements) to the drivers. Read the next chapter to get familiar with this pattern.
 

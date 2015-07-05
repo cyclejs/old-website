@@ -59,7 +59,7 @@ Cycle.run(main, {
 
 Cycle *Web* is a package containing two drivers and some helpers to use those libraries. A DOM Driver is created with `makeDOMDriver()` and an HTML Driver (for server-side rendering) is created with `makeHTMLDriver()`. `CycleWeb` also includes `h()` and `svg()`, these are functions that output [`virtual-dom`](https://github.com/Matt-Esch/virtual-dom) virtual elements, usually called *VTree*.
 
-Our `main()` for now does nothing. It takes driver `responses` and outputs driver `requests`. To make something appear on the screen, we need to output an Observable of VTree in `requests.DOM`. The name `DOM` in `requests` must match the name we gave in the drivers object given to `Cycle.run()`. This is how Cycle.js knows which drivers to match with witch request Observables. This is also true for responses: we listen to DOM events by using `responses.DOM`.
+Our `main()` for now does nothing. It takes driver `responses` and outputs driver `requests`. To make something appear on the screen, we need to output an Observable of VTree in `requests.DOM`. The name `DOM` in `requests` must match the name we gave in the drivers object given to `Cycle.run()`. This is how Cycle.js knows which drivers to match with which request Observables. This is also true for responses: we listen to DOM events by using `responses.DOM`.
 
 {% highlight js %}
 import Cycle from '@cycle/core';
@@ -115,11 +115,11 @@ Cycle.run(main, {
 
 <a class="jsbin-embed" href="http://jsbin.com/qomenu/embed?output">JS Bin on jsbin.com</a>
 
-Notice the lines we changed, with `NEW!`. We now map `change` events on the checkbox to the `checked` value of the element (the first `map()`) to VTrees displaying that value. However, we need a [`.startWith()`](http://reactivex.io/documentation/operators/startwith.html) to give a default value to be converted to a VTree. Without this, nothing would be shown! Why? Because our `requests` is reacting to `responses`, but `responses` is reacting to `requests`. If no one triggers the first event, nothing will happen. It is the same effect as meeting a stranger, and not having anything to say. Someone needs to take the initiative to start the conversation. That is what `main()` doing: kickstarting the interaction, and then letting subsequent actions be mutual reactions between `main()` and the DOM Driver.
+Notice the lines we changed, with `NEW!`. We now map `change` events on the checkbox to the `checked` value of the element (the first `map()`) to VTrees displaying that value. However, we need a [`.startWith()`](http://reactivex.io/documentation/operators/startwith.html) to give a default value to be converted to a VTree. Without this, nothing would be shown! Why? Because our `requests` is reacting to `responses`, but `responses` is reacting to `requests`. If no one triggers the first event, nothing will happen. It is the same effect as meeting a stranger, and not having anything to say. Someone needs to take the initiative to start the conversation. That is what `main()` is doing: kickstarting the interaction, and then letting subsequent actions be mutual reactions between `main()` and the DOM Driver.
 
 <h2 id="increment-and-decrement-a-counter">Increment and decrement a counter</h2>
 
-We saw how to use the *dialogue* pattern of building user interfaces, but our case didn't have state: the label just reacted to the checkbox event. Normally applications have state in memory, so let's see how to build a Cycle.js for app that case.
+We saw how to use the *dialogue* pattern of building user interfaces, but our case didn't have state: the label just reacted to the checkbox event. Normally applications have state in memory, so let's see how to build a Cycle.js app for that case.
 
 If we have a counter Observable (emitting events to tell the current counter value), displaying the counter is as simple as this:
 
@@ -129,7 +129,7 @@ count$.map(count =>
     h('button.increment', 'Increment'),
     h('button.decrement', 'Decrement'),
     h('p', 'Counter: ' + count)
-  ])    
+  ])
 )
 {% endhighlight %}
 
@@ -183,7 +183,7 @@ function main({DOM}) {
           h('button.decrement', 'Decrement'),
           h('button.increment', 'Increment'),
           h('p', 'Counter: ' + count)
-        ])    
+        ])
       )
   };
 }
