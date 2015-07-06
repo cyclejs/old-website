@@ -127,7 +127,7 @@ Suppose we have a backend with a database containing 10 users. We want to have a
 
 Essentially we just need to make a request for the endpoint `/user/:number` whenever the button is clicked. Where would this HTTP request fit in a Cycle.js app?
 
-Recall the dialogue abstraction, mentioned also in the previous "checkbox" example. The app generates VTree Observables as "requests to the DOM". But our apps should also be able to generate different kinds of requests. The most typical type of request is an HTTP *request*. Since these are not anyhow related to the DOM, we need a different driver to handle them.
+Recall the dialogue abstraction, mentioned also in the previous "checkbox" example. The app generates VTree Observables as "requests to the DOM". But our apps should also be able to generate different kinds of requests. The most typical type of request is an HTTP *request*. Since these are not in any way related to the DOM, we need a different driver to handle them.
 
 The [HTTP Driver](https://github.com/cyclejs/cycle-http-driver) is similar in style to the DOM Driver: it expects a request Observable, and gives you a response Observable. Instead of studying in details how the HTTP Driver works, let's see how a basic HTTP example looks like.
 
