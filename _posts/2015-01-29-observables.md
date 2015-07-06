@@ -69,7 +69,7 @@ On the other hand, when applying the Reactive pattern, if you want to discover w
 
 Passive/Proactive programming has been the default way of working for most programmers in imperative languages. Sometimes the Reactive pattern is used, but sporadically. The selling point for widespread Reactive programming is to build self-responsible modules which focus on their own functionality rather than changing external state. This leads to Separation of Concerns.
 
-The challenge with Reactive programming is this paradigm shift where we attempt to choose the Reactive/Listenable approach by default, before considering Passive/Proactive. After rewiring your brain to think Reactive-first, the learning curve flattens and most tasks become straightforward, specially when using a Reactive library like RxJS.
+The challenge with Reactive programming is this paradigm shift where we attempt to choose the Reactive/Listenable approach by default, before considering Passive/Proactive. After rewiring your brain to think Reactive-first, the learning curve flattens and most tasks become straightforward, especially when using a Reactive library like RxJS.
 
 <h2 id="rxjs-observables">RxJS Observables</h2>
 

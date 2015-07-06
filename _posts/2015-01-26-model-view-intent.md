@@ -374,7 +374,7 @@ This is what it means to say Cycle.js is *sliceable*. MVI is just one way of sli
 
 > <h4 id="sliceable">"Sliceable"?</h4>
 >
-> We mean the ability to refactor the program by extracting pieces of code without having to significantly modify their surroundings. Sliceability is a feature often found in functional programming languages, specially in LISP-based languages like [Clojure](https://en.wikipedia.org/wiki/Clojure), which use S-expressions to enable treating [*code as data*](https://en.wikipedia.org/wiki/Homoiconicity).
+> We mean the ability to refactor the program by extracting pieces of code without having to significantly modify their surroundings. Sliceability is a feature often found in functional programming languages, especially in LISP-based languages like [Clojure](https://en.wikipedia.org/wiki/Clojure), which use S-expressions to enable treating [*code as data*](https://en.wikipedia.org/wiki/Homoiconicity).
 
 <h2 id="pursuing-dry">Pursuing DRY</h2>
 

@@ -117,6 +117,86 @@ Cycle.run(main, {
 
 Notice the lines we changed, with `NEW!`. We now map `change` events on the checkbox to the `checked` value of the element (the first `map()`) to VTrees displaying that value. However, we need a [`.startWith()`](http://reactivex.io/documentation/operators/startwith.html) to give a default value to be converted to a VTree. Without this, nothing would be shown! Why? Because our `requests` is reacting to `responses`, but `responses` is reacting to `requests`. If no one triggers the first event, nothing will happen. It is the same effect as meeting a stranger, and not having anything to say. Someone needs to take the initiative to start the conversation. That is what `main()` is doing: kickstarting the interaction, and then letting subsequent actions be mutual reactions between `main()` and the DOM Driver.
 
+<h2 id="Displaying data from HTTP requests">Displaying data from HTTP requests</h2>
+
+One of the most obvious requirements web apps normally have is to fetch some data from the server and display that. How would we build that with Cycle.js?
+
+- What we want to achieve: post the JSBin.
+- Suppose we have a backend with a database of 10 users. We want to have a frontend with one button "get a random user", and display the user's details, like name and email.
+- Essentially we just need to make a request for the endpoint `/user/:number` whenever the button is clicked
+- Recall the dialogue abstraction
+- For instance we just mentioned it in the previous example
+- Our app generated VTree Observables as "requests to the DOM"
+- But out app should also be able to generate different kinds of requests
+- HTTP requests are the most typical type of request
+- They aren't anyhow related to the DOM, so we need a different driver for that
+- HTTP Driver. It is driver like the DOM Driver: it expects a request Observable, and gives you a response Observable
+- If requests are sent when clicks on the button happen, then the HTTP request Observable should depend directly on the button click Observable
+- Show that code
+- We give this request$ to the HTTP driver
+- We need to display data for the current user, and this comes only when we get a response.
+- For that purpose we need the Observable of user data to depend directly on the HTTP response Observable
+- This is available from the main's input: responses.HTTP (HTTP needs to match the driver name you gave for the HTTP driver)
+- `responses.HTTP` is an Observable of all the network responses this app is observing
+- Because this could potentially include responses unrelated to the user, we need to filter. And we also mergeAll(), to flatten the Observable of Observables. This might feel like magic right now, so read the http driver docs if you're curious.
+- We map res=>res.body to get the JSON data from the response and ignore other fields like status.
+- What we display to the DOM is what we have from the current user's data in user$.
+- So vtree$ depends directly on user$
+- However, initially, there won't be any user$ event, because those only happen when the user clicks.
+- This is the same "conversation initiative" problem we saw in the previous *checkbox* example
+- So we make user$ start with a null user, and in case vtree$ sees a null user, it renders just the button
+- Unless, if we have real user data, we display the name, the email, and the website
+- We give vtree$ to the DOM Driver, and it renders those for us, all done.
+- Show the full code
+- Show the JSBin
+
+{% highlight js %}
+import Cycle from '@cycle/core';
+import {h, makeDOMDriver} from '@cycle/web';
+import {makeHTTPDriver} from '@cycle/http';
+
+function main(responses) {
+  const USERS_URL = 'http://jsonplaceholder.typicode.com/users/';
+  let getRandomUser$ = responses.DOM.get('.get-random', 'click')
+    .map(() => {
+      let randomNum = Math.round(Math.random()*9)+1;
+      return {
+        url: USERS_URL + String(randomNum),
+        method: 'GET'
+      };
+    });
+  
+  let user$ = responses.HTTP
+    .filter(res$ => res$.request.url.indexOf(USERS_URL) === 0)
+    .mergeAll()
+    .map(res => res.body)
+    .startWith(null);
+  
+  let vtree$ = user$.map(user =>
+    h('div.users', [
+      h('button.get-random', 'Get random user'),
+      user === null ? null : h('div.user-details', [
+        h('h1.user-name', user.name),
+        h('h4.user-email', user.email),
+        h('a.user-website', {href: user.website}, user.website)
+      ])       
+    ])
+  );
+  
+  return {
+    DOM: vtree$,
+    HTTP: getRandomUser$
+  };
+}
+
+Cycle.run(main, {
+  DOM: makeDOMDriver('#app'),
+  HTTP: makeHTTPDriver()
+});
+{% endhighlight %}
+
+<a class="jsbin-embed" href="http://jsbin.com/yizisa/embed?output">JS Bin on jsbin.com</a>
+
 <h2 id="increment-and-decrement-a-counter">Increment and decrement a counter</h2>
 
 We saw how to use the *dialogue* pattern of building user interfaces, but our case didn't have state: the label just reacted to the checkbox event. Normally applications have state in memory, so let's see how to build a Cycle.js app for that case.
