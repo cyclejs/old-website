@@ -117,7 +117,7 @@ Cycle.run(main, {
 
 Notice the lines we changed, with `NEW!`. We now map `change` events on the checkbox to the `checked` value of the element (the first `map()`) to VTrees displaying that value. However, we need a [`.startWith()`](http://reactivex.io/documentation/operators/startwith.html) to give a default value to be converted to a VTree. Without this, nothing would be shown! Why? Because our `requests` is reacting to `responses`, but `responses` is reacting to `requests`. If no one triggers the first event, nothing will happen. It is the same effect as meeting a stranger, and not having anything to say. Someone needs to take the initiative to start the conversation. That is what `main()` is doing: kickstarting the interaction, and then letting subsequent actions be mutual reactions between `main()` and the DOM Driver.
 
-<h2 id="Displaying data from HTTP requests">Displaying data from HTTP requests</h2>
+<h2 id="displaying-data-from-http-requests">Displaying data from HTTP requests</h2>
 
 One of the most obvious requirements web apps normally have is to fetch some data from the server and display that. How would we build that with Cycle.js?
 
