@@ -109,7 +109,7 @@ We now just need to make use of `responses.props` and `responses.DOM`, create `n
 function labeledSlider(responses) {
   let initialValue$ = responses.props.get('initial').first();
   let newValue$ = responses.DOM.get('.slider', 'input')
-    .map(ev => ev.target.value).share();
+    .map(ev => ev.target.value);
   let value$ = initialValue$.concat(newValue$);
   let props$ = responses.props.getAll();
   let vtree$ = Rx.Observable
@@ -143,7 +143,7 @@ function labeledSlider(responses) {
   function intent(DOM) {
     return {
       changeValue$: DOM.get('.slider', 'input')
-        .map(ev => ev.target.value).share()
+        .map(ev => ev.target.value)
     };
   }
 
@@ -199,7 +199,7 @@ function labeledSlider(responses) {
   function intent(DOM) {
     return {
       changeValue$: DOM.get('.slider', 'input')
-        .map(ev => ev.target.value).share()
+        .map(ev => ev.target.value)
     };
   }
 
@@ -292,7 +292,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/muwilu/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/qocipih/embed?output">JS Bin on jsbin.com</a>
 
 <h2 id="custom-element-with-children-property">Custom element with `children` property</h2>
 
@@ -317,7 +317,7 @@ In the custom element's implementation function `labeledSlider()`, we can access
 function labeledSlider(responses) {
   let initialValue$ = responses.props.get('initial').first();
   let newValue$ = responses.DOM.get('.slider', 'input')
-    .map(ev => ev.target.value).share();
+    .map(ev => ev.target.value);
   let value$ = initialValue$.concat(newValue$);
   let props$ = responses.props.getAll();
   let vtree$ = Rx.Observable
@@ -347,7 +347,7 @@ function labeledSlider(responses) {
 }
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/xuvepa/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/fovizu/embed?output">JS Bin on jsbin.com</a>
 
 <h2 id="tips-and-best-practices">Tips and best practices</h2>
 
