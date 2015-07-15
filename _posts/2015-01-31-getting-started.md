@@ -13,6 +13,8 @@ npm install @cycle/core @cycle/web
 
 This installs Cycle *Core*, and Cycle *Web*. The former is the minimum required API to work with Cycle.js, including a single function `run()`, and the latter is the standard DOM Driver providing a way to interface with the DOM.
 
+Packages of the type `@org/package` are [npm scoped packages](https://docs.npmjs.com/getting-started/scoped-packages), supported if your npm installation is version 2.11 or higher. Check your npm version with `npm --version` and upgrade in order to install Cycle.js.
+
 In case you are not dealing with a DOM-interfacing web application, you can omit `@cycle/web` when installing.
 
 <h2 id="first-steps">First steps</h2>
