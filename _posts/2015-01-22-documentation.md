@@ -8,12 +8,12 @@ tags: chapters
 - [`run`](#run)
 - [`Rx`](#Rx)
 
-### <a id="run"></a> `run(app, drivers)`
+### <a id="run"></a> `run(main, drivers)`
 
-Takes an `app` function and circularly connects it to the given collection
+Takes an `main` function and circularly connects it to the given collection
 of driver functions.
 
-The `app` function expects a collection of "driver response" Observables as
+The `main` function expects a collection of "driver response" Observables as
 input, and should return a collection of "driver request" Observables.
 A "collection of Observables" is a JavaScript object where
 keys match the driver names registered by the `drivers` object, and values
@@ -21,7 +21,7 @@ are Observables or a collection of Observables.
 
 #### Arguments:
 
-- `app :: Function` a function that takes `responses` as input and outputs a collection of `requests` Observables.
+- `main :: Function` a function that takes `responses` as input and outputs a collection of `requests` Observables.
 - `drivers :: Object` an object where keys are driver names and values are driver functions.
 
 #### Return:
@@ -59,7 +59,7 @@ DOM element corresponding to the root (or container) of the app on the DOM.
 - `container :: String|HTMLElement` the DOM selector for the element (or the element itself) to contain the rendering of the VTrees.
 - `customElements :: Object` a collection of custom element definitions. The key of each property should be the tag name of the custom element, and
 the value should be a function defining the implementation of the custom
-element. This function follows the same contract as the top-most `app`
+element. This function follows the same contract as the top-most `main`
 function: input are driver responses, output are requests to drivers.
 
 #### Return:
@@ -81,7 +81,7 @@ their implementations.
 
 - `customElements :: Object` a collection of custom element definitions. The key of each property should be the tag name of the custom element, and
 the value should be a function defining the implementation of the custom
-element. This function follows the same contract as the top-most `app`
+element. This function follows the same contract as the top-most `main`
 function: input are driver responses, output are requests to drivers.
 
 #### Return:
