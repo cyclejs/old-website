@@ -11,14 +11,7 @@ To engage with the community around Cycle.js, follow these resources:
 
 ### Resources
 
-- [RxMarbles is written in Cycle.js](https://github.com/staltz/rxmarbles)
-- [A presentation about Cycle.js](http://slides.com/eryknapierala/cycle) by Eryk Napierała
-- [Cycle-React](https://github.com/pH200/cycle-react) use React instead of virtual-dom with a Cycle-like API, by [@pH200](https://github.com/pH200)
-- [Slack trend searching written in Cycle.js](https://github.com/grozen/trends-cycle) by [@grozen](https://github.com/grozen)
-- [Cycle.js examples using JSX and ES6](https://github.com/ivan-kleshnin/cyclejs-examples) by [@ivan-kleshnin](https://github.com/ivan-kleshnin)
-- [TodoMVP, an example webapp written in Cycle.js](https://github.com/cgeorg/todomvp) by [@cgeorg](https://github.com/cgeorg)
-- [sinject, a dependency injection tool supporting Cycle's circular dependencies](https://github.com/cgeorg/sinject) by [@cgeorg](https://github.com/cgeorg)
-- [An advanced Web Component built with Cycle.js](https://github.com/erykpiast/autocompleted-select) by [@erykpiast](https://github.com/erykpiast)
+Visit [Awesome Cycle.js](https://github.com/vic/awesome-cyclejs) to see a curated list of examples, presentations, blog posts, utilities and resources built by the community.
 
 ### Acknowledgements
 
