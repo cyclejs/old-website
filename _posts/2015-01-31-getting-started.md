@@ -102,6 +102,34 @@ Cycle.run(main, drivers);
 
 Function `main()` now takes `drivers` as input. Just like the output `main()` produces, the input `drivers` follow the same structure: an object containing `DOM` as a property. `drivers.DOM` is a queryable collection of Observables. Use `drivers.DOM.get(selector, eventType)` to get an Observable of `eventType` DOM events happening on the element(s) specified by `selector`. This `main()` function takes the Observable of clicks happening on `.checkbox` elements, and maps those toggling events to Virtual DOM elements displaying a togglable checkbox.
 
+We used the `h()` helper function to create virtual DOM elements, but you can also use JSX with Babel. The following only works if you are building with Babel: (1) add the line `/** @jsx hJSX */` at the top of the file, (2) import hJSX as `import {hJSX} from '@cycle/web';`, and then you can utilize JSX instead of `h()`:
+
+{% highlight html %}
+/** @jsx hJSX */
+import Cycle from '@cycle/core';
+import {makeDOMDriver, hJSX} from '@cycle/web';
+
+function main(drivers) {
+  return {
+    DOM: drivers.DOM.get('input', 'click')
+      .map(ev => ev.target.checked)
+      .startWith(false)
+      .map(toggled =>
+        <div>
+          <input type="checkbox">Toggle me</input>
+          <p>{toggled ? 'ON' : 'off'}</p>
+        </div>
+      )
+  };
+}
+
+let drivers = {
+  DOM: makeDOMDriver('#app')
+};
+
+Cycle.run(main, drivers);
+{% endhighlight %}
+
 This example portrays the most common problem-solving pattern in Cycle.js: formulate the computer's behavior as a function of Observables: continuously listen to driver events and continuously provide messages (in our case, Virtual DOM elements) to the drivers. Read the next chapter to get familiar with this pattern.
 
 <h2 id="cyclejs-as-a-script">Cycle.js as a script</h2>
