@@ -12,7 +12,7 @@ Cycle's core abstraction is Human-Computer Interaction modelled as an interplay 
 
 {% highlight js %}
 import {run} from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/web';
+import {h, makeDOMDriver} from '@cycle/dom';
 
 function main(responses) {
   return {

@@ -8,14 +8,14 @@ tags: chapters
 The recommended channel for downloading Cycle.js as a package is through [npm](http://npmjs.org/), which follows the [CommonJS](http://wiki.commonjs.org/wiki/CommonJS) spec. Create a new directory and run this inside that directory:
 
 {% highlight text %}
-npm install @cycle/core @cycle/web
+npm install @cycle/core @cycle/dom
 {% endhighlight %}
 
-This installs Cycle *Core*, and Cycle *Web*. The former is the minimum required API to work with Cycle.js, including a single function `run()`, and the latter is the standard DOM Driver providing a way to interface with the DOM.
+This installs Cycle *Core*, and Cycle *DOM*. The former is the minimum required API to work with Cycle.js, including a single function `run()`, and the latter is the standard DOM Driver providing a way to interface with the DOM.
 
 Packages of the type `@org/package` are [npm scoped packages](https://docs.npmjs.com/getting-started/scoped-packages), supported if your npm installation is version 2.11 or higher. Check your npm version with `npm --version` and upgrade in order to install Cycle.js.
 
-In case you are not dealing with a DOM-interfacing web application, you can omit `@cycle/web` when installing.
+In case you are not dealing with a DOM-interfacing web application, you can omit `@cycle/dom` when installing.
 
 <h2 id="first-steps">First steps</h2>
 
@@ -23,7 +23,7 @@ We recommend the use of a bundling tool such as [browserify](http://browserify.o
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import CycleWeb from '@cycle/web';
+import CycleDOM from '@cycle/dom';
 
 // ...
 {% endhighlight %}
@@ -34,38 +34,38 @@ The imported `Cycle` object on the first line contains one important function: `
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import CycleWeb from '@cycle/web';
+import CycleDOM from '@cycle/dom';
 
 function main() {
   // ...
 }
 
 let drivers = {
-  DOM: CycleWeb.makeDOMDriver('#app')
+  DOM: CycleDOM.makeDOMDriver('#app')
 };
 
 Cycle.run(main, drivers);
 {% endhighlight %}
 
-`makeDOMDriver(container)` from Cycle *Web* returns a driver function to interact with the DOM. This function is registered under the key `DOM` in the `drivers` object above.
+`makeDOMDriver(container)` from Cycle *DOM* returns a driver function to interact with the DOM. This function is registered under the key `DOM` in the `drivers` object above.
 
 **Send messages from `main` to the `DOM` driver:**
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import CycleWeb from '@cycle/web';
+import CycleDOM from '@cycle/dom';
 
 function main() {
   return {
     DOM: Cycle.Rx.Observable.interval(1000)
-      .map(i => CycleWeb.h(
+      .map(i => CycleDOM.h(
         'h1', '' + i + ' seconds elapsed'
       ))
   };
 }
 
 let drivers = {
-  DOM: CycleWeb.makeDOMDriver('#app')
+  DOM: CycleDOM.makeDOMDriver('#app')
 };
 
 Cycle.run(main, drivers);
@@ -77,7 +77,7 @@ We have filled the `main()` function with some code: returns an object which has
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import {makeDOMDriver, h} from '@cycle/web';
+import {makeDOMDriver, h} from '@cycle/dom';
 
 function main(drivers) {
   return {
@@ -102,12 +102,12 @@ Cycle.run(main, drivers);
 
 Function `main()` now takes `drivers` as input. Just like the output `main()` produces, the input `drivers` follow the same structure: an object containing `DOM` as a property. `drivers.DOM` is a queryable collection of Observables. Use `drivers.DOM.get(selector, eventType)` to get an Observable of `eventType` DOM events happening on the element(s) specified by `selector`. This `main()` function takes the Observable of clicks happening on `.checkbox` elements, and maps those toggling events to Virtual DOM elements displaying a togglable checkbox.
 
-We used the `h()` helper function to create virtual DOM elements, but you can also use JSX with Babel. The following only works if you are building with Babel: (1) add the line `/** @jsx hJSX */` at the top of the file, (2) import hJSX as `import {hJSX} from '@cycle/web';`, and then you can utilize JSX instead of `h()`:
+We used the `h()` helper function to create virtual DOM elements, but you can also use JSX with Babel. The following only works if you are building with Babel: (1) add the line `/** @jsx hJSX */` at the top of the file, (2) import hJSX as `import {hJSX} from '@cycle/dom';`, and then you can utilize JSX instead of `h()`:
 
 {% highlight html %}
 /** @jsx hJSX */
 import Cycle from '@cycle/core';
-import {makeDOMDriver, hJSX} from '@cycle/web';
+import {makeDOMDriver, hJSX} from '@cycle/dom';
 
 function main(drivers) {
   return {
@@ -137,4 +137,4 @@ This example portrays the most common problem-solving pattern in Cycle.js: formu
 In the rare occasion you need Cycle.js as a standalone JavaScript file, you can download them on the [Releases](https://github.com/cyclejs/cycle-core/releases) page at GitHub.
 
 - Download the latest [Cycle Core](https://github.com/cyclejs/cycle-core/releases)
-- Download the latest [Cycle Web](https://github.com/cyclejs/cycle-web/releases)
+- Download the latest [Cycle DOM](https://github.com/cyclejs/cycle-dom/releases)

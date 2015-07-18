@@ -182,7 +182,7 @@ function labeledSlider(responses) {
 Now `labeledSlider()` is a small Cycle.js implementing our custom element, but we still don't know how to call this function in the context of the parent Cycle.js app. We do this by registering the labeled slider with an element name (`<labeled-slider>`) when we create the DOM Driver:
 
 {% highlight js %}
-let domDriver = CycleWeb.makeDOMDriver('#app', {
+let domDriver = CycleDOM.makeDOMDriver('#app', {
   'labeled-slider': labeledSlider // our function
 });
 {% endhighlight %}
@@ -193,7 +193,7 @@ The complete BMI application using labeled slider custom elements is:
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/web';
+import {h, makeDOMDriver} from '@cycle/dom';
 
 function labeledSlider(responses) {
   function intent(DOM) {

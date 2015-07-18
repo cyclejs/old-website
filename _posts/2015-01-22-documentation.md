@@ -3,7 +3,7 @@ title:  "Documentation"
 tags: chapters
 ---
 
-## Cycle *Core* [v1.0.0](https://github.com/cyclejs/cycle-core/releases/tag/v1.0.0) API: `Cycle` object
+## Cycle *Core* [v1.0.1](https://github.com/cyclejs/cycle-core/releases/tag/v1.0.1) API: `Cycle` object
 
 - [`run`](#run)
 - [`Rx`](#Rx)
@@ -36,7 +36,7 @@ can be used for debugging or testing.
 A shortcut to the root object of
 [RxJS](https://github.com/Reactive-Extensions/RxJS).
 
-## Cycle *Web* [v1.0.0](https://github.com/cyclejs/cycle-web/releases/tag/v1.0.0) API: `CycleWeb` object
+## Cycle *DOM* [v3.0.0](https://github.com/cyclejs/cycle-dom/releases/tag/v3.0.0) API: `CycleDOM` object
 
 - [`makeDOMDriver`](#makeDOMDriver)
 - [`makeHTMLDriver`](#makeHTMLDriver)
@@ -106,7 +106,7 @@ An adapter around virtual-hyperscript `h()` to allow JSX to be used easily
 with Babel. Place the [Babel configuration comment](
 http://babeljs.io/docs/advanced/transformers/other/react/) `@jsx hJSX` at
 the top of the ES6 file, make sure you import `hJSX` with
-`import {hJSX} from '@cycle/web'`, and then you can use JSX to create
+`import {hJSX} from '@cycle/dom'`, and then you can use JSX to create
 VTrees.
 
 - - -

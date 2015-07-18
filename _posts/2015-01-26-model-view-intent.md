@@ -7,7 +7,7 @@ In the [previous chapter](/basic-examples.html#body-mass-index-calculator) we wr
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/web';
+import {h, makeDOMDriver} from '@cycle/dom';
 
 function main({DOM}) {
   let changeWeight$ = DOM.get('#weight', 'input')
@@ -50,7 +50,7 @@ We have plenty of anonymous functions which could be refactored away from `main`
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/web';
+import {h, makeDOMDriver} from '@cycle/dom';
 
 // NEW!
 function renderWeightSlider(weight) {
@@ -107,7 +107,7 @@ Cycle.run(main, {
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/web';
+import {h, makeDOMDriver} from '@cycle/dom';
 
 function renderWeightSlider(weight) {
   return h('div', [
@@ -166,7 +166,7 @@ Now, `main` is much smaller. But is it doing *one thing*? We have `changeWeight$
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/web';
+import {h, makeDOMDriver} from '@cycle/dom';
 
 function renderWeightSlider(weight) {
   return h('div', [
@@ -229,7 +229,7 @@ Cycle.run(main, {
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/web';
+import {h, makeDOMDriver} from '@cycle/dom';
 
 function renderWeightSlider(weight) {
   return h('div', [
@@ -353,14 +353,14 @@ Model-View-Intent (MVI) is **reactive**, **funtional**, and follows the **core i
 >
 > Some programmers get concerned about `DOM.get(selector, eventType)` being a bad practice because it resembles spaghetti code in jQuery-based programs. They would rather prefer the virtual DOM elements to specify handler callbacks for events, such as `onClick={this.handleClick()}`.
 >
-> The choice for selector-based event querying in Cycle *Web* is an informed and rational decision. This strategy enables MVI to be reactive and is inspired by the [open-closed principle](https://en.wikipedia.org/wiki/Open/closed_principle).
+> The choice for selector-based event querying in Cycle *DOM* is an informed and rational decision. This strategy enables MVI to be reactive and is inspired by the [open-closed principle](https://en.wikipedia.org/wiki/Open/closed_principle).
 >
 > **Important for reactivity and MVI.** If we would have Views with `onClick={this.handleClick()}`, it would means Views would *not* be anymore a simple translation from digital model to user mental model, because we also specify what happens as a consequence of the user's actions. To keep all parts in a Cycle.js app reactive, we need the View to simply declare how the visual representation of the Model is. Otherwise the View becomes a Proactive component. It is beneficial to keep the View responsible only for declaring how state is visually represented: it has a [single responsibility](https://en.wikipedia.org/wiki/Single_responsibility_principle) and is friendly to UI designers. It is also conceptually aligned with the [original View in MVC](http://heim.ifi.uio.no/~trygver/1979/mvc-2/1979-12-MVC.pdf): "*... a view should never know about user input, such as mouse operations and
 keystrokes.*"
 >
 > **Adding user actions shouldn't affect the View.** If you need to change Intent code to grab new kinds of events from the element, you don't need to modify code in the VTree element. The View stays untouched, and it should, because translation from state to DOM hasn't changed.
 >
-> The MVI strategy in Cycle Web is to name *all* elements in your View with appropriate semantic classnames. Then you do not need to worry which of those can have event handlers, if all of them can. The classname is the common artifact which the View (DOM request) and the Intent (DOM response) can use to refer to the same element.
+> The MVI strategy in Cycle DOM is to name *all* elements in your View with appropriate semantic classnames. Then you do not need to worry which of those can have event handlers, if all of them can. The classname is the common artifact which the View (DOM request) and the Intent (DOM response) can use to refer to the same element.
 
 MVI is an architecture, but in Cycle it is nothing else than simply a function decomposition of `main()`.
 

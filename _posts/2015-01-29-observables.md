@@ -206,11 +206,11 @@ This is how the name "*Cycle.js*" came to be. It is a framework to solve the cyc
 >
 > - RxJS: 71,1 %
 > - virtual-dom: 9,76 %
-> - @cycle/web: 4,87 %
+> - @cycle/dom: 4,87 %
 > - src: 2,47 %
 > - @cycle/core: 0,64 %
 > - misc: 10,77 %
 >
-> Cycle is just an architecture for reactive web applications: a set of ideas about how you should structure your app using RxJS. To help you out, it also provides some libraries to address common use cases: Cycle *Web*, to interact with the DOM, and Cycle *Core*, to help you create the loops between your program and the drivers.
+> Cycle is just an architecture for reactive web applications: a set of ideas about how you should structure your app using RxJS. To help you out, it also provides some libraries to address common use cases: Cycle *DOM*, to interact with the DOM, and Cycle *Core*, to help you create the loops between your program and the drivers.
 
 [Read next about basic examples](/basic-examples.html) applying what we've learned so far of Cycle.js.
