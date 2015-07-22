@@ -116,7 +116,7 @@ function main(drivers) {
       .startWith(false)
       .map(toggled =>
         <div>
-          <input type="checkbox">Toggle me</input>
+          <input type="checkbox" /> Toggle me
           <p>{toggled ? 'ON' : 'off'}</p>
         </div>
       )
