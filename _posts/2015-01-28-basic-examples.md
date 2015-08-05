@@ -119,7 +119,7 @@ Notice the lines we changed (lines commented `NEW!`). We now map `change` events
 
 <h2 id="displaying-data-from-http-requests">Displaying data from HTTP requests</h2>
 
-One of the most obvious requirements web apps normally have is to fetch and render data. How would we build that with Cycle.js?
+One of the most obvious requirements web apps normally have is to fetch and render data from the server. How would we build that with Cycle.js?
 
 Suppose we have a backend with a database containing ten users. We want to have a front-end with one button "get a random user", and to display the user's details, like name and email. This is what we want to achieve:
 
