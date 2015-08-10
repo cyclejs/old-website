@@ -6,9 +6,9 @@ tags: chapters
 Some parts of our UI share the same *looks* and *behavior*. Looks are the rendering of VTrees from state, in other words *View*. Behavior is what happens when the user generates DOM events related to that UI, in other words, *Intent*. Let's call these UI parts as *Widget*.
 
 > <h4 id="what-is-a-widget">What is a "Widget"?</h4>
-> 
+>
 > We will refer to "Widget" as a small reusable user interface program with: (1) an interface to interact with a parent UI program, (2) no business logic.
-> 
+>
 > Examples of Widgets in user interfaces: a slider with a dynamic label, a dropdown selector list, a knob in an audio-editing program, a button with special behavior, an animated checkbox.
 
 We need a way of encapsulating looks and behavior together, in order to reuse them seemlessly. View and Intent both relate to state, which relates to Model. So we actually need a way of encapsulating all three Model, View, Intent as a reusable component to implement a Widget.
@@ -391,17 +391,17 @@ function view(state) {
 Notice `h('labeled-slider', { key: 1, ... })`.
 
 > <h4 id="why-use-key">Why use `key`?</h4>
-> 
-> The use of `key` is necessary for specifying that the element in question is still the same even though its properties might have changed. 
-> 
+>
+> The use of `key` is necessary for specifying that the element in question is still the same even though its properties might have changed.
+>
 > Here is a counterexample: Imagine you have a custom element `<gif-with-filters>` which plays an animated gif, but you can specify a color `filter` such as "black and white" or "sepia". If you don't use a `key` for this element, when the `filter` property changes (for instance from BW to sepia), we will have an ambiguous situation. The virtual DOM diff and patch will not know whether you want to:
 >
 > 1.  Replace the current `<gif-with-filters>` BW with a **new** `<gif-with-filters>` sepia, hence **restarting** the gif animation **or**
 > 2.  Keep the same `<gif-with-filters>` element but just swap the filter from BW to sepia without restarting the animation.
-> 
+>
 > To fix this ambiguity we use keys. If you want (1), then you provide a different key when you change the filter. If you want (2), then you provide the same key but change the filter property. Both cases (1) and (2) should be equally easy to express, and should be a responsibility of the app developer.
 
-Another good practice is to avoid making custom elements for anything, but instead reserving them for implementing Widgets only. The rule of thumb is: if it contains business logic, it shouldn't be a custom element. In most cases you need just a function from state to VTree. 
+Another good practice is to avoid making custom elements for anything, but instead reserving them for implementing Widgets only. The rule of thumb is: if it contains business logic, it shouldn't be a custom element. In most cases you need just a function from state to VTree.
 
 Other special behavior can normally be implemented as a function from Observable to Observable. For instance, say you have a `vtree$` Observable. You can wrap it with additional looks or behavior by transforming the `vtree$` Observable with RxJS operators.
 
