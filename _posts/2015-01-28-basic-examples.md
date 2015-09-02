@@ -85,7 +85,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/yusope/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/cusuraqago/embed?output">JS Bin on jsbin.com</a>
 
 We just added an Observable of `false` mapped to a VTree. [`Observable.just(x)`](http://reactivex.io/documentation/operators/just.html) creates a simple Observable which simply emits `x` once. Then we use [`map()`](http://reactivex.io/documentation/operators/map.html) to convert that to the `virtual-dom` VTree containing an `<input type="checkbox">` and a `<p>` element displaying `off` if the `toggled` boolean is `false`, and displaying `ON` otherwise.
 
