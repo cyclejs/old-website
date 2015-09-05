@@ -81,7 +81,7 @@ import {makeDOMDriver, h} from '@cycle/dom';
 
 function main(drivers) {
   return {
-    DOM: drivers.DOM.get('input', 'click')
+    DOM: drivers.DOM.select('input').events('click')
       .map(ev => ev.target.checked)
       .startWith(false)
       .map(toggled =>
@@ -111,7 +111,7 @@ import {makeDOMDriver, hJSX} from '@cycle/dom';
 
 function main(drivers) {
   return {
-    DOM: drivers.DOM.get('input', 'click')
+    DOM: drivers.DOM.select('input').events('click')
       .map(ev => ev.target.checked)
       .startWith(false)
       .map(toggled =>

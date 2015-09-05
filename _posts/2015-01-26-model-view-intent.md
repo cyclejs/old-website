@@ -10,9 +10,9 @@ import Cycle from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/dom';
 
 function main({DOM}) {
-  let changeWeight$ = DOM.get('#weight', 'input')
+  let changeWeight$ = DOM.select('#weight').events('input')
     .map(ev => ev.target.value);
-  let changeHeight$ = DOM.get('#height', 'input')
+  let changeHeight$ = DOM.select('#height').events('input')
     .map(ev => ev.target.value);
   let state$ = Cycle.Rx.Observable.combineLatest(
     changeWeight$.startWith(70),
@@ -76,9 +76,9 @@ function calculateBMI(weight, height) {
 
 // UPDATED!
 function main({DOM}) {
-  let changeWeight$ = DOM.get('#weight', 'input')
+  let changeWeight$ = DOM.select('#weight').events('input')
     .map(ev => ev.target.value);
-  let changeHeight$ = DOM.get('#height', 'input')
+  let changeHeight$ = DOM.select('#height').events('input')
     .map(ev => ev.target.value);
   let state$ = Cycle.Rx.Observable.combineLatest(
     changeWeight$.startWith(70),
@@ -141,9 +141,9 @@ function view(state$) {
 
 // UPDATED!
 function main({DOM}) {
-  let changeWeight$ = DOM.get('#weight', 'input')
+  let changeWeight$ = DOM.select('#weight').events('input')
     .map(ev => ev.target.value);
-  let changeHeight$ = DOM.get('#height', 'input')
+  let changeHeight$ = DOM.select('#height').events('input')
     .map(ev => ev.target.value);
   let state$ = Cycle.Rx.Observable.combineLatest(
     changeWeight$.startWith(70),
@@ -209,9 +209,9 @@ function view(state$) {
 
 // UPDATED!
 function main({DOM}) {
-  let changeWeight$ = DOM.get('#weight', 'input')
+  let changeWeight$ = DOM.select('#weight').events('input')
     .map(ev => ev.target.value);
-  let changeHeight$ = DOM.get('#height', 'input')
+  let changeHeight$ = DOM.select('#height').events('input')
     .map(ev => ev.target.value);
   let state$ = model(changeWeight$, changeHeight$);
 
@@ -253,9 +253,9 @@ function calculateBMI(weight, height) {
 // NEW!
 function intent(DOM) {
   return {
-    changeWeight$: DOM.get('#weight', 'input')
+    changeWeight$: DOM.select('#weight').events('input')
       .map(ev => ev.target.value),
-    changeHeight$: DOM.get('#height', 'input')
+    changeHeight$: DOM.select('#height').events('input')
       .map(ev => ev.target.value)
   };
 }
@@ -351,7 +351,7 @@ Model-View-Intent (MVI) is **reactive**, **funtional**, and follows the **core i
 
 > <h4 id="why-css-selectors-for-querying-dom-events">Why CSS selectors for querying DOM events?</h4>
 >
-> Some programmers get concerned about `DOM.get(selector, eventType)` being a bad practice because it resembles spaghetti code in jQuery-based programs. They would rather prefer the virtual DOM elements to specify handler callbacks for events, such as `onClick={this.handleClick()}`.
+> Some programmers get concerned about `DOM.select(selector).events(eventType)` being a bad practice because it resembles spaghetti code in jQuery-based programs. They would rather prefer the virtual DOM elements to specify handler callbacks for events, such as `onClick={this.handleClick()}`.
 >
 > The choice for selector-based event querying in Cycle *DOM* is an informed and rational decision. This strategy enables MVI to be reactive and is inspired by the [open-closed principle](https://en.wikipedia.org/wiki/Open/closed_principle).
 >
@@ -380,7 +380,7 @@ This is what it means to say Cycle.js is *sliceable*. MVI is just one way of sli
 
 As good programmers writing good codebases, we must follow [DRY: Don't Repeat Yourself](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself). The MVI code we wrote is not entirely DRY.
 
-For instance, the View rendering of the sliders share a significant amount of code. And in the Intent, we have some duplication of the `DOM.get()` Observables.
+For instance, the View rendering of the sliders share a significant amount of code. And in the Intent, we have some duplication of the `DOM.select()` Observables.
 
 {% highlight js %}
 function renderWeightSlider(weight) {
@@ -399,9 +399,9 @@ function renderHeightSlider(height) {
 
 function intent(DOM) {
   return {
-    changeWeight$: DOM.get('#weight', 'input')
+    changeWeight$: DOM.select('#weight').events('input')
       .map(ev => ev.target.value),
-    changeHeight$: DOM.get('#height', 'input')
+    changeHeight$: DOM.select('#height').events('input')
       .map(ev => ev.target.value)
   };
 }
@@ -426,7 +426,7 @@ function renderHeightSlider(height) {
 }
 
 function getSliderEvent(DOM, id) {
-  return DOM.get('#' + id, 'input').map(ev => ev.target.value);
+  return DOM.select('#' + id).events('input').map(ev => ev.target.value);
 }
 
 function intent(DOM) {

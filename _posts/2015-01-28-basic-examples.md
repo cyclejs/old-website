@@ -97,7 +97,7 @@ import {h, makeDOMDriver} from '@cycle/dom';
 
 function main(responses) {
   let requests = {
-    DOM: responses.DOM.get('input', 'change') // NEW!
+    DOM: responses.DOM.select('input').events('change') // NEW!
       .map(ev => ev.target.checked) // NEW!
       .startWith(false) // NEW!
       .map(toggled =>
@@ -139,7 +139,7 @@ If HTTP requests are sent when the button is clicked, then the HTTP request Obse
 function main(responses) {
   // ...
 
-  let click$ = responses.DOM.get('.get-random', 'click');
+  let click$ = responses.DOM.select('.get-random').events('click');
 
   const USERS_URL = 'http://jsonplaceholder.typicode.com/users/';
   // This is the HTTP request Observable
@@ -243,7 +243,7 @@ import {makeHTTPDriver} from '@cycle/http';
 
 function main(responses) {
   const USERS_URL = 'http://jsonplaceholder.typicode.com/users/';
-  let getRandomUser$ = responses.DOM.get('.get-random', 'click')
+  let getRandomUser$ = responses.DOM.select('.get-random').events('click')
     .map(() => {
       let randomNum = Math.round(Math.random()*9)+1;
       return {
@@ -312,8 +312,8 @@ But how do we create a `count$`? Clearly it must depend on increment clicks and 
 
 {% highlight js %}
 let action$ = Cycle.Rx.Observable.merge(
-  DOM.get('.decrement', 'click').map(ev => -1),
-  DOM.get('.increment', 'click').map(ev => +1)
+  DOM.select('.decrement').events('click').map(ev => -1),
+  DOM.select('.increment').events('click').map(ev => +1)
 );
 {% endhighlight %}
 
@@ -339,8 +339,8 @@ import {h, makeDOMDriver} from '@cycle/dom';
 
 function main({DOM}) {
   let action$ = Cycle.Rx.Observable.merge(
-    DOM.get('.decrement', 'click').map(ev => -1),
-    DOM.get('.increment', 'click').map(ev => +1)
+    DOM.select('.decrement').events('click').map(ev => -1),
+    DOM.select('.increment').events('click').map(ev => +1)
   );
   let count$ = action$.startWith(0).scan((x,y) => x+y);
   return {
@@ -370,9 +370,9 @@ Now that we've got the hang of Cycle.js apps with state, let's tackle something 
 In the previous example, we had the actions *decrement* and *increment*. In this example, we have "change weight" and "change height". These seem straightforward to implement.
 
 {% highlight js %}
-let changeWeight$ = DOM.get('#weight', 'input')
+let changeWeight$ = DOM.select('#weight').events('input')
   .map(ev => ev.target.value);
-let changeHeight$ = DOM.get('#height', 'input')
+let changeHeight$ = DOM.select('#height').events('input')
   .map(ev => ev.target.value);
 {% endhighlight %}
 
@@ -396,9 +396,9 @@ import Cycle from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/dom';
 
 function main({DOM}) {
-  let changeWeight$ = DOM.get('#weight', 'input')
+  let changeWeight$ = DOM.select('#weight').events('input')
     .map(ev => ev.target.value);
-  let changeHeight$ = DOM.get('#height', 'input')
+  let changeHeight$ = DOM.select('#height').events('input')
     .map(ev => ev.target.value);
   let bmi$ = Cycle.Rx.Observable.combineLatest(
     changeWeight$.startWith(70),
@@ -456,9 +456,9 @@ import Cycle from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/dom';
 
 function main({DOM}) {
-  let changeWeight$ = DOM.get('#weight', 'input')
+  let changeWeight$ = DOM.select('#weight').events('input')
     .map(ev => ev.target.value);
-  let changeHeight$ = DOM.get('#height', 'input')
+  let changeHeight$ = DOM.select('#height').events('input')
     .map(ev => ev.target.value);
   let state$ = Cycle.Rx.Observable.combineLatest(
     changeWeight$.startWith(70),
@@ -499,4 +499,3 @@ Great, this program functions exactly like we want it to. Weight and height labe
 *However*, we wrote all the code inside one function: `main()`. This approach doesn't scale, and even for a small app like this, it already looks too large and is doing too many things.
 
 We need a proper architecture for user interfaces that follows the reactive, functional, and cyclic principles of Cycle.js. This is the subject of our [next chapter](/model-view-intent.html).
-
