@@ -15,7 +15,7 @@ import {run} from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/dom';
 
 function main(responses) {
-  return {
+  const requests = {
     DOM: responses.DOM.select('.field').events('input')
       .map(ev => ev.target.value)
       .startWith('')
@@ -28,6 +28,7 @@ function main(responses) {
         ])
       )
   };
+  return requests;
 }
 
 run(main, {
