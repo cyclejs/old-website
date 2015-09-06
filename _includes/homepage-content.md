@@ -16,7 +16,7 @@ import {h, makeDOMDriver} from '@cycle/dom';
 
 function main(responses) {
   return {
-    DOM: responses.DOM.get('.field', 'input')
+    DOM: responses.DOM.select('.field').events('input')
       .map(ev => ev.target.value)
       .startWith('')
       .map(name =>

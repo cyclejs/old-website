@@ -81,7 +81,7 @@ import {makeDOMDriver, h} from '@cycle/dom';
 
 function main(drivers) {
   return {
-    DOM: drivers.DOM.get('input', 'click')
+    DOM: drivers.DOM.select('input').events('click')
       .map(ev => ev.target.checked)
       .startWith(false)
       .map(toggled =>
@@ -100,7 +100,7 @@ let drivers = {
 Cycle.run(main, drivers);
 {% endhighlight %}
 
-Function `main()` now takes `drivers` as input. Just like the output `main()` produces, the input `drivers` follow the same structure: an object containing `DOM` as a property. `drivers.DOM` is a queryable collection of Observables. Use `drivers.DOM.get(selector, eventType)` to get an Observable of `eventType` DOM events happening on the element(s) specified by `selector`. This `main()` function takes the Observable of clicks happening on `input` elements, and maps those toggling events to Virtual DOM elements displaying a togglable checkbox.
+Function `main()` now takes `drivers` as input. Just like the output `main()` produces, the input `drivers` follow the same structure: an object containing `DOM` as a property. `drivers.DOM` is a queryable collection of Observables. Use `drivers.DOM.select(selector).events(eventType)` to get an Observable of `eventType` DOM events happening on the element(s) specified by `selector`. This `main()` function takes the Observable of clicks happening on `input` elements, and maps those toggling events to Virtual DOM elements displaying a togglable checkbox.
 
 We used the `h()` helper function to create virtual DOM elements, but you can also use JSX with Babel. The following only works if you are building with Babel: (1) add the line `/** @jsx hJSX */` at the top of the file, (2) import hJSX as `import {hJSX} from '@cycle/dom';`, and then you can utilize JSX instead of `h()`:
 
@@ -111,7 +111,7 @@ import {makeDOMDriver, hJSX} from '@cycle/dom';
 
 function main(drivers) {
   return {
-    DOM: drivers.DOM.get('input', 'click')
+    DOM: drivers.DOM.select('input').events('click')
       .map(ev => ev.target.checked)
       .startWith(false)
       .map(toggled =>

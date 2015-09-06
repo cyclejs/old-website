@@ -108,7 +108,7 @@ We now just need to make use of `responses.props` and `responses.DOM`, create `n
 {% highlight js %}
 function labeledSlider(responses) {
   let initialValue$ = responses.props.get('initial').first();
-  let newValue$ = responses.DOM.get('.slider', 'input')
+  let newValue$ = responses.DOM.select('.slider').events('input')
     .map(ev => ev.target.value);
   let value$ = initialValue$.concat(newValue$);
   let props$ = responses.props.getAll();
@@ -142,7 +142,7 @@ Because this `labeledSlider()` function is a Cycle.js app, we can refactor it wi
 function labeledSlider(responses) {
   function intent(DOM) {
     return {
-      changeValue$: DOM.get('.slider', 'input')
+      changeValue$: DOM.select('.slider').events('input')
         .map(ev => ev.target.value)
     };
   }
@@ -198,7 +198,7 @@ import {h, makeDOMDriver} from '@cycle/dom';
 function labeledSlider(responses) {
   function intent(DOM) {
     return {
-      changeValue$: DOM.get('.slider', 'input')
+      changeValue$: DOM.select('.slider').events('input')
         .map(ev => ev.target.value)
     };
   }
@@ -241,9 +241,9 @@ function calculateBMI(weight, height) {
 
 function intent(DOM) {
   return {
-    changeWeight: DOM.get('#weight', 'newValue')
+    changeWeight: DOM.select('#weight').events('newValue')
       .map(ev => ev.detail),
-    changeHeight: DOM.get('#height', 'newValue')
+    changeHeight: DOM.select('#height').events('newValue')
       .map(ev => ev.detail)
   };
 }
@@ -316,7 +316,7 @@ In the custom element's implementation function `labeledSlider()`, we can access
 {% highlight js %}
 function labeledSlider(responses) {
   let initialValue$ = responses.props.get('initial').first();
-  let newValue$ = responses.DOM.get('.slider', 'input')
+  let newValue$ = responses.DOM.select('.slider').events('input')
     .map(ev => ev.target.value);
   let value$ = initialValue$.concat(newValue$);
   let props$ = responses.props.getAll();
@@ -358,9 +358,9 @@ Here is the Intent code interpreting actions from the labeled sliders:
 {% highlight js %}
 function intent(DOM) {
   return {
-    changeWeight: DOM.get('#weight', 'newValue')
+    changeWeight: DOM.select('#weight').events('newValue')
       .map(ev => ev.detail),
-    changeHeight: DOM.get('#height', 'newValue')
+    changeHeight: DOM.select('#height').events('newValue')
       .map(ev => ev.detail)
   };
 }
