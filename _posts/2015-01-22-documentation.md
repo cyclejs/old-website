@@ -3,7 +3,7 @@ title:  "Documentation"
 tags: chapters
 ---
 
-## Cycle *Core* [v1.0.1](https://github.com/cyclejs/cycle-core/releases/tag/v1.0.1) API: `Cycle` object
+## Cycle *Core* [v3.1.0](https://github.com/cyclejs/cycle-core/releases/tag/v1.0.1) API: `Cycle` object
 
 - [`run`](#run)
 - [`Rx`](#Rx)
@@ -13,8 +13,8 @@ tags: chapters
 Takes an `main` function and circularly connects it to the given collection
 of driver functions.
 
-The `main` function expects a collection of "driver response" Observables as
-input, and should return a collection of "driver request" Observables.
+The `main` function expects a collection of "driver response" Observables
+as input, and should return a collection of "driver request" Observables.
 A "collection of Observables" is a JavaScript object where
 keys match the driver names registered by the `drivers` object, and values
 are Observables or a collection of Observables.
@@ -36,7 +36,7 @@ can be used for debugging or testing.
 A shortcut to the root object of
 [RxJS](https://github.com/Reactive-Extensions/RxJS).
 
-## Cycle *DOM* [v3.0.0](https://github.com/cyclejs/cycle-dom/releases/tag/v3.0.0) API: `CycleDOM` object
+## Cycle *DOM* [v5.1.0](https://github.com/cyclejs/cycle-dom/releases/tag/v5.1.0) API: `CycleDOM` object
 
 - [`makeDOMDriver`](#makeDOMDriver)
 - [`makeHTMLDriver`](#makeHTMLDriver)
@@ -50,9 +50,11 @@ A factory for the DOM driver function. Takes a `container` to define the
 target on the existing DOM which this driver will operate on. All custom
 elements which this driver can detect should be given as the second
 parameter. The output of this driver is a collection of Observables queried
-by a getter function: `domDriverOutput.get(selector, eventType)` returns an
+with: `domDriverOutput.select(selector).events(eventType)` returns an
 Observable of events of `eventType` happening on the element determined by
-`selector`. Also, `domDriverOutput.get(':root')` returns an Observable of
+`selector`. Just `domDriverOutput.select(selector).observable` returns
+an Observable of the DOM element matched by the given selector. Also,
+`domDriverOutput.select(':root').observable` returns an Observable of
 DOM element corresponding to the root (or container) of the app on the DOM.
 
 #### Arguments:
@@ -66,8 +68,8 @@ function: input are driver responses, output are requests to drivers.
 #### Return:
 
 *(Function)* the DOM driver function. The function expects an Observable of VTree as input, and outputs the response object for this
-driver, containing functions `get()` and `dispose()` that can be used for
-debugging and testing.
+driver, containing functions `select()` and `dispose()` that can be used
+for debugging and testing.
 
 - - -
 
