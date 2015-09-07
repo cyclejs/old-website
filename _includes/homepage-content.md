@@ -11,7 +11,7 @@ Cycle's core abstraction is Human-Computer Interaction modelled as an interplay 
 ## Example
 
 {% highlight js %}
-import {run} from '@cycle/core';
+import Cycle from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/dom';
 
 function main(responses) {
@@ -21,18 +21,17 @@ function main(responses) {
       .startWith('')
       .map(name =>
         h('div', [
-          h('label.label', 'Name:'),
+          h('label', 'Name:'),
           h('input.field', {attributes: {type: 'text'}}),
-          h('hr'),
-          h('h1.header', 'Hello ' + name)
+          h('h1', 'Hello ' + name)
         ])
       )
   };
   return requests;
 }
 
-run(main, {
-  DOM: makeDOMDriver('.js-container')
+Cycle.run(main, {
+  DOM: makeDOMDriver('#app-container')
 });
 {% endhighlight %}
 
