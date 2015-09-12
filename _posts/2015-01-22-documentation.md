@@ -130,7 +130,7 @@ Observables. Call mockDOMResponse giving it an object specifying selectors,
 eventTypes and their Observabls, and get as output an object following the
 same format as the DOM Driver's response. Example:
 
-```js
+{% highlight js %}
 const userEvents = mockDOMResponse({
   '.foo': {
     'click': Rx.Observable.just({target: {}}),
@@ -143,7 +143,7 @@ const userEvents = mockDOMResponse({
 
 // Usage
 const click$ = userEvents.select('.foo').events('click');
-```
+{% endhighlight %}
 
 #### Arguments:
 
