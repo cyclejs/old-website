@@ -36,13 +36,14 @@ can be used for debugging or testing.
 A shortcut to the root object of
 [RxJS](https://github.com/Reactive-Extensions/RxJS).
 
-## Cycle *DOM* [v5.1.0](https://github.com/cyclejs/cycle-dom/releases/tag/v5.1.0) API: `CycleDOM` object
+## Cycle *DOM* [v5.3.0](https://github.com/cyclejs/cycle-dom/releases/tag/v5.1.0) API: `CycleDOM` object
 
 - [`makeDOMDriver`](#makeDOMDriver)
 - [`makeHTMLDriver`](#makeHTMLDriver)
 - [`h`](#h)
 - [`hJSX`](#hJSX)
 - [`svg`](#svg)
+- [`mockDOMResponse`](#mockDOMResponse)
 
 ### <a id="makeDOMDriver"></a> `makeDOMDriver(container, customElements)`
 
@@ -56,6 +57,9 @@ Observable of events of `eventType` happening on the element determined by
 an Observable of the DOM element matched by the given selector. Also,
 `domDriverOutput.select(':root').observable` returns an Observable of
 DOM element corresponding to the root (or container) of the app on the DOM.
+The `events()` function also allows you to specify the `useCapture`
+parameter of event listener. That is, the full function signature is
+`events(eventType, useCapture)` where `useCapture` is by default `false`.
 
 #### Arguments:
 
@@ -116,3 +120,38 @@ VTrees.
 ### <a id="svg"></a> `svg`
 
 A shortcut to the svg hyperscript function.
+
+- - -
+
+### <a id="mockDOMResponse"></a> `mockDOMResponse(mockedSelectors)`
+
+A testing utility which aids in creating a queryable collection of
+Observables. Call mockDOMResponse giving it an object specifying selectors,
+eventTypes and their Observabls, and get as output an object following the
+same format as the DOM Driver's response. Example:
+
+```js
+const userEvents = mockDOMResponse({
+  '.foo': {
+    'click': Rx.Observable.just(135),
+    'mouseover': Rx.Observable.just('example')
+  },
+  '.bar': {
+    'scroll': Rx.Observable.just(2)
+  }
+});
+
+// Usage
+const click$ = userEvents.select('.foo').events('click');
+```
+
+#### Arguments:
+
+- `mockedSelectors :: Object` an object where keys are selector strings and values are objects. Those nested objects have eventType strings as keys
+and values are Observables you created.
+
+#### Return:
+
+*(Object)* fake DOM response object, containin a function `select()` which can be used just like the DOM Driver's response. Call
+`select(selector).events(eventType)` on the response object to get the
+Observable you defined in the input of `mockDOMResponse`.
