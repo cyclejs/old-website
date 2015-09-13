@@ -347,7 +347,7 @@ The opposite direction should be also a straightforward translation from the use
   {% include img/intent-translation.svg %}
 </p>
 
-Model-View-Intent (MVI) is **reactive**, **funtional**, and follows the **core idea in MVC**. It is reactive because Intent observes the User, Model observes the Intent, View observes the Model, and the User observes the View. It is functional because each of these components is expressed as a [referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency_%28computer_science%29) function over Observables. It follows the original MVC purpose because View and Intent bridge the gap between the user and the digital model, each in one direction.
+Model-View-Intent (MVI) is **reactive**, **functional**, and follows the **core idea in MVC**. It is reactive because Intent observes the User, Model observes the Intent, View observes the Model, and the User observes the View. It is functional because each of these components is expressed as a [referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency_%28computer_science%29) function over Observables. It follows the original MVC purpose because View and Intent bridge the gap between the user and the digital model, each in one direction.
 
 > <h4 id="why-css-selectors-for-querying-dom-events">Why CSS selectors for querying DOM events?</h4>
 >
