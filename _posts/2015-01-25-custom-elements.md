@@ -11,7 +11,7 @@ Some parts of our UI share the same *looks* and *behavior*. Looks are the render
 >
 > Examples of Widgets in user interfaces: a slider with a dynamic label, a dropdown selector list, a knob in an audio-editing program, a button with special behavior, an animated checkbox.
 
-We need a way of encapsulating looks and behavior together, in order to reuse them seemlessly. View and Intent both relate to state, which relates to Model. So we actually need a way of encapsulating all three Model, View, Intent as a reusable component to implement a Widget.
+We need a way of encapsulating looks and behavior together, in order to reuse them seamlessly. View and Intent both relate to state, which relates to Model. So we actually need a way of encapsulating all three Model, View, Intent as a reusable component to implement a Widget.
 
 Isn't MVI an architecture for Cycle.js UI programs? Does this mean a Widget is a Cycle.js application? Well, "*if it looks like a duck, swims like a duck, and quacks like a duck, then it probably [is a duck](https://en.wikipedia.org/wiki/Duck_test).*"
 
