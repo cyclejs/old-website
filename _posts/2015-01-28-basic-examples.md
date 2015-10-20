@@ -64,12 +64,13 @@ Cycle *DOM* is a package containing two drivers and some helpers to use those li
 Our `main()`, for now, does nothing. It takes driver `responses` and outputs driver `requests`. To make something appear on the screen, we need to output an Observable of VTree in `requests.DOM`. The name `DOM` in `requests` must match the name we gave in the drivers object given to `Cycle.run()`. This is how Cycle.js knows which drivers to match with which request Observables. This is also true for responses: we listen to DOM events by using `responses.DOM`.
 
 {% highlight js %}
+import Rx from 'rx';
 import Cycle from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/dom';
 
 function main(responses) {
   let requests = {
-    DOM: Cycle.Rx.Observable.just(false)
+    DOM: Rx.Observable.just(false)
       .map(toggled =>
         h('div', [
           h('input', {type: 'checkbox'}), 'Toggle me',
@@ -85,7 +86,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/vizurixexi/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/nilesaheme/embed?output">JS Bin on jsbin.com</a>
 
 We just added an Observable of `false` mapped to a VTree. [`Observable.just(x)`](http://reactivex.io/documentation/operators/just.html) creates a simple Observable which simply emits `x` once. Then we use [`map()`](http://reactivex.io/documentation/operators/map.html) to convert that to the `virtual-dom` VTree containing an `<input type="checkbox">` and a `<p>` element displaying `off` if the `toggled` boolean is `false`, and displaying `ON` otherwise.
 
@@ -115,7 +116,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/bikadaroco/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/tuceromuvo/embed?output">JS Bin on jsbin.com</a>
 
 Notice the lines we changed (lines commented `NEW!`). We now map `change` events on the checkbox to the `checked` value of the element (the first `map()`) to VTrees displaying that value. However, we need a [`.startWith()`](http://reactivex.io/documentation/operators/startwith.html) to give a default value to be converted to a VTree. Without this, nothing would be shown! Why? Because our `requests` is reacting to `responses`, but `responses` is reacting to `requests`. If no one triggers the first event, nothing will happen. It is the same effect as meeting a stranger, and not having anything to say. Someone needs to take the initiative to start the conversation. That is what `main()` is doing: kickstarting the interaction, and then letting subsequent actions be mutual reactions between `main()` and the DOM Driver.
 
@@ -125,7 +126,7 @@ One of the most obvious requirements web apps normally have is to fetch and rend
 
 Suppose we have a backend with a database containing ten users. We want to have a front-end with one button "get a random user", and to display the user's details, like name and email. This is what we want to achieve:
 
-<a class="jsbin-embed" href="http://jsbin.com/qukiqasika/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/lacizewoki/embed?output">JS Bin on jsbin.com</a>
 
 Essentially we just need to make a request for the endpoint `/user/:number` whenever the button is clicked. Where would this HTTP request fit in a Cycle.js app?
 
@@ -281,7 +282,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/qukiqasika/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/lacizewoki/embed?output">JS Bin on jsbin.com</a>
 
 <h2 id="increment-and-decrement-a-counter">Increment and decrement a counter</h2>
 
@@ -311,7 +312,7 @@ count$.map(count =>
 But how do we create a `count$`? Clearly it must depend on increment clicks and decrement clicks. The former should mean a "+1" operation, and the latter a "-1" operation.
 
 {% highlight js %}
-let action$ = Cycle.Rx.Observable.merge(
+let action$ = Rx.Observable.merge(
   DOM.select('.decrement').events('click').map(ev => -1),
   DOM.select('.increment').events('click').map(ev => +1)
 );
@@ -334,11 +335,12 @@ What does `scan` do? It is similar to [`reduce`](https://developer.mozilla.org/e
 If we put `action$` and `count$` together in our `main()`, we can implement the counter like this:
 
 {% highlight js %}
+import Rx from 'rx';
 import Cycle from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/dom';
 
 function main({DOM}) {
-  let action$ = Cycle.Rx.Observable.merge(
+  let action$ = Rx.Observable.merge(
     DOM.select('.decrement').events('click').map(ev => -1),
     DOM.select('.increment').events('click').map(ev => +1)
   );
@@ -359,13 +361,13 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/wuweyadori/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/fegezoweni/embed?output">JS Bin on jsbin.com</a>
 
 <h2 id="body-mass-index-calculator">Body mass index calculator</h2>
 
 Now that we've got the hang of Cycle.js apps with state, let's tackle something a bit larger. Consider the following [BMI](https://en.wikipedia.org/wiki/Body_mass_index) calculator: it has a slider to select the weight, a slider to select the height, and the text indicates the calculated BMI from the weight and height values selected.
 
-<a class="jsbin-embed" href="http://jsbin.com/xipuvucula/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/nepotiqoqo/embed?output">JS Bin on jsbin.com</a>
 
 In the previous example, we had the actions *decrement* and *increment*. In this example, we have "change weight" and "change height". These seem straightforward to implement.
 
@@ -379,7 +381,7 @@ let changeHeight$ = DOM.select('#height').events('input')
 To combine these two actions and use their values to compute the BMI, we use the RxJS [`combineLatest`](http://reactivex.io/documentation/operators/combinelatest.html) operator. We saw in the previous example that `merge` had *OR* semantics. `combineLatest` has, on the other hand, *AND* semantics. For instance, to compute the BMI, we need a `weight` value *and* and a `height` value.
 
 {% highlight js %}
-let bmi$ = Cycle.Rx.Observable.combineLatest(
+let bmi$ = Rx.Observable.combineLatest(
   changeWeight$.startWith(70),
   changeHeight$.startWith(170),
   (weight, height) => {
@@ -392,6 +394,7 @@ let bmi$ = Cycle.Rx.Observable.combineLatest(
 Now we just need a function to visualize the BMI result and the sliders. We do that by mapping `bmi$` to an Observable of VTree, and giving that to the `DOM` driver.
 
 {% highlight js %}
+import Rx from 'rx';
 import Cycle from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/dom';
 
@@ -400,7 +403,7 @@ function main({DOM}) {
     .map(ev => ev.target.value);
   let changeHeight$ = DOM.select('#height').events('input')
     .map(ev => ev.target.value);
-  let bmi$ = Cycle.Rx.Observable.combineLatest(
+  let bmi$ = Rx.Observable.combineLatest(
     changeWeight$.startWith(70),
     changeHeight$.startWith(170),
     (weight, height) => {
@@ -431,14 +434,14 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/puzatoteyo/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/mukexewexu/embed?output">JS Bin on jsbin.com</a>
 
 This code works. We can get the calculated BMI when we move the slider. However, maybe you noticed, the labels for weight and height do not show what the slider is selecting. Instead, they just show e.g. `Weight ___kg`, which is useless since we do not know what value we are choosing for the weight.
 
 The problem happens because when we map on `bmi$`, we do not have anymore the `weight` and `height` values. Therefore, for the function which renders the VTree, we need to use an Observable which emits a complete amount of data instead of just BMI data. We need a `state$` Observable.
 
 {% highlight js %}
-let state$ = Cycle.Rx.Observable.combineLatest(
+let state$ = Rx.Observable.combineLatest(
   changeWeight$.startWith(70),
   changeHeight$.startWith(170),
   (weight, height) => {
@@ -452,6 +455,7 @@ let state$ = Cycle.Rx.Observable.combineLatest(
 Below is the program that uses `state$` to render all dynamic values correctly to the DOM.
 
 {% highlight js %}
+import Rx from 'rx';
 import Cycle from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/dom';
 
@@ -460,7 +464,7 @@ function main({DOM}) {
     .map(ev => ev.target.value);
   let changeHeight$ = DOM.select('#height').events('input')
     .map(ev => ev.target.value);
-  let state$ = Cycle.Rx.Observable.combineLatest(
+  let state$ = Rx.Observable.combineLatest(
     changeWeight$.startWith(70),
     changeHeight$.startWith(170),
     (weight, height) => {
@@ -492,7 +496,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/xipuvucula/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/nepotiqoqo/embed?output">JS Bin on jsbin.com</a>
 
 Great, this program functions exactly like we want it to. Weight and height labels react to the sliders being dragged, and the BMI result gets recalculated as well.
 

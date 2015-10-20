@@ -200,7 +200,7 @@ This is how the name "*Cycle.js*" came to be. It is a framework that solves the 
 
 > <h4 id="what-is-cycle-core">What is Cycle <em>Core</em>?</h4>
 >
-> Beside containing RxJS, Cycle *Core* delivers only the `run()` function which is implemented in about 100 lines of code. It's a very small library.
+> Cycle *Core* delivers only the `run()` function which is implemented in about 100 lines of code. It's a very small library.
 >
 > In the TodoMVC built with Cycle.js, these are the proportions of code each library or section comprises:
 >

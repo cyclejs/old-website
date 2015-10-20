@@ -8,10 +8,10 @@ tags: chapters
 The recommended channel for downloading Cycle.js as a package is through [npm](http://npmjs.org/), which follows the [CommonJS](http://wiki.commonjs.org/wiki/CommonJS) spec. Create a new directory and run this inside that directory:
 
 {% highlight text %}
-npm install @cycle/core @cycle/dom
+npm install rx @cycle/core @cycle/dom
 {% endhighlight %}
 
-This installs Cycle *Core*, and Cycle *DOM*. The former is the minimum required API to work with Cycle.js, including a single function `run()`, and the latter is the standard DOM Driver providing a way to interface with the DOM.
+This installs RxJS, Cycle *Core*, and Cycle *DOM*. RxJS and *Core* are the minimum required API to work with Cycle.js. *Core* includes a single function `run()`, and Cycle *DOM* is the standard DOM Driver providing a way to interface with the DOM. **RxJS is a peer dependency of Cycle *Core***.
 
 Packages of the type `@org/package` are [npm scoped packages](https://docs.npmjs.com/getting-started/scoped-packages), supported if your npm installation is version 2.11 or higher. Check your npm version with `npm --version` and upgrade in order to install Cycle.js.
 
@@ -52,12 +52,13 @@ Cycle.run(main, drivers);
 **Send messages from `main` to the `DOM` driver:**
 
 {% highlight js %}
+import Rx from 'rx';
 import Cycle from '@cycle/core';
 import CycleDOM from '@cycle/dom';
 
 function main() {
   return {
-    DOM: Cycle.Rx.Observable.interval(1000)
+    DOM: Rx.Observable.interval(1000)
       .map(i => CycleDOM.h(
         'h1', '' + i + ' seconds elapsed'
       ))
