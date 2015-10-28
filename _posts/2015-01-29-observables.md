@@ -131,7 +131,7 @@ Knowing the basics of ReactiveX is a prerequisite to getting work done with Cycl
 - [The introduction to Reactive Programming you've been missing](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754): a thorough introduction to RxJS by Cycle.js author Andre Staltz.
 - [Introduction to Rx](http://introtorx.com/): an online book focused on Rx.NET, but most concepts map directly to RxJS.
 - [ReactiveX.io](http://reactivex.io/): official cross-language documentation site for ReactiveX.
-- [Learn Rx](http://reactive-extensions.github.io/learnrx/): an interactive tutorial with arrays and Observables, by Jafar Husain.
+- [Learn Rx](http://reactivex.io/learnrx/): an interactive tutorial with arrays and Observables, by Jafar Husain.
 - [RxJS lessons at Egghead.io](https://egghead.io/technologies/rx)
 - [RxJS GitBook](http://xgrommx.github.io/rx-book/)
 - [RxMarbles](http://rxmarbles.com/): interactive diagrams of RxJS operators, built with Cycle.js.
