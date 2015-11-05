@@ -103,7 +103,15 @@ Cycle.run(main, drivers);
 
 Function `main()` now takes `drivers` as input. Just like the output `main()` produces, the input `drivers` follow the same structure: an object containing `DOM` as a property. `drivers.DOM` is a queryable collection of Observables. Use `drivers.DOM.select(selector).events(eventType)` to get an Observable of `eventType` DOM events happening on the element(s) specified by `selector`. This `main()` function takes the Observable of clicks happening on `input` elements, and maps those toggling events to Virtual DOM elements displaying a togglable checkbox.
 
-We used the `h()` helper function to create virtual DOM elements, but you can also use JSX with Babel. The following only works if you are building with Babel: (1) add the line `/** @jsx hJSX */` at the top of the file, (2) import hJSX as `import {hJSX} from '@cycle/dom';`, and then you can utilize JSX instead of `h()`:
+We used the `h()` helper function to create virtual DOM elements, but you can also use JSX with Babel. The following only works if you are building with Babel: (1) add the line `/** @jsx hJSX */` at the top of the file, (2) install the [babel-plugin-transform-react-jsx](http://babeljs.io/docs/plugins/transform-react-jsx/) npm package and and specify a pragma for jsx as shown in the following example:, (3) import hJSX as `import {hJSX} from '@cycle/dom';`, and then you can utilize JSX instead of `h()`:
+
+{% highlight json %}
+{
+  "plugins": [
+    ["transform-react-jsx", { "pragma": "DOM.hJSX" }]
+  ]
+}
+{% endhighlight %}
 
 {% highlight html %}
 /** @jsx hJSX */
