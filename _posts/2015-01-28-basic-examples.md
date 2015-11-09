@@ -438,7 +438,7 @@ Cycle.run(main, {
 
 This code works. We can get the calculated BMI when we move the slider. However, maybe you noticed, the labels for weight and height do not show what the slider is selecting. Instead, they just show e.g. `Weight ___kg`, which is useless since we do not know what value we are choosing for the weight.
 
-The problem happens because when we map on `bmi$`, we do not have anymore the `weight` and `height` values. Therefore, for the function which renders the VTree, we need to use an Observable which emits a complete amount of data instead of just BMI data. We need a `state$` Observable.
+The problem happens because when we map on `bmi$`, we do not have the `weight` and `height` values anymore. Therefore, for the function which renders the VTree, we need to use an Observable which emits a complete amount of data instead of just BMI data. We need a `state$` Observable.
 
 {% highlight js %}
 let state$ = Rx.Observable.combineLatest(
