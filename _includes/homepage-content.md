@@ -12,27 +12,25 @@ Cycle's core abstraction is Human-Computer Interaction modelled as an interplay 
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/dom';
+import {div, label, input, h1, makeDOMDriver} from '@cycle/dom';
 
-function main(responses) {
-  const requests = {
-    DOM: responses.DOM.select('.field').events('input')
+function main(sources) {
+  const sinks = {
+    DOM: sources.DOM.select('.field').events('input')
       .map(ev => ev.target.value)
       .startWith('')
       .map(name =>
-        h('div', [
-          h('label', 'Name:'),
-          h('input.field', {attributes: {type: 'text'}}),
-          h('h1', 'Hello ' + name)
+        div([
+          label('Name:'),
+          input('.field', {attributes: {type: 'text'}}),
+          h1('Hello ' + name)
         ])
       )
   };
-  return requests;
+  return sinks;
 }
 
-Cycle.run(main, {
-  DOM: makeDOMDriver('#app-container')
-});
+Cycle.run(main, { DOM: makeDOMDriver('#app-container') });
 {% endhighlight %}
 
 The computer function is `main()`, with input `responses` as a collection of Response [Observables](http://reactivex.io/intro.html) (event streams from [ReactiveX](http://reactivex.io/)), and outputs a collection of Request Observables. The human function is represented by the DOM Driver in the code above, because in the context of a web application, the DOM is a proxy to the user. The responsibility of `main()` is to transform DOM Response Observables to DOM Request Observables, through a chain of RxJS operators. To learn more about this approach, the [documentation](/getting-started.html) will guide you through more details.
