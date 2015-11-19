@@ -55,7 +55,7 @@ Foo.addOnNetworkRequestListener(() => {
 
 Bar is **reactive**: it is fully responsible for managing its own state by reacting to external events. Foo, on the other hand, is unaware of the existence of the arrow originating from its network request event.
 
-What is the benefit of this approach? Inversion of Control, mainly because Bar is responsible for itself. Plus, we can hide Bar's `incrementCounter()` as a private function. In the passive case, it was required to have `incrementCounter()` public, which means we are exposing Bar's internal state management outwards. It also means if we want to discover how does Bar's counter work, we need to find all usages of `incrementCounter()` in the codebase. In this regard, Reactive and Passive seem to be duals of each other.
+What is the benefit of this approach? Inversion of Control, mainly because Bar is responsible for itself. Plus, we can hide Bar's `incrementCounter()` as a private function. In the passive case, it was required to have `incrementCounter()` public, which means we are exposing Bar's internal state management outwards. It also means if we want to discover how Bar's counter works, we need to find all usages of `incrementCounter()` in the codebase. In this regard, Reactive and Passive seem to be duals of each other.
 
 |                      | Passive                 | Reactive      |
 |----------------------|-------------------------|---------------|
