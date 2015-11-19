@@ -17,7 +17,7 @@ Say you have a module Foo and a module Bar. A *module* can be considered to be a
   {% include img/modules-foo-bar.svg %}
 </p>
 
-A practical example of such arrow would be: *whenever Foo does a network request, increment a counter in B*. If all code lives in some module, **where does this arrow live?** Where is it defined? The typical choice would be to write code inside Foo which calls a method in Bar to increment the counter.
+A practical example of such arrow would be: *whenever Foo does a network request, increment a counter in Bar*. If all code lives in some module, **where does this arrow live?** Where is it defined? The typical choice would be to write code inside Foo which calls a method in Bar to increment the counter.
 
 {% highlight js %}
 // This is inside the Foo module
