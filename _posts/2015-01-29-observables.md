@@ -57,7 +57,7 @@ Bar is **reactive**: it is fully responsible for managing its own state by react
 
 What is the benefit of this approach? Inversion of Control, mainly because Bar is responsible for itself. Plus, we can hide Bar's `incrementCounter()` as a private function. In the passive case, it was required to have `incrementCounter()` public, which means we are exposing Bar's internal state management outwards. It also means if we want to discover how Bar's counter works, we need to find all usages of `incrementCounter()` in the codebase. In this regard, Reactive and Passive seem to be duals of each other.
 
-|              -        | Passive                 | Reactive      |
+|                       | Passive                 | Reactive      |
 |-----------------------|-------------------------|---------------|
 | How does Bar work?    | *Find usages*           | Look inside   |
 
