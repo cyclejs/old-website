@@ -61,11 +61,11 @@ What is the benefit of this approach? Inversion of Control, mainly because Bar i
 |-----------------------|-------------------------|---------------|
 | How does Bar work?    | *Find usages*           | Look inside   |
 
-On the other hand, when applying the Reactive pattern, if you want to discover which modules does an event in a Listenable module affect, you must find all usages of that event.
+On the other hand, when applying the Reactive pattern, if you want to discover which modules are affected by an event in a Listenable module, you must find all usages of that event.
 
-|                      | Proactive               | Listenable    |
-|----------------------|-------------------------|---------------|
-| What does it affect? | Look inside             | *Find Usages* |
+|                             | Proactive               | Listenable    |
+|-----------------------------|-------------------------|---------------|
+| Which modules are affected? | Look inside             | *Find Usages* |
 
 Passive/Proactive programming has been the default way of working for most programmers in imperative languages. Sometimes the Reactive pattern is used, but sporadically. The selling point for widespread Reactive programming is to build self-responsible modules which focus on their own functionality rather than changing external state. This leads to Separation of Concerns.
 
