@@ -17,7 +17,7 @@ Say you have a module Foo and a module Bar. A *module* can be considered to be a
   {% include img/modules-foo-bar.svg %}
 </p>
 
-A practical example of such arrow would be: *whenever Foo does a network request, increment a counter in B*. If all code lives in some module, **where does this arrow live?** Where is it defined? The typical choice would be to write code inside Foo which calls a method in Bar to increment the counter.
+A practical example of such arrow would be: *whenever Foo does a network request, increment a counter in Bar*. If all code lives in some module, **where does this arrow live?** Where is it defined? The typical choice would be to write code inside Foo which calls a method in Bar to increment the counter.
 
 {% highlight js %}
 // This is inside the Foo module
@@ -55,17 +55,17 @@ Foo.addOnNetworkRequestListener(() => {
 
 Bar is **reactive**: it is fully responsible for managing its own state by reacting to external events. Foo, on the other hand, is unaware of the existence of the arrow originating from its network request event.
 
-What is the benefit of this approach? Inversion of Control, mainly because Bar is responsible for itself. Plus, we can hide Bar's `incrementCounter()` as a private function. In the passive case, it was required to have `incrementCounter()` public, which means we are exposing Bar's internal state management outwards. It also means if we want to discover how does Bar's counter work, we need to find all usages of `incrementCounter()` in the codebase. In this regard, Reactive and Passive seem to be duals of each other.
+What is the benefit of this approach? Inversion of Control, mainly because Bar is responsible for itself. Plus, we can hide Bar's `incrementCounter()` as a private function. In the passive case, it was required to have `incrementCounter()` public, which means we are exposing Bar's internal state management outwards. It also means if we want to discover how Bar's counter works, we need to find all usages of `incrementCounter()` in the codebase. In this regard, Reactive and Passive seem to be duals of each other.
 
-|                      | Passive                 | Reactive      |
-|----------------------|-------------------------|---------------|
-| How does it work?    | *Find usages*           | Look inside   |
+|                       | Passive                 | Reactive      |
+|-----------------------|-------------------------|---------------|
+| How does Bar work?    | *Find usages*           | Look inside   |
 
-On the other hand, when applying the Reactive pattern, if you want to discover which modules does an event in a Listenable module affect, you must find all usages of that event.
+On the other hand, when applying the Reactive pattern, if you want to discover which modules are affected by an event in a Listenable module, you must find all usages of that event.
 
-|                      | Proactive               | Listenable    |
-|----------------------|-------------------------|---------------|
-| What does it affect? | Look inside             | *Find Usages* |
+|                             | Proactive               | Listenable    |
+|-----------------------------|-------------------------|---------------|
+| Which modules are affected? | Look inside             | *Find Usages* |
 
 Passive/Proactive programming has been the default way of working for most programmers in imperative languages. Sometimes the Reactive pattern is used, but sporadically. The selling point for widespread Reactive programming is to build self-responsible modules which focus on their own functionality rather than changing external state. This leads to Separation of Concerns.
 
