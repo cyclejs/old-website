@@ -44,9 +44,11 @@ article
         h2
             display: inline-block
         .edit-post
+            @extend .mobile-hidden
             font-size: 80%
-            top: -4px
-            position: relative
+            top: $normal-space
+            right: $normal-space
+            position: absolute
     > div
         margin-bottom: 2em
     .paginator
