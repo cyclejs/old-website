@@ -20,6 +20,9 @@ layout: blank
       <article id="content">
         <header>
           <h2>{{ page.title }}</h2>
+          {% if page.path %}
+            <a class="edit-post" title="Edit on Github" href="{{ page.path | prepend: 'https://github.com/cyclejs/cyclejs.github.io/edit/master/' }}">Edit on GitHub <i class="fa fa-edit"></i></a>
+          {% endif %}
         </header>
         <div>
 {{ content }}
