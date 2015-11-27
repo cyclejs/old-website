@@ -3,6 +3,32 @@ title: "Components"
 tags: chapters
 ---
 
+User interfaces are usually made up of many reusable pieces: buttons, charts, sliders, hoverable avatars, smart form fields, etc. In many frameworks, these are called components. However, in Cycle.js they have a special property.
+
+#### Components in Cycle.js have a unique characteristic:<br />they are always small Cycle.js programs.
+
+- How is that so?
+- Take any component. It will have some inputs and some outputs.
+- For instance a smart slider takes user events as input, and generates a virtual DOM Observable of a slider element. Besides the virtual DOM, it might also output a value: an observable of slider values. It might also take attributes (from its parent) as input to customize some behavior or looks. These are called props in other frameworks.
+- We just described a small Cycle.js program.
+- By now we know how to build small and simple Cycle.js programs, so lets just make a Cycle.js program for a labeled slider. This will be our component.
+- Labeled slider section
+- Quotebox for CapitalCase convention
+- ...
+- Using the labeled slider for only weight in BMI
+- When using labeled slider for the height, we notice a collision
+- Enter isolate()
+- Explain isolate as simply a namespaced restriction
+- Second argument to isolate is the scope name
+- isolate(LabeledSlider, 'weight')
+- isolate(LabeledSlider, 'height')
+- Call isolate by default on custom elements and you'll be safe against global collisions, and each component can work as if it would be the only one in the application
+- From a component's perspective, it makes no assumption on what the parent is
+- The role of sources and sinks as interfaces, where the top-most component is main, and its parents are drivers that take sinks and give sources.
+
+
+- - -
+
 Some parts of our UI share the same *looks* and *behavior*. Looks are the rendering of VTrees from state, in other words *View*. Behavior is what happens when the user generates DOM events related to that UI, in other words, *Intent*. Let's call these UI parts as *Widget*.
 
 > <h4 id="what-is-a-widget">What is a "Widget"?</h4>

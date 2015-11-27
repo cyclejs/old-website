@@ -3,9 +3,11 @@ title:  "Basic examples"
 tags: chapters
 ---
 
-**You can find the source code for these examples, and others, at [cyclejs/cycle-examples](https://github.com/cyclejs/cycle-examples).**
+Cycle.js apps will always include at least three important components: `main()`, **drivers**, and `run()`. In `main()`, we listen to drivers (the input to `main`), and we speak to drivers (the output of `main`).
 
-Cycle.js apps will always include at least three important components: `main()`, drivers, and `run()`. In `main()`, we listen to drivers (the input to `main`), and we speak to drivers (the output of `main`). In Haskell 1.0 jargon, `main()` takes driver "*response*" Observables and outputs driver "*request*" Observables. `Cycle.run()` ties `main()` and drivers together, as we saw in the last chapter.
+#### You can find the source code for these examples, and others, at [cyclejs/cycle-examples](https://github.com/cyclejs/cycle-examples).
+
+`Cycle.run()` ties `main()` and drivers together, as we saw in the last chapter.
 
 {% highlight js %}
 function main(driverResponses) {

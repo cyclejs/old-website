@@ -7,6 +7,8 @@ The name "Observable" immediately indicates a relation to the [Observer pattern]
 
 However, an Observable is not exactly the same concept as a traditional Subject from the Observer pattern, because Observables share features with Iterables from the [Iterator pattern](https://en.wikipedia.org/wiki/Iterator_pattern) as well.
 
+#### Observables are lazy event streams which can emit zero or more events, and may or may not finish.
+
 Observables originated from [ReactiveX](http://reactivex.io/intro.html), a Reactive Programming library. Reactivity is an important aspect in Cycle.js, and part of the core principles that led to the creation of this framework. There is a lot of confusion surrounding what Reactive means, so let's focus on that topic for a while.
 
 <h2 id="reactive-programming">Reactive Programming</h2>
