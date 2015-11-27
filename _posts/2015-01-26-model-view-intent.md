@@ -437,4 +437,4 @@ function intent(DOM) {
 }
 {% endhighlight %}
 
-But this still isn't ideal: we seem to have *more* code now. What we really want is just to render a *labeled slider*, where the label updates in real-time when the slider is changed. We want to be able to use this in the View: `h('my-labeled-slider')`. For that, we need [custom elements](/custom-elements.html).
+But this still isn't ideal: we seem to have *more* code now. What we really want is just to render a *labeled slider*, where the label updates in real-time when the slider is changed. We want to be able to use this in the View: `h('my-labeled-slider')`. For that, we need [custom elements](/components.html).

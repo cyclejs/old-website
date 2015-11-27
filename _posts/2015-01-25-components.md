@@ -1,5 +1,5 @@
 ---
-title: "Custom elements"
+title: "Components"
 tags: chapters
 ---
 
