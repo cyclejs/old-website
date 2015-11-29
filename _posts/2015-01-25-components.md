@@ -7,16 +7,189 @@ User interfaces are usually made up of many reusable pieces: buttons, charts, sl
 
 #### Components in Cycle.js have a unique characteristic:<br />they are always small Cycle.js programs.
 
-- How is that so?
-- Take any component. It will have some inputs and some outputs.
-- For instance a smart slider takes user events as input, and generates a virtual DOM Observable of a slider element. Besides the virtual DOM, it might also output a value: an observable of slider values. It might also take attributes (from its parent) as input to customize some behavior or looks. These are called props in other frameworks.
-- We just described a small Cycle.js program.
-- By now we know how to build small and simple Cycle.js programs, so lets just make a Cycle.js program for a labeled slider. This will be our component.
-- Labeled slider section
-- Quotebox for CapitalCase convention
-- ...
-- Using the labeled slider for only weight in BMI
-- When using labeled slider for the height, we notice a collision
+How is that so? Any component can be built as a dataflow program taking inputs from and generating outputs to the external world.
+
+For instance a smart slider component takes user events as input, and generates a virtual DOM Observable of a slider element. Besides the virtual DOM, it might also output a value: the observable of slider values. It might also take attributes (from its parent) as input to customize some behavior or looks. These are sometimes called *props* ("properties") in other frameworks.
+
+<p>
+  {% include img/dataflow-component.svg %}
+</p>
+
+"*If it looks like a duck, swims like a duck, and quacks like a duck, then it probably [is a duck](https://en.wikipedia.org/wiki/Duck_test).*" This is why the component we described can easily be written as a small Cycle.js program.  By now we know how to build small and simple Cycle.js programs, so let's just make an app for a single labeled slider. That will become our reusable component.
+
+<h2 id="a-labeled-slider-custom-element">A labeled slider component</h2>
+
+A labeled slider has two parts: a label and slider, side by side, where the label always displays the current dynamic value of the slider.
+
+<a class="jsbin-embed" href="http://jsbin.com/negulukoxo/embed?output">JS Bin on jsbin.com</a>
+
+Every labeled slider has some properties:
+
+ - Label text (`'Weight'`, `'Height'`, etc)
+ - Unit text (`'kg'`, `'cm'`, etc)
+ - Min value
+ - Max value
+ - Initial value
+
+These props can be encoded as an object, wrapped in an Observable, and passed to our `main()` function as a *source* input:
+
+{% highlight js %}
+function main(sources) {
+  const props$ = sources.props$;
+  // ...
+  return sinks;
+}
+{% endhighlight %}
+
+To use this main function, we call `Cycle.run`:
+
+{% highlight js %}
+Cycle.run(main, {
+  props$: () => Observable.of({
+    label: 'Weight', unit: 'kg', min: 40, initial: 70, max: 140
+  })
+});
+{% endhighlight %}
+
+Remember that even though we are building a component, we are assuming our labeled slider to be our main program. Then, because `props$` are an input given to the labeled slider from its parent, the only parent of `main()` in this case is `Cycle.run`. That is why we need to configure `props$` as a driver.
+
+The other input to this labeled slider program is the DOM source representing user events:
+
+{% highlight diff %}
+ function main(sources) {
++  const DOMSource = sources.DOM;
+   const props$ = sources.props$;
+   // ...
+   return sinks;
+ }
+{% endhighlight %}
+
+The remaining of the program is rather easy given that we've written the same labeled slider in the two previous chapters. However, this time we take props as the initial value.
+
+{% highlight js %}
+function main(sources) {
+  const initialValue$ = sources.props$
+    .map(props => props.initial)
+    .first();
+
+  const newValue$ = sources.DOM
+    .select('.slider')
+    .events('input')
+    .map(ev => ev.target.value);
+
+  const value$ = initialValue$.concat(newValue$);
+
+  const vtree$ = Observable.combineLatest(sources.props$, value$,
+    (props, value) =>
+      div('.labeled-slider', [
+        span('.label',
+          props.label + ' ' + value + props.unit
+        ),
+        input('.slider', {
+          type: 'range', min: props.min, max: props.max, value: value
+        })
+      ])
+  );
+
+  const sinks = {
+    DOM: vtree$,
+    value$: value$,
+  };
+  return sinks;
+}
+{% endhighlight %}
+
+You might have noticed that besides the virtual DOM output, we also return the `value$` Observable as a sink:
+
+{% highlight diff %}
+   // ...
+   const sinks = {
+     DOM: vtree$,
++    value$: value$,
+   };
+   return sinks;
+ }
+{% endhighlight %}
+
+This value Observable is crucial to be sent to the parent if the parent wishes to use the numeric value for some calculations, such as that of BMI.
+
+<h2 id="using-a-component">Using a component</h2>
+
+Now that our dataflow component for a labeled slider is ready, we can use it in the context of a larger application. First, we will rename our component to `LabeledSlider`, and `main()` will refer to our larger application.
+
+{% highlight diff %}
+-function main(sources) {
++function LabeledSlider(sources) {
+   const initialValue$ = sources.props$
+     .map(props => props.initial)
+     .first();
+
+   // ...
+
+   return sinks;
+ }
+
++function main(sources) {
++  // Call LabeledSlider() here...
++}
+{% endhighlight %}
+
+Since `LabeledSlider` is just a function, we can call it with some sources to get its sinks as output.
+
+{% highlight js %}
+function main(sources) {
+  const props$ = Observable.of({
+    label: 'Radius', unit: '', min: 10, initial: 30, max: 100
+  });
+  const childSources = {DOM: sources.DOM, props$};
+  const labeledSlider = LabeledSlider(childSources);
+  const childVTree$ = labeledSlider.DOM;
+  const childValue$ = labeledSlider.value$;
+
+  // ...
+}
+{% endhighlight %}
+
+> <h4 id="why-name-components-with-capitalcase">Why name components with CapitalCase?</h4>
+>
+> You probably noticed we named the dataflow component as `LabeledSlider`. Usually in JavaScript, capitalized names are used for classes and constructor functions. Since Cycle.js uses functional programming techniques heavily, Object-oriented programming conventions are irrelevant, there are rarely classes in Cycle.js apps.
+>
+> For this reason, capitalized names become available in the functional programming flavor of JavaScript. We will follow the convention of capitalized names such as `FooButton` for dataflow components (in other words, small Cycle.js apps). Their camel-case counterpart such as `fooButton` will refer to the output of `FooButton` function when called, i.e., the sinks object.
+
+Now we have `childVTree$` and `childValue$` as sinks from the labeled slider, available for use as regular Observables in the context of the `main()` parent. We use `childValue$` to render a circle with radius equal to the slider's value, and use `childVTree$` to embed the slider's virtual DOM in the parent's virtual DOM:
+
+{% highlight js %}
+function main(sources) {
+  // ...
+
+  const childVTree$ = labeledSlider.DOM;
+  const childValue$ = labeledSlider.value$;
+
+  const vtree$ = Observable.combineLatest(
+    childValue$, childVTree$,
+    (value, childVTree) =>
+      div([
+        childVTree,
+        div({style: {
+          backgroundColor: '#58D3D8',
+          width: String(value) + 'px',
+          height: String(value) + 'px',
+          borderRadius: String(value * 0.5) + 'px'
+        }})
+      ])
+    );
+  return {
+    DOM: vtree$
+  };
+}
+{% endhighlight %}
+
+- - -
+
++ Labeled slider section
++ Using the labeled slider for a circle resizer thingy
++ Quotebox for CapitalCase convention
+- Using the labeled slider for both weight and height in BMI example, we notice a collision
 - Enter isolate()
 - Explain isolate as simply a namespaced restriction
 - Second argument to isolate is the scope name
@@ -25,6 +198,82 @@ User interfaces are usually made up of many reusable pieces: buttons, charts, sl
 - Call isolate by default on custom elements and you'll be safe against global collisions, and each component can work as if it would be the only one in the application
 - From a component's perspective, it makes no assumption on what the parent is
 - The role of sources and sinks as interfaces, where the top-most component is main, and its parents are drivers that take sinks and give sources.
+
+- - -
+
+<h2 id="using-components-in-a-parent">Using components in a parent</h2>
+
+We want to use our labeled slider like any other DOM element. If we can express `h('div')` or `h('select')`, we should also be able to express `h('labeled-slider')`. And we give properties (or "attributes") to it as such:
+
+{% highlight js %}
+h('labeled-slider#weight', {
+  label:'Weight', unit:'kg', min: 40, max: 140, initial: 70
+})
+{% endhighlight %}
+
+We have access to these properties as `responses.props` from the custom element implementation function:
+
+{% highlight js %}
+function labeledSlider(responses) {
+  // Observable of the 'label' property
+  let label$ = responses.props.get('label');
+  // ...
+  return requests;
+}
+{% endhighlight %}
+
+`responses.props.get(propName)` returns an Observable of `propName` values. Use `responses.props.getAll()` to get an Observable of the properties object containing all properties: `{label, unit, min, max, initial}`. Creating `h('labeled-slider', propsObject)` and using `responses.props` is how our parent Cycle.js app can communicate to our small custom element Cycle.js app. What about the opposite direction?
+
+The labeled slider needs to communicate to the parent application whenever a new value is set on the slider, so e.g. our BMI calculator can update the BMI result. The labeled slider can emit a custom DOM event `newValue`. To declare this `newValue` event in the custom element's implementation, we return an Observable as part of `labeledSlider`'s `request` output.
+
+{% highlight js %}
+function labeledSlider(responses) {
+  let newValue$ = // we need to create this Observable
+  // ...
+  let requests = {
+    DOM: vtree$,
+    events: { // a collection of all custom DOM events
+      newValue: newValue$
+    }
+  };
+  return requests;
+}
+{% endhighlight %}
+
+We now just need to make use of `responses.props` and `responses.DOM`, create `newValue$` and `vtree$`, and return these. Here is the full implementation of the labeled slider custom element:
+
+{% highlight js %}
+function labeledSlider(responses) {
+  let initialValue$ = responses.props.get('initial').first();
+  let newValue$ = responses.DOM.select('.slider').events('input')
+    .map(ev => ev.target.value);
+  let value$ = initialValue$.concat(newValue$);
+  let props$ = responses.props.getAll();
+  let vtree$ = Rx.Observable
+    .combineLatest(props$, value$, (props, value) =>
+      h('div.labeled-slider', [
+        h('span.label', [
+          props.label + ' ' + value + props.unit
+        ]),
+        h('input.slider', {
+          type: 'range',
+          min: props.min,
+          max: props.max,
+          value: value
+        })
+      ])
+    );
+
+  return {
+    DOM: vtree$,
+    events: {
+      newValue: newValue$
+    }
+  };
+}
+{% endhighlight %}
+
+
 
 
 - - -
