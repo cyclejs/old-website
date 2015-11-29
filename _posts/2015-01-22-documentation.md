@@ -127,7 +127,7 @@ A shortcut to the svg hyperscript function.
 
 A testing utility which aids in creating a queryable collection of
 Observables. Call mockDOMResponse giving it an object specifying selectors,
-eventTypes and their Observabls, and get as output an object following the
+eventTypes and their Observables, and get as output an object following the
 same format as the DOM Driver's response. Example:
 
 {% highlight js %}
