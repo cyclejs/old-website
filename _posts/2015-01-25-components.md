@@ -184,20 +184,102 @@ function main(sources) {
 }
 {% endhighlight %}
 
-- - -
+As a result, we get a Cycle.js program where the labeled slider controls the size of a rendered circle.
 
-+ Labeled slider section
-+ Using the labeled slider for a circle resizer thingy
-+ Quotebox for CapitalCase convention
-- Using the labeled slider for both weight and height in BMI example, we notice a collision
-- Enter isolate()
-- Explain isolate as simply a namespaced restriction
-- Second argument to isolate is the scope name
-- isolate(LabeledSlider, 'weight')
-- isolate(LabeledSlider, 'height')
-- Call isolate by default on custom elements and you'll be safe against global collisions, and each component can work as if it would be the only one in the application
-- From a component's perspective, it makes no assumption on what the parent is
-- The role of sources and sinks as interfaces, where the top-most component is main, and its parents are drivers that take sinks and give sources.
+<a class="jsbin-embed" href="http://jsbin.com/lobigimovo/embed?output">JS Bin on jsbin.com</a>
+
+<h2 id="multiple-instances-of-the-same-component">Multiple instances and isolation</h2>
+
+Our labeled sliders were originally built for the BMI example, so we should see how the component we just built can be used in the BMI example.
+
+The naïve approach is to simply call `LabeledSlider()` twice, once with props for weight, and again with props for height:
+
+{% highlight js %}
+function main(sources) {
+  const weightProps$ = Observable.of({
+    label: 'Weight', unit: 'kg', min: 40, initial: 70, max: 150
+  });
+  const heightProps$ = Observable.of({
+    label: 'Height', unit: 'cm', min: 140, initial: 170, max: 210
+  });
+
+  const weightSources = {DOM: sources.DOM, props$: weightProps$};
+  const heightSources = {DOM: sources.DOM, props$: heightProps$};
+
+  const weightSlider = LabeledSlider(weightSources);
+  const heightSlider = LabeledSlider(heightSources);
+
+  const weightVTree$ = weightSlider.DOM;
+  const weightValue$ = weightSlider.value$;
+
+  const heightVTree$ = heightSlider.DOM;
+  const heightValue$ = heightSlider.value$;
+
+  // ...
+}
+{% endhighlight %}
+
+However, this creates a bug. At least one of the labeled sliders does not work: its label does not change when the slider moves. Can you see why? Pay attention to the implementation of `LabeledSlider` with this piece of code:
+
+{% highlight js %}
+function LabeledSlider(sources) {
+  // ...
+
+  const newValue$ = sources.DOM
+    .select('.slider')
+    .events('input')
+    .map(ev => ev.target.value);
+
+  const value$ = initialValue$.concat(newValue$);
+
+  // ...
+}
+{% endhighlight %}
+
+Suppose we just ran this function for the weight labeled slider. The line `sources.DOM.select('.slider')` **will attempt to select all** `.slider` **elements on the entire DOM tree managed by this app**. This means both the `.slider` in the weight component and the `.slider` in the height component. As a result, the weight component will detect changes to both the height slider and the weight slider, which is a bug.
+
+A component should not leak its output to other components, and it should not be able to detect outputs from other sibling components. In order keep the nice property of "a component is just a Cycle.js app", we want two properties:
+
+- A component's **sources** are not affected by other components' sources.
+- A component's **sinks** do not affect other components' sinks.
+
+In order to achieve these properties, we need to modify the sources when they enter the component, and also modify the sinks when they are returned from the component. To make sources and sinks isolated from influence of other components, we need to introduce a scope for the current component.
+
+For the DOM source and DOM sink, we can use a unique identifier string as namespace for the virtual DOM element.
+
+DRAFT: We add a className on the sink (the vtree)
+
+DRAFT: code code code for the map(vtree => add classname) on the sink
+
+DRAFT: Show the HTML output we get.
+
+DRAFT: and also we narrow down the DOM source by doing a select() for that same className
+
+DRAFT: code code code for the DOM source
+
+QUOTEBOX: DOM source scope selection
+
+DRAFT: Show both source and sink narrow-down code.
+
+DRAFT: Extract those two things as isolateSource and isolateSink
+
+DRAFT: Show how these two are attached to sources.DOM
+
+DRAFT: Introduce isolate() as a helper library
+
+DRAFT: Show how isolate calls both isolateSource and isolateSink for every source and sink that has such method. Show how we can call isolate(component, 'weight')
+
+DRAFT: Show how we can call instead isolate(component) without providing the namespace, and how its auto-generated for us.
+
+## Overview
+
+DRAFT: Call isolate by default on components and you'll be safe against global collisions, and each component can work as if it would be the only one in the application.
+
+DRAFT: From a component's perspective, it should make no assumption on what the parent is.
+
+DRAFT: isolateSource and isolateSink is a driver-specific function. Each driver should define how its sources and sinks should be isolated.
+
+DRAFT: Recap: The role of sources and sinks as interfaces, where the top-most component is main, and its parents are drivers that take sinks and give sources.
 
 - - -
 
