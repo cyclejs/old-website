@@ -3,25 +3,25 @@ title: "Components"
 tags: chapters
 ---
 
-User interfaces are usually made up of many reusable pieces: buttons, charts, sliders, hoverable avatars, smart form fields, etc. In many frameworks, these are called components. However, in Cycle.js they have a special property.
+User interfaces are usually made up of many reusable pieces: buttons, charts, sliders, hoverable avatars, smart form fields, etc. In many frameworks, including Cycle.js, these are called components. However, in this framework they have a special property.
 
-#### Components in Cycle.js have a unique characteristic:<br />they are always small Cycle.js programs.
+#### Any Cycle.js app can be reused as a component in a larger Cycle.js app.
 
-How is that so? Any component can be built as a dataflow program taking inputs from and generating outputs to the external world.
+How is that so? In any framework you can build a program that just makes one slider. By now, we know how to make a Cycle.js `main()` that makes a smart slider widget. Then, since `main()` is just a function taking inputs from the external world and generating outputs in return, we can just call that function inside a larger Cycle.js app.
 
-For instance a smart slider component takes user events as input, and generates a virtual DOM Observable of a slider element. Besides the virtual DOM, it might also output a value: the observable of slider values. It might also take attributes (from its parent) as input to customize some behavior or looks. These are sometimes called *props* ("properties") in other frameworks.
+Each of these "small Cycle.js `main()` functions" are called **dataflow components**. The sources which a dataflow component receives are Observables provided by its parent, and sinks are Observables given back to the parent. All along, we have been building dataflow components, because the `main()` given to `Cycle.run(main, drivers)` is also a dataflow component. Its parent are the drivers, because that is where its sources come from and where its sinks go to.
 
 <p>
   {% include img/dataflow-component.svg %}
 </p>
 
-"*If it looks like a duck, swims like a duck, and quacks like a duck, then it probably [is a duck](https://en.wikipedia.org/wiki/Duck_test).*" This is why the component we described can easily be written as a small Cycle.js program.  By now we know how to build small and simple Cycle.js programs, so let's just make an app for a single labeled slider. That will become our reusable component.
+To learn by doing, let's just make a dataflow component for a single labeled slider. It should take user events as input, and generate a virtual DOM Observable of a slider element. Besides the virtual DOM, it might also output a value: the observable of slider values. It might also take attributes (from its parent) as input to customize some behavior or looks. These are sometimes called *props* ("properties") in other frameworks.
 
 <h2 id="a-labeled-slider-custom-element">A labeled slider component</h2>
 
 A labeled slider has two parts: a label and slider, side by side, where the label always displays the current dynamic value of the slider.
 
-<a class="jsbin-embed" href="http://jsbin.com/negulukoxo/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/ritajuxele/embed?output">JS Bin on jsbin.com</a>
 
 Every labeled slider has some properties:
 
@@ -47,7 +47,8 @@ To use this main function, we call `Cycle.run`:
 Cycle.run(main, {
   props$: () => Observable.of({
     label: 'Weight', unit: 'kg', min: 40, initial: 70, max: 140
-  })
+  }),
+  DOM: makeDOMDriver('#app')
 });
 {% endhighlight %}
 
@@ -86,14 +87,14 @@ function main(sources) {
           props.label + ' ' + value + props.unit
         ),
         input('.slider', {
-          type: 'range', min: props.min, max: props.max, value: value
+          type: 'range', min: props.min, max: props.max, value
         })
       ])
   );
 
   const sinks = {
     DOM: vtree$,
-    value$: value$,
+    value$,
   };
   return sinks;
 }
@@ -105,13 +106,13 @@ You might have noticed that besides the virtual DOM output, we also return the `
    // ...
    const sinks = {
      DOM: vtree$,
-+    value$: value$,
++    value$,
    };
    return sinks;
  }
 {% endhighlight %}
 
-This value Observable is crucial to be sent to the parent if the parent wishes to use the numeric value for some calculations, such as that of BMI.
+This value Observable is crucial to be sent to the parent if the parent wishes to use the numeric value for some calculations, such as that of BMI. In the program we wrote above, the parent of `main()` are the drivers. The drivers don't need to use `value$`, that's why we don't need a driver named `value$`. However, when the parent of the slider component is another dataflow component, like in the next section, then `value$` will be important.
 
 <h2 id="using-a-component">Using a component</h2>
 
@@ -165,9 +166,8 @@ function main(sources) {
   const childVTree$ = labeledSlider.DOM;
   const childValue$ = labeledSlider.value$;
 
-  const vtree$ = Observable.combineLatest(
-    childValue$, childVTree$,
-    (value, childVTree) =>
+  const vtree$ = childVTree$.withLatestFrom(childValue$,
+    (childVTree, value) =>
       div([
         childVTree,
         div({style: {
