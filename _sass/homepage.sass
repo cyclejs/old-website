@@ -17,13 +17,23 @@
         margin-top: $normal-space
     h3
         margin-top: $large-space
-        margin-bottom: $large-space
+        margin-bottom: $small-space
         text-align: center
         display: block
         a
             +box_link($lime-light, $black, $lime-light)
             letter-spacing: 0
             display: inline-block
+    h4
+        margin-top: $small-space
+        margin-bottom: $large-space
+        text-align: center
+        display: block
+        a
+            +box_link($teal-light, $black, $teal-light)
+            letter-spacing: 0
+            display: inline-block
+
     .hero-gh-star
         position: absolute
         top: $large-space
@@ -34,13 +44,30 @@
 
 .features
     ul
-        margin-bottom: 0
+        width: 50%
+        margin: 0 auto
     h1, h2, h3
         text-align: center
         a
             display: inline-block
             +box_link()
             letter-spacing: 0
+
+table.homepage-features
+    margin-top: $normal-space
+    td
+        vertical-align: top
+        border: none
+
+.dataflow-minimap svg
+    width: inherit
+    height: 340px
+    margin: 0 auto
+    min-width: inherit
+    max-width: inherit
+    max-height: inherit
+.dataflow-minimap-code
+    font-size: 14px
 
 @media only screen and (max-width: 680px)
     .hero
