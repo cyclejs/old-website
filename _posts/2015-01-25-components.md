@@ -215,9 +215,28 @@ function main(sources) {
   const heightVTree$ = heightSlider.DOM;
   const heightValue$ = heightSlider.value$;
 
-  // ...
+  const bmi$ = Observable.combineLatest(weightValue$, heightValue$,
+    (weight, height) => {
+      let heightMeters = height * 0.01;
+      let bmi = Math.round(weight / (heightMeters * heightMeters));
+      return bmi;
+    }
+  );
+
+  return {
+    DOM: bmi$.combineLatest(weightVTree$, heightVTree$,
+      (bmi, weightVTree, heightVTree) =>
+        div([
+          weightVTree,
+          heightVTree,
+          h2('BMI is ' + bmi)
+        ])
+      )
+  };
 }
 {% endhighlight %}
+
+<a class="jsbin-embed" href="http://jsbin.com/xobuyesezo/embed?output">JS Bin on jsbin.com</a>
 
 However, this creates a bug. At least one of the labeled sliders does not work: its label does not change when the slider moves. Can you see why? Pay attention to the implementation of `LabeledSlider` with this piece of code:
 
@@ -245,527 +264,318 @@ A component should not leak its output to other components, and it should not be
 
 In order to achieve these properties, we need to modify the sources when they enter the component, and also modify the sinks when they are returned from the component. To make sources and sinks isolated from influence of other components, we need to introduce a scope for the current component.
 
-For the DOM source and DOM sink, we can use a unique identifier string as namespace for the virtual DOM element.
+For the DOM source and DOM sink, we can use a unique identifier string as namespace for the virtual DOM element. First, we patch the DOM sink, adding a className to the VTrees it emits.
 
-DRAFT: We add a className on the sink (the vtree)
+{% highlight diff %}
+ function main(sources) {
+   // ...
 
-DRAFT: code code code for the map(vtree => add classname) on the sink
+   const weightSlider = LabeledSlider(weightSources);
+   const heightSlider = LabeledSlider(heightSources);
 
-DRAFT: Show the HTML output we get.
+   const weightVTree$ = weightSlider.DOM
++    .map(vtree => {
++      vtree.className += ' weight';
++      return vtree;
++    });
+   const weightValue$ = weightSlider.value$;
 
-DRAFT: and also we narrow down the DOM source by doing a select() for that same className
+   const heightVTree$ = heightSlider.DOM
++    .map(vtree => {
++      vtree.className += ' height';
++      return vtree;
++    });
+   const heightValue$ = heightSlider.value$;
 
-DRAFT: code code code for the DOM source
-
-QUOTEBOX: DOM source scope selection
-
-DRAFT: Show both source and sink narrow-down code.
-
-DRAFT: Extract those two things as isolateSource and isolateSink
-
-DRAFT: Show how these two are attached to sources.DOM
-
-DRAFT: Introduce isolate() as a helper library
-
-DRAFT: Show how isolate calls both isolateSource and isolateSink for every source and sink that has such method. Show how we can call isolate(component, 'weight')
-
-DRAFT: Show how we can call instead isolate(component) without providing the namespace, and how its auto-generated for us.
-
-## Overview
-
-DRAFT: Call isolate by default on components and you'll be safe against global collisions, and each component can work as if it would be the only one in the application.
-
-DRAFT: From a component's perspective, it should make no assumption on what the parent is.
-
-DRAFT: isolateSource and isolateSink is a driver-specific function. Each driver should define how its sources and sinks should be isolated.
-
-DRAFT: Recap: The role of sources and sinks as interfaces, where the top-most component is main, and its parents are drivers that take sinks and give sources.
-
-- - -
-
-<h2 id="using-components-in-a-parent">Using components in a parent</h2>
-
-We want to use our labeled slider like any other DOM element. If we can express `h('div')` or `h('select')`, we should also be able to express `h('labeled-slider')`. And we give properties (or "attributes") to it as such:
-
-{% highlight js %}
-h('labeled-slider#weight', {
-  label:'Weight', unit:'kg', min: 40, max: 140, initial: 70
-})
+   // ...
+ }
 {% endhighlight %}
 
-We have access to these properties as `responses.props` from the custom element implementation function:
+This will result in the following rendered HTML:
 
-{% highlight js %}
-function labeledSlider(responses) {
-  // Observable of the 'label' property
-  let label$ = responses.props.get('label');
-  // ...
-  return requests;
-}
+{% highlight html %}
+<div class="labeled-slider weight">
+  <span class="label">Weight 70kg</span>
+  <input class="slider" type="range" min="40" max="150">
+</div>
 {% endhighlight %}
 
-`responses.props.get(propName)` returns an Observable of `propName` values. Use `responses.props.getAll()` to get an Observable of the properties object containing all properties: `{label, unit, min, max, initial}`. Creating `h('labeled-slider', propsObject)` and using `responses.props` is how our parent Cycle.js app can communicate to our small custom element Cycle.js app. What about the opposite direction?
+For querying user events on these rendered sliders, the `weightSlider` dataflow component should detect user events *only* from the `<div class="labeled-slider weight">` element and its descendants when `sources.DOM.select('.slider').events('input')` is called.
 
-The labeled slider needs to communicate to the parent application whenever a new value is set on the slider, so e.g. our BMI calculator can update the BMI result. The labeled slider can emit a custom DOM event `newValue`. To declare this `newValue` event in the custom element's implementation, we return an Observable as part of `labeledSlider`'s `request` output.
+In the context of the labeled slider component, **`sources.DOM.select()` should refer only to the DOM that was created by the corresponding `vtree$` sink in that component**.
 
-{% highlight js %}
-function labeledSlider(responses) {
-  let newValue$ = // we need to create this Observable
-  // ...
-  let requests = {
-    DOM: vtree$,
-    events: { // a collection of all custom DOM events
-      newValue: newValue$
-    }
-  };
-  return requests;
-}
+We can achieve that by narrowing down the DOM source before it is given to the component, using the same className we patched on the sink, like this:
+
+{% highlight diff %}
+ function main(sources) {
+   // ...
+   const weightSources = {
+-    DOM: sources.DOM,
++    DOM: sources.DOM.select('.weight'),
+     props$: weightProps$
+   };
+   const heightSources = {
+-    DOM: sources.DOM,
++    DOM: sources.DOM.select('.height'),
+     props$: heightProps$
+   };
+
+   const weightSlider = LabeledSlider(weightSources);
+   const heightSlider = LabeledSlider(heightSources);
+   // ...
+ }
 {% endhighlight %}
 
-We now just need to make use of `responses.props` and `responses.DOM`, create `newValue$` and `vtree$`, and return these. Here is the full implementation of the labeled slider custom element:
-
-{% highlight js %}
-function labeledSlider(responses) {
-  let initialValue$ = responses.props.get('initial').first();
-  let newValue$ = responses.DOM.select('.slider').events('input')
-    .map(ev => ev.target.value);
-  let value$ = initialValue$.concat(newValue$);
-  let props$ = responses.props.getAll();
-  let vtree$ = Rx.Observable
-    .combineLatest(props$, value$, (props, value) =>
-      h('div.labeled-slider', [
-        h('span.label', [
-          props.label + ' ' + value + props.unit
-        ]),
-        h('input.slider', {
-          type: 'range',
-          min: props.min,
-          max: props.max,
-          value: value
-        })
-      ])
-    );
-
-  return {
-    DOM: vtree$,
-    events: {
-      newValue: newValue$
-    }
-  };
-}
-{% endhighlight %}
-
-
-
-
-- - -
-
-Some parts of our UI share the same *looks* and *behavior*. Looks are the rendering of VTrees from state, in other words *View*. Behavior is what happens when the user generates DOM events related to that UI, in other words, *Intent*. Let's call these UI parts as *Widget*.
-
-> <h4 id="what-is-a-widget">What is a "Widget"?</h4>
+> <h4 id="what-does-sources-dom-select-do">What does <code>sources.DOM.select()</code> do?</h4>
 >
-> We will refer to "Widget" as a small reusable user interface program with: (1) an interface to interact with a parent UI program, (2) no business logic.
+> We have used `.select(selector).events(eventType)` many times previously to get an Observable emitting DOM events of type `eventType` happening on the `selector` element(s).
 >
-> Examples of Widgets in user interfaces: a slider with a dynamic label, a dropdown selector list, a knob in an audio-editing program, a button with special behavior, an animated checkbox.
+> In the code above, we called `sources.DOM.select(selector)` without `.events(eventType)`. It returns a **new** DOM source, on which we can call again `select()` or `events()`.
+>
+> `select('.foo').select('.bar').events('click')` returns an Observable of click events happening on `'.foo .bar'` elements. In other words, these are all clicks happening on `'.bar'` elements descendants of `'.foo'` elements. The first call, `select('.foo')`, allows us to "narrow down" the DOM source.
 
-We need a way of encapsulating looks and behavior together, in order to reuse them seamlessly. View and Intent both relate to state, which relates to Model. So we actually need a way of encapsulating all three Model, View, Intent as a reusable component to implement a Widget.
-
-Isn't MVI an architecture for Cycle.js UI programs? Does this mean a Widget is a Cycle.js application? Well, "*if it looks like a duck, swims like a duck, and quacks like a duck, then it probably [is a duck](https://en.wikipedia.org/wiki/Duck_test).*"
-
-**Custom elements are small Cycle.js apps to implement Widgets.** Here is the skeleton implementation of most custom elements:
+The code we wrote for isolating sources and sinks looks like boilerplate. Ideally we don't want to manually managing scopes for each component instance using classNames:
 
 {% highlight js %}
-function myCustomElement(responses) {
-  // Use responses.DOM to get DOM events
-  // happening on the elements from this
-  // custom element.
-  //
-  // Use responses.props to get properties
-  // passed to this custom elements from
-  // the parent Cycle.js app.
+function main(sources) {
   // ...
-  return {
-    DOM: vtree$,
-    events: {
-      foo: foo$,
-      bar: bar$ // 'bar' is a custom DOM event
-                // emitted whenever the Observable
-                // bar$ emits.
-    }
+  const weightSources = {
+    DOM: sources.DOM.select('.weight'), props$: weightProps$
   };
-}
-{% endhighlight %}
-
-Notice the similar structure to a `main()` function for a Cycle.js app:
-
-{% highlight js %}
-function main(responses) {
-  return {
-    driver1: // ...
-    driver2: // ...
+  const heightSources = {
+    DOM: sources.DOM.select('.height'), props$: heightProps$
   };
-}
-{% endhighlight %}
-
-Let's learn by doing: how to create custom elements and use them in a Cycle.js application.
-
-<h2 id="a-labeled-slider-custom-element">A labeled slider custom element</h2>
-
-From the [last chapter](/model-view-intent.html#pursuing-dry) we saw the need to have a labeled slider: a label and slider, side by side, where the label always displays the current dynamic value of the slider.
-
-<a class="jsbin-embed" href="http://jsbin.com/negulukoxo/embed?output">JS Bin on jsbin.com</a>
-
-Every labeled slider has some properties:
-
- - Label text (`'Weight'`, `'Height'`, etc)
- - Unit text (`'kg'`, `'cm'`, etc)
- - Min value
- - Max value
- - Initial value
-
-We want to use our labeled slider like any other DOM element. If we can express `h('div')` or `h('select')`, we should also be able to express `h('labeled-slider')`. And we give properties (or "attributes") to it as such:
-
-{% highlight js %}
-h('labeled-slider#weight', {
-  label:'Weight', unit:'kg', min: 40, max: 140, initial: 70
-})
-{% endhighlight %}
-
-We have access to these properties as `responses.props` from the custom element implementation function:
-
-{% highlight js %}
-function labeledSlider(responses) {
-  // Observable of the 'label' property
-  let label$ = responses.props.get('label');
   // ...
-  return requests;
-}
-{% endhighlight %}
-
-`responses.props.get(propName)` returns an Observable of `propName` values. Use `responses.props.getAll()` to get an Observable of the properties object containing all properties: `{label, unit, min, max, initial}`. Creating `h('labeled-slider', propsObject)` and using `responses.props` is how our parent Cycle.js app can communicate to our small custom element Cycle.js app. What about the opposite direction?
-
-The labeled slider needs to communicate to the parent application whenever a new value is set on the slider, so e.g. our BMI calculator can update the BMI result. The labeled slider can emit a custom DOM event `newValue`. To declare this `newValue` event in the custom element's implementation, we return an Observable as part of `labeledSlider`'s `request` output.
-
-{% highlight js %}
-function labeledSlider(responses) {
-  let newValue$ = // we need to create this Observable
-  // ...
-  let requests = {
-    DOM: vtree$,
-    events: { // a collection of all custom DOM events
-      newValue: newValue$
-    }
-  };
-  return requests;
-}
-{% endhighlight %}
-
-We now just need to make use of `responses.props` and `responses.DOM`, create `newValue$` and `vtree$`, and return these. Here is the full implementation of the labeled slider custom element:
-
-{% highlight js %}
-function labeledSlider(responses) {
-  let initialValue$ = responses.props.get('initial').first();
-  let newValue$ = responses.DOM.select('.slider').events('input')
-    .map(ev => ev.target.value);
-  let value$ = initialValue$.concat(newValue$);
-  let props$ = responses.props.getAll();
-  let vtree$ = Rx.Observable
-    .combineLatest(props$, value$, (props, value) =>
-      h('div.labeled-slider', [
-        h('span.label', [
-          props.label + ' ' + value + props.unit
-        ]),
-        h('input.slider', {
-          type: 'range',
-          min: props.min,
-          max: props.max,
-          value: value
-        })
-      ])
-    );
-
-  return {
-    DOM: vtree$,
-    events: {
-      newValue: newValue$
-    }
-  };
-}
-{% endhighlight %}
-
-Because this `labeledSlider()` function is a Cycle.js app, we can refactor it with MVI architecture.
-
-{% highlight js %}
-function labeledSlider(responses) {
-  function intent(DOM) {
-    return {
-      changeValue$: DOM.select('.slider').events('input')
-        .map(ev => ev.target.value)
-    };
-  }
-
-  function model(context, actions) {
-    let initialValue$ = context.props.get('initial').first();
-    let value$ = initialValue$.concat(actions.changeValue$);
-    let props$ = context.props.getAll();
-    return Rx.Observable.combineLatest(props$, value$,
-      (props, value) => { return {props, value}; }
-    );
-  }
-
-  function view(state$) {
-    return state$.map(state => {
-      let {label, unit, min, max} = state.props;
-      let value = state.value;
-      return h('div.labeled-slider', [
-        h('span.label', [label + ' ' + value + unit]),
-        h('input.slider', {type: 'range', min, max, value})
-      ])
+  const weightVTree$ = weightSlider.DOM
+    .map(vtree => {
+      vtree.className += ' weight';
+      return vtree;
     });
-  }
-
-  let actions = intent(responses.DOM);
-  let vtree$ = view(model(responses, actions));
-
-  return {
-    DOM: vtree$,
-    events: {
-      newValue: actions.changeValue$
-    }
-  };
-}
-{% endhighlight %}
-
-Now `labeledSlider()` is a small Cycle.js implementing our custom element, but we still don't know how to call this function in the context of the parent Cycle.js app. We do this by registering the labeled slider with an element name (`<labeled-slider>`) when we create the DOM Driver:
-
-{% highlight js %}
-let domDriver = CycleDOM.makeDOMDriver('#app', {
-  'labeled-slider': labeledSlider // our function
-});
-{% endhighlight %}
-
-This API was designed in a way that mimics [Web Components](http://webcomponents.org/). A Cycle.js app can make use of `'labeled-slider'` and stay oblivious to its implementation, making no assumptions whether it was implemented as a Cycle.js Custom Element or as a Web Component.
-
-The complete BMI application using labeled slider custom elements is:
-
-{% highlight js %}
-import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/dom';
-
-function labeledSlider(responses) {
-  function intent(DOM) {
-    return {
-      changeValue$: DOM.select('.slider').events('input')
-        .map(ev => ev.target.value)
-    };
-  }
-
-  function model(context, actions) {
-    let initialValue$ = context.props.get('initial').first();
-    let value$ = initialValue$.concat(actions.changeValue$);
-    let props$ = context.props.getAll();
-    return Rx.Observable.combineLatest(props$, value$,
-      (props, value) => { return {props, value}; }
-    );
-  }
-
-  function view(state$) {
-    return state$.map(state => {
-      let {label, unit, min, max} = state.props;
-      let value = state.value;
-      return h('div.labeled-slider', [
-        h('span.label', [label + ' ' + value + unit]),
-        h('input.slider', {type: 'range', min, max, value})
-      ])
+  // ...
+  const heightVTree$ = heightSlider.DOM
+    .map(vtree => {
+      vtree.className += ' height';
+      return vtree;
     });
-  }
-
-  let actions = intent(responses.DOM);
-  let vtree$ = view(model(responses, actions));
-
-  return {
-    DOM: vtree$,
-    events: {
-      newValue: actions.changeValue$
-    }
-  };
+  // ...
 }
-
-function calculateBMI(weight, height) {
-  const heightMeters = height * 0.01;
-  return Math.round(weight / (heightMeters * heightMeters));
-}
-
-function intent(DOM) {
-  return {
-    changeWeight: DOM.select('#weight').events('newValue')
-      .map(ev => ev.detail),
-    changeHeight: DOM.select('#height').events('newValue')
-      .map(ev => ev.detail)
-  };
-}
-
-function model(actions) {
-  return Rx.Observable
-    .combineLatest(
-      actions.changeWeight.startWith(70),
-      actions.changeHeight.startWith(170),
-      (weight, height) => {
-        return {
-          weight,
-          height,
-          bmi: calculateBMI(weight, height)
-        };
-      }
-    );
-}
-
-function view(state) {
-  return state.map(({weight, height, bmi}) =>
-    h('div', [
-      h('labeled-slider#weight', {
-        key: 1, label: 'Weight', unit: 'kg',
-        min: 40, initial: weight, max: 140
-      }),
-      h('labeled-slider#height', {
-        key: 2, label: 'Height', unit: 'cm',
-        min: 140, initial: height, max: 210
-      }),
-      h('h2', 'BMI is ' + bmi)
-    ])
-  );
-}
-
-function main({DOM}) {
-  return {
-    DOM: view(model(intent(DOM)))
-  };
-}
-
-Cycle.run(main, {
-  DOM: makeDOMDriver('#app', {
-    'labeled-slider': labeledSlider
-  })
-});
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/wubuwunaka/embed?output">JS Bin on jsbin.com</a>
+To avoid repeating code, such as the `.map(vtree => ...)` which patches the VTree, we could extract the functionality into functions: `isolateDOMSink()` and `isolateDOMSource()`.
 
-<h2 id="custom-element-with-children-property">Custom element with `children` property</h2>
+{% highlight diff %}
+ function main(sources) {
+   // ...
+   const weightSources = {
+-    DOM: sources.DOM.select('.weight'), props$: weightProps$
++    DOM: isolateDOMSource(sources.DOM, 'weight'), props$: weightProps$
+   };
+   const heightSources = {
+-    DOM: sources.DOM.select('.height'), props$: heightProps$
++    DOM: isolateDOMSource(sources.DOM, 'height'), props$: heightProps$
+   };
+   // ...
+-  const weightVTree$ = weightSlider.DOM
+-    .map(vtree => {
+-      vtree.className += ' weight';
+-      return vtree;
+-    });
++  const weightVTree$ = isolateDOMSink(weightSlider.DOM, 'weight');
+   // ...
+-  const heightVTree$ = heightSlider.DOM
+-    .map(vtree => {
+-      vtree.className += ' height';
+-      return vtree;
+-    });
++  const heightVTree$ = isolateDOMSink(heightSlider.DOM, 'height');
+   // ...
+ }
+{% endhighlight %}
 
-The interface for your custom element can also get passed a VTree to be embedded as a children. We can change our labeled slider to receive the label as a child VTree instead of a property string `label`.
-
-To provide children, just give an array to the `h()` helper like we normally do with typical elements:
+Since these are very useful helper functions, they are packaged in Cycle DOM. They are available as static functions under the DOM source: `sources.DOM.isolateSource` and `sources.DOM.isolateSink`. This is how the `main()` function looks like when we use those functions:
 
 {% highlight js %}
-h('div', [
-  h('labeled-slider#weight', {/* properties */}, [
-    h('h2', 'Weight')
-  ]),
-  h('labeled-slider#height', {/* properties */}, [
-    h('h4', 'Height')
-  ])
-])
+function main(sources) {
+  const weightProps$ = Observable.of({
+    label: 'Weight', unit: 'kg', min: 40, initial: 70, max: 150
+  });
+  const heightProps$ = Observable.of({
+    label: 'Height', unit: 'cm', min: 140, initial: 170, max: 210
+  });
+
+  const {isolateSource, isolateSink} = sources.DOM;
+
+  const weightSources = {
+    DOM: isolateSource(sources.DOM, 'weight'), props$: weightProps$
+  };
+  const heightSources = {
+    DOM: isolateSource(sources.DOM, 'height'), props$: heightProps$
+  };
+
+  const weightSlider = LabeledSlider(weightSources);
+  const heightSlider = LabeledSlider(heightSources);
+
+  const weightVTree$ = isolateSink(weightSlider.DOM, 'weight');
+  const weightValue$ = weightSlider.value$;
+
+  const heightVTree$ = isolateSink(heightSlider.DOM, 'height');
+  const heightValue$ = heightSlider.value$;
+
+  // ...
+}
 {% endhighlight %}
 
-In the custom element's implementation function `labeledSlider()`, we can access these children simply through `responses.props.get('children')`, or as the `children` property in the props object emitted by `responses.props.getAll()` Observable.
+The code above shows how we need to manually process the sources and sinks of a child component to make sure each child is run in an isolated context. It would be better, however, if we could just "isolate" a component and make source and sink isolation happen under the hood.
+
+Such is the purpose of [`isolate()`](https://github.com/cyclejs/isolate) (`npm install @cycle/isolate`), a helper function which handles calls to `isolateSource` and `isolateSink` for us. `isolate(Component, scope)` takes a dataflow component function `Component` as input, and outputs a dataflow component function which isolates the sources to `scope`, runs `Component`, then isolates its sinks to `scope` as well. Here is a heavily simplified implementation of `isolate()`:
 
 {% highlight js %}
-function labeledSlider(responses) {
-  let initialValue$ = responses.props.get('initial').first();
-  let newValue$ = responses.DOM.select('.slider').events('input')
-    .map(ev => ev.target.value);
-  let value$ = initialValue$.concat(newValue$);
-  let props$ = responses.props.getAll();
-  let vtree$ = Rx.Observable
-    .combineLatest(props$, value$, (props, value) =>
-      h('div.labeled-slider', [
-        h('div.label',
-          // props.children is an array with all
-          // the VTree objects passed into this
-          // custom element.
-          props.children.concat(value + props.unit)
-        ),
-        h('input.slider', {
-          type: 'range',
-          min: props.min,
-          max: props.max,
-          value: value
-        })
-      ])
-    );
-
-  return {
-    DOM: vtree$,
-    events: {
-      newValue: newValue$
-    }
+function isolate(Component, scope) {
+  return function IsolatedComponent(sources) {
+    const {isolateSource, isolateSink} = sources.DOM;
+    const isolatedDOMSource = isolateSource(sources.DOM, scope);
+    const sinks = Component({DOM: isolatedDOMSource});
+    const isolatedDOMSink = isolateSink(sinks.DOM, scope);
+    return {
+      DOM: isolatedDOMSink
+    };
   };
 }
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/xamehogoze/embed?output">JS Bin on jsbin.com</a>
+This allows us to simplify the `main()` function with two labeled slider components:
 
-<h2 id="tips-and-best-practices">Tips and best practices</h2>
+{% highlight diff %}
+ function main(sources) {
+   const weightProps$ = Observable.of({
+     label: 'Weight', unit: 'kg', min: 40, initial: 70, max: 150
+   });
+   const heightProps$ = Observable.of({
+     label: 'Height', unit: 'cm', min: 140, initial: 170, max: 210
+   });
 
-Using a custom element is similar to using typical DOM elements, with a few differences: event data is sent through `event.detail`, and the recommended use of `key` property on the virtual DOM elements.
+-  const {isolateSource, isolateSink} = sources.DOM;
+   const weightSources = {
+-    DOM: isolateSource(sources.DOM, 'weight'), props$: weightProps$
++    DOM: sources.DOM, props$: weightProps$
+   };
+   const heightSources = {
+-    DOM: isolateSource(sources.DOM, 'height'), props$: heightProps$
++    DOM: sources.DOM, props$: heightProps$
+   };
 
-Here is the Intent code interpreting actions from the labeled sliders:
++  const WeightSlider = isolate(LabeledSlider, 'weight');
++  const HeightSlider = isolate(LabeledSlider, 'height');
 
-{% highlight js %}
-function intent(DOM) {
-  return {
-    changeWeight: DOM.select('#weight').events('newValue')
-      .map(ev => ev.detail),
-    changeHeight: DOM.select('#height').events('newValue')
-      .map(ev => ev.detail)
-  };
-}
+-  const weightSlider = LabeledSlider(weightSources);
++  const weightSlider = WeightSlider(weightSources);
+-  const heightSlider = LabeledSlider(heightSources);
++  const heightSlider = HeightSlider(heightSources);
+
+-  const weightVTree$ = isolateSink(weightSlider.DOM, 'weight');
++  const weightVTree$ = weightSlider.DOM;
+   const weightValue$ = weightSlider.value$;
+
+-  const heightVTree$ = isolateSink(heightSlider.DOM, 'height');
++  const heightVTree$ = heightSlider.DOM;
+   const heightValue$ = heightSlider.value$;
+
+   // ...
+ }
 {% endhighlight %}
 
-Notice `map(ev => ev.detail)`. Because custom elements emit [custom DOM events](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent), they come with a read-only `detail` property, which is where data goes when emitted by the Observable internal to the custom element. The property `detail` follows Web Specifications.
-
-When we render a custom element, we usually should provide a unique identifier under the `key` property. This is [`virtual-dom` specific](https://github.com/Matt-Esch/virtual-dom/blob/master/docs/vnode.md#arguments), and helps to resolve ambiguities.
+Notice the line which creates the `WeightSlider` component:
 
 {% highlight js %}
-function view(state) {
-  return state.map(({weight, height, bmi}) =>
-    h('div', [
-      h('labeled-slider#weight', {
-        key: 1, label: 'Weight', unit: 'kg',
-        min: 40, initial: weight, max: 140
-      }),
-      h('labeled-slider#height', {
-        key: 2, label: 'Height', unit: 'cm',
-        min: 140, initial: height, max: 210
-      }),
-      h('h2', 'BMI is ' + bmi)
-    ])
-  );
-}
+const WeightSlider = isolate(LabeledSlider, 'weight');
 {% endhighlight %}
 
-Notice `h('labeled-slider', { key: 1, ... })`.
+`isolate()` takes a non-isolated component `LabeledSlider` and restricts it to the `'weight'` scope, creating `WeightSlider`. The scope `'weight'` is only used in this line of code, and nowhere else. We can simplify this code a bit more, by making the scope parameter implicit:
 
-> <h4 id="why-use-key">Why use `key`?</h4>
+{% highlight js %}
+const WeightSlider = isolate(LabeledSlider);
+{% endhighlight %}
+
+This does the same as previously, except the scope parameter is unique and autogenerated. The scope string itself was irrelevant to us, so we let `isolate()` generate some scope string for us.
+
+> <h4 id="is-isolate-referentially-transparent">Is <code>isolate()</code> referentially transparent?</h4>
 >
-> The use of `key` is necessary for specifying that the element in question is still the same even though its properties might have changed.
+> If we leave the scope parameter implicit for both weight and height sliders, then the code becomes
 >
-> Here is a counterexample: Imagine you have a custom element `<gif-with-filters>` which plays an animated gif, but you can specify a color `filter` such as "black and white" or "sepia". If you don't use a `key` for this element, when the `filter` property changes (for instance from BW to sepia), we will have an ambiguous situation. The virtual DOM diff and patch will not know whether you want to:
+> `const WeightSlider = isolate(LabeledSlider);`<br />
+> `const HeightSlider = isolate(LabeledSlider);`
 >
-> 1.  Replace the current `<gif-with-filters>` BW with a **new** `<gif-with-filters>` sepia, hence **restarting** the gif animation **or**
-> 2.  Keep the same `<gif-with-filters>` element but just swap the filter from BW to sepia without restarting the animation.
+> Because the right-hand side is the same, does this mean `WeightSlider` and `HeightSlider` are the same component? **Certainly not.**
 >
-> To fix this ambiguity we use keys. If you want (1), then you provide a different key when you change the filter. If you want (2), then you provide the same key but change the filter property. Both cases (1) and (2) should be equally easy to express, and should be a responsibility of the app developer.
+> `isolate()` with an implicit scope parameter is **not** referentially transparent. In other words, calling `isolate()` with an implicit scope is "impure". `WeightSlider` and `HeightSlider` are not the same components. Each one has its own unique scope parameter.
+>
+> On the other hand, when using an explicit scope parameter, then `isolate()` is referentially transparent. In other words, `Foo` and `Fuu` are the same here:
+>
+> `const Foo = isolate(LabeledSlider, 'myScope');`<br />
+> `const Fuu = isolate(LabeledSlider, 'myScope');`
+>
+> Since Cycle.js follows functional programming techniques, usually most of its API is referentially transparent. `isolate()` is an exception, for convenience. If you want referential transparency everwhere, then provide explicit scope parameters. If you want convenience and you know how `isolate()` works, then use implicit scope parameters.
 
-Another good practice is to avoid making custom elements for anything, but instead reserving them for implementing Widgets only. The rule of thumb is: if it contains business logic, it shouldn't be a custom element. In most cases you need just a function from state to VTree.
+If we compare our last code with the code we initially started out naïvely for `main()` to make the BMI calculator, the only difference is the use of `isolate()` on child components:
 
-Other special behavior can normally be implemented as a function from Observable to Observable. For instance, say you have a `vtree$` Observable. You can wrap it with additional looks or behavior by transforming the `vtree$` Observable with RxJS operators.
+{% highlight diff %}
+ function main(sources) {
+   const weightProps$ = Observable.of({
+     label: 'Weight', unit: 'kg', min: 40, initial: 70, max: 150
+   });
+   const heightProps$ = Observable.of({
+     label: 'Height', unit: 'cm', min: 140, initial: 170, max: 210
+   });
 
-<h4 id="recap">Recap</h4>
+   const weightSources = {DOM: sources.DOM, props$: weightProps$};
+   const heightSources = {DOM: sources.DOM, props$: heightProps$};
 
-- Use `event.detail` to get data sent in the custom event
-- Use `key` when creating VTrees for custom elements
-- Avoid creating custom elements with app business logic
-- Avoid custom elements if you can just use a pure function
-- Avoid custom elements to implement anything else than a Widget
+-  const weightSlider =         LabeledSlider(weightSources);
++  const weightSlider = isolate(LabeledSlider)(weightSources);
+-  const heightSlider =         LabeledSlider(heightSources);
++  const heightSlider = isolate(LabeledSlider)(heightSources);
+
+   const weightVTree$ = weightSlider.DOM;
+   const weightValue$ = weightSlider.value$;
+
+   const heightVTree$ = heightSlider.DOM;
+   const heightValue$ = heightSlider.value$;
+
+   const bmi$ = Observable.combineLatest(weightValue$, heightValue$,
+     (weight, height) => {
+       let heightMeters = height * 0.01;
+       let bmi = Math.round(weight / (heightMeters * heightMeters));
+       return bmi;
+     }
+   );
+
+   return {
+     DOM: bmi$.combineLatest(weightVTree$, heightVTree$,
+       (bmi, weightVTree, heightVTree) =>
+         div([
+           weightVTree,
+           heightVTree,
+           h2('BMI is ' + bmi)
+         ])
+       )
+   };
+ }
+{% endhighlight %}
+
+The takeaway is: **when creating multiple instances of the same type of component, just remember to `isolate` each.**
+
+<a class="jsbin-embed" href="http://jsbin.com/bicoziniqu/embed?output">JS Bin on jsbin.com</a>
+
+## Recap
+
+To achieve reusability, ***any* Cycle.js app is simply a function that can be reused as a component in larger Cycle.js app**. Sources and sinks are the interface between the application and the drivers, but they are also the interface between a child component and its parent.
+
+<p>
+  {% include img/nested-components.svg %}
+</p>
+
+From a component's perspective, it should make no assumption on what the parent is. The parent could either be the drivers if the component is used as the `main()`, or the parent could be any other component. For this reason, a component should assume its sources contain only data related to itself. Therefore, the sources and sinks of a component must be *isolated*.
+
+Use `isolateSource` and `isolateSink` to separate the execution contexts of sibling components or unrelated components. Use `isolate` to create a component that automatically applies `isolateSource` and `isolateSink`. This way your codebase will be safe against [*collisions*](https://en.wikipedia.org/wiki/Collision_%28computer_science%29), and each component can work as if it would be the only one in the application.
+
+Each driver should define static functions `isolateSource` and `isolateSink`. We only saw those functions implemented for the DOM Driver, but there are other use cases with other drivers where it makes sense to apply the same isolation techniques. To learn more, read about [Drivers](/drivers.html).
