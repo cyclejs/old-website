@@ -133,7 +133,7 @@ Suppose we have a backend with a database containing ten users. We want to have 
 
 Essentially we just need to make a request for the endpoint `/user/:number` whenever the button is clicked. Where would this HTTP request fit in a Cycle.js app?
 
-*Sinks* are intructions from `main()` to drivers to perform side effects, and *sources* are readable side effects. HTTP requests are sinks, and HTTP responses are sources.
+*Sinks* are instructions from `main()` to drivers to perform side effects, and *sources* are readable side effects. HTTP requests are sinks, and HTTP responses are sources.
 
 The [HTTP Driver](https://github.com/cyclejs/cycle-http-driver) is similar in style to the DOM Driver: it expects a sink Observable (for requests), and gives you a source Observable (for responses). Instead of studying the details of how the HTTP Driver works, let's see what a basic HTTP example looks like.
 
