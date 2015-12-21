@@ -217,8 +217,8 @@ function main(sources) {
 
   const bmi$ = Observable.combineLatest(weightValue$, heightValue$,
     (weight, height) => {
-      let heightMeters = height * 0.01;
-      let bmi = Math.round(weight / (heightMeters * heightMeters));
+      const heightMeters = height * 0.01;
+      const bmi = Math.round(weight / (heightMeters * heightMeters));
       return bmi;
     }
   );
@@ -543,8 +543,8 @@ If we compare our last code with the code we initially started out naïvely for 
 
    const bmi$ = Observable.combineLatest(weightValue$, heightValue$,
      (weight, height) => {
-       let heightMeters = height * 0.01;
-       let bmi = Math.round(weight / (heightMeters * heightMeters));
+       const heightMeters = height * 0.01;
+       const bmi = Math.round(weight / (heightMeters * heightMeters));
        return bmi;
      }
    );
