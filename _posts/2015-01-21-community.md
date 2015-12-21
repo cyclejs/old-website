@@ -16,6 +16,7 @@ Visit [Awesome Cycle.js](https://github.com/vic/awesome-cyclejs) to see a curate
 ### Acknowledgements
 
 - This project is a grateful recipient of the [Futurice Open Source sponsorship program](http://futurice.com/blog/sponsoring-free-time-open-source-activities).
+- [@TylorS](https://github.com/TylorS) and [@Frikki](https://github.com/Frikki/) for fantastic contributions and involvement with Cycle.js.
 - [@dobrite](https://github.com/dobrite) for [boilerplate reduction ideas](https://github.com/cyclejs/cycle-core/issues/56).
 - [@erykpiast](https://github.com/erykpiast) for pull requests and great ideas.
 - [@pH200](https://github.com/pH200) for pull requests and amazing contributions.
