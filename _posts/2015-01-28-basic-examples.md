@@ -148,7 +148,7 @@ function main(sources) {
   const USERS_URL = 'http://jsonplaceholder.typicode.com/users/';
   // This is the HTTP request Observable
   const getRandomUser$ = click$.map(() => {
-    let randomNum = Math.round(Math.random()*9)+1;
+    const randomNum = Math.round(Math.random()*9)+1;
     return {
       url: USERS_URL + String(randomNum),
       method: 'GET'
@@ -393,7 +393,7 @@ const bmi$ = Rx.Observable.combineLatest(
   changeWeight$.startWith(70),
   changeHeight$.startWith(170),
   (weight, height) => {
-    let heightMeters = height * 0.01;
+    const heightMeters = height * 0.01;
     return weight / (heightMeters * heightMeters);
   }
 );
@@ -455,8 +455,8 @@ const state$ = Rx.Observable.combineLatest(
   changeWeight$.startWith(70),
   changeHeight$.startWith(170),
   (weight, height) => {
-    let heightMeters = height * 0.01;
-    let bmi = Math.round(weight / (heightMeters * heightMeters));
+    const heightMeters = height * 0.01;
+    const bmi = Math.round(weight / (heightMeters * heightMeters));
     return {weight, height, bmi};
   }
 );
