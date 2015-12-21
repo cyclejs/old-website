@@ -448,4 +448,4 @@ function intent(DOM) {
 }
 {% endhighlight %}
 
-But this still isn't ideal: we seem to have *more* code now. What we really want is just to create *labeled sliders*: one for height, and the other for weight. We should be able to build a generic and reusable labeled slider. In other words, we want the labeled slider to be a [component](/component.html).
+But this still isn't ideal: we seem to have *more* code now. What we really want is just to create *labeled sliders*: one for height, and the other for weight. We should be able to build a generic and reusable labeled slider. In other words, we want the labeled slider to be a [component](/components.html).
