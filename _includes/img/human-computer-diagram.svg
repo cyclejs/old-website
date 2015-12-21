@@ -21,12 +21,12 @@
             <text id="Cycle.js" sketch:type="MSTextLayer" font-family="Merriweather" font-size="20" font-weight="bold" fill="#727481">
                 <tspan x="2" y="199">Cycle.js</tspan>
             </text>
-            <text id="Request-Observables" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" fill="#409B9E">
-                <tspan x="146" y="149">Request</tspan>
+            <text id="Sink-Observables" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" fill="#409B9E">
+                <tspan x="146" y="149">Sink</tspan>
                 <tspan x="146" y="180">Observables</tspan>
             </text>
-            <text id="Response-Observables" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" sketch:alignment="right" fill="#67AB83">
-                <tspan x="504.92" y="220">Response</tspan>
+            <text id="Source-Observables" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" sketch:alignment="right" fill="#67AB83">
+                <tspan x="532" y="220">Source</tspan>
                 <tspan x="477.584" y="251">Observables</tspan>
             </text>
             <text id="a-function-copy" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" fill="#727481">

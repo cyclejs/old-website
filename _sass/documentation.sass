@@ -35,6 +35,13 @@ article
     margin-left: calc(#{$side-menu-width} + #{$normal-space})
     overflow-x: visible
     padding-top: 1px
+    blockquote
+        margin: 0
+        padding: 1px 1em
+        color: $gray-dark
+        background-color: $almost-white
+        h1, h2, h3, h4, h5, h6
+            text-align: left
     th
         border-bottom-width: 2px
     th, td
@@ -49,6 +56,8 @@ article
             top: $normal-space
             right: $normal-space
             position: absolute
+    h4
+        text-align: center
     > div
         margin-bottom: 2em
     .paginator

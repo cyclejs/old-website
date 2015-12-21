@@ -3,20 +3,22 @@ title:  "Basic examples"
 tags: chapters
 ---
 
-**You can find the source code for these examples, and others, at [cyclejs/cycle-examples](https://github.com/cyclejs/cycle-examples).**
+Cycle.js apps will always include at least three important components: `main()`, **drivers**, and `run()`. In `main()`, we listen to driver sources (the input to `main`), and we speak to drivers (sinks, the output of `main`).
 
-Cycle.js apps will always include at least three important components: `main()`, drivers, and `run()`. In `main()`, we listen to drivers (the input to `main`), and we speak to drivers (the output of `main`). In Haskell 1.0 jargon, `main()` takes driver "*response*" Observables and outputs driver "*request*" Observables. `Cycle.run()` ties `main()` and drivers together, as we saw in the last chapter.
+#### You can find the source code for these examples, and others, at [cyclejs/cycle-examples](https://github.com/cyclejs/cycle-examples).
+
+`Cycle.run()` ties `main()` and drivers together, as we saw in the last chapter.
 
 {% highlight js %}
-function main(driverResponses) {
-  let driverRequests = {
-    DOM: // transform driverResponses.DOM
+function main(driverSources) {
+  const driverSinks = {
+    DOM: // transform driverSources.DOM
          // through a series of RxJS operators
   };
-  return driverRequests;
+  return driverSinks;
 }
 
-let drivers = {
+const drivers = {
   DOM: makeDOMDriver('#app')
 };
 
@@ -47,11 +49,11 @@ We will point our Cycle.js app to live inside `#app`. The `checkbox-app.js` file
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/dom';
+import {div, makeDOMDriver} from '@cycle/dom';
 
-function main(responses) {
-  let requests = {DOM: null};
-  return requests;
+function main(sources) {
+  const sinks = {DOM: null};
+  return sinks;
 }
 
 Cycle.run(main, {
@@ -59,26 +61,26 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-Cycle *DOM* is a package containing two drivers and some helpers to use those libraries. A DOM Driver is created with `makeDOMDriver()` and an HTML Driver (for server-side rendering) is created with `makeHTMLDriver()`. `CycleDOM` also includes `h()` and `svg()`. These functions output virtual elements (i.e., *VTree*). See [`virtual-dom`](https://github.com/Matt-Esch/virtual-dom) for details.
+Cycle *DOM* is a package containing two drivers and some helpers to use those libraries. A DOM Driver is created with `makeDOMDriver()` and an HTML Driver (for server-side rendering) is created with `makeHTMLDriver()`. `CycleDOM` also includes `div()`, `h1()`, `h2()`, `input()`, `ul()`, `li()`, `svg()`, etc. These functions output virtual elements (i.e., *VTree*). See [`virtual-dom`](https://github.com/Matt-Esch/virtual-dom) for details.
 
-Our `main()`, for now, does nothing. It takes driver `responses` and outputs driver `requests`. To make something appear on the screen, we need to output an Observable of VTree in `requests.DOM`. The name `DOM` in `requests` must match the name we gave in the drivers object given to `Cycle.run()`. This is how Cycle.js knows which drivers to match with which request Observables. This is also true for responses: we listen to DOM events by using `responses.DOM`.
+Our `main()`, for now, does nothing. It takes driver `sources` and outputs driver `sinks`. To make something appear on the screen, we need to output an Observable of VTree in `sinks.DOM`. The name `DOM` in `sinks` must match the name we gave in the drivers object given to `Cycle.run()`. This is how Cycle.js knows which drivers to match with which sink Observables. This is also true for sources: we listen to DOM events by using `sources.DOM`.
 
 {% highlight js %}
 import Rx from 'rx';
 import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/dom';
+import {div, input, p, makeDOMDriver} from '@cycle/dom';
 
-function main(responses) {
-  let requests = {
+function main(sources) {
+  const sinks = {
     DOM: Rx.Observable.just(false)
       .map(toggled =>
-        h('div', [
-          h('input', {type: 'checkbox'}), 'Toggle me',
-          h('p', toggled ? 'ON' : 'off')
+        div([
+          input({type: 'checkbox'}), 'Toggle me',
+          p(toggled ? 'ON' : 'off')
         ])
       )
   };
-  return requests;
+  return sinks;
 }
 
 Cycle.run(main, {
@@ -86,39 +88,40 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/nilesaheme/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/fuzafemese/embed?output">JS Bin on jsbin.com</a>
 
 We just added an Observable of `false` mapped to a VTree. [`Observable.just(x)`](http://reactivex.io/documentation/operators/just.html) creates a simple Observable which simply emits `x` once. Then we use [`map()`](http://reactivex.io/documentation/operators/map.html) to convert that to the `virtual-dom` VTree containing an `<input type="checkbox">` and a `<p>` element displaying `off` if the `toggled` boolean is `false`, and displaying `ON` otherwise.
 
-This is nice: we can see the DOM elements generated by the `virtual-dom` elements created with `h()`. But if we click the "Toggle me" checkbox, the label "off" under it does not change to "ON". That is because we are not listening to DOM events. In essence, our `main()` isn't listening to the *user*. We do that by using `responses.DOM`:
+This is nice: we can see the DOM elements generated by the `virtual-dom` elements created with `div()`, `input()`, and `p()`. But if we click the "Toggle me" checkbox, the label "off" under it does not change to "ON". That is because we are not listening to DOM events. In essence, our `main()` isn't listening to the *user*. We do that by using `sources.DOM`:
 
-{% highlight js %}
-import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/dom';
+{% highlight diff %}
+ import Cycle from '@cycle/core';
+ import {div, input, p, makeDOMDriver} from '@cycle/dom';
 
-function main(responses) {
-  let requests = {
-    DOM: responses.DOM.select('input').events('change') // NEW!
-      .map(ev => ev.target.checked) // NEW!
-      .startWith(false) // NEW!
-      .map(toggled =>
-        h('div', [
-          h('input', {type: 'checkbox'}), 'Toggle me',
-          h('p', toggled ? 'ON' : 'off')
-        ])
-      )
-  };
-  return requests;
-}
+ function main(sources) {
+   const sinks = {
+-    DOM: Rx.Observable.just(false)
++    DOM: sources.DOM.select('input').events('change')
++      .map(ev => ev.target.checked)
++      .startWith(false)
+       .map(toggled =>
+         div([
+           input({type: 'checkbox'}), 'Toggle me',
+           p(toggled ? 'ON' : 'off')
+         ])
+       )
+   };
+   return sinks;
+ }
 
-Cycle.run(main, {
-  DOM: makeDOMDriver('#app')
-});
+ Cycle.run(main, {
+   DOM: makeDOMDriver('#app')
+ });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/tuceromuvo/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/pinukazutu/embed?output">JS Bin on jsbin.com</a>
 
-Notice the lines we changed (lines commented `NEW!`). We now map `change` events on the checkbox to the `checked` value of the element (the first `map()`) to VTrees displaying that value. However, we need a [`.startWith()`](http://reactivex.io/documentation/operators/startwith.html) to give a default value to be converted to a VTree. Without this, nothing would be shown! Why? Because our `requests` is reacting to `responses`, but `responses` is reacting to `requests`. If no one triggers the first event, nothing will happen. It is the same effect as meeting a stranger, and not having anything to say. Someone needs to take the initiative to start the conversation. That is what `main()` is doing: kickstarting the interaction, and then letting subsequent actions be mutual reactions between `main()` and the DOM Driver.
+We now map `change` events on the checkbox to the `checked` value of the element (the first `map()`) to VTrees displaying that value. However, we need a [`.startWith()`](http://reactivex.io/documentation/operators/startwith.html) to give a default value to be converted to a VTree. Without this, nothing would be shown! Why? Because our `sinks` is reacting to `sources`, but `sources` is reacting to `sinks`. If no one triggers the first event, nothing will happen. It is the same effect as meeting a stranger, and not having anything to say. Someone needs to take the initiative to start the conversation. That is what `main()` is doing: kickstarting the interaction, and then letting subsequent actions be mutual reactions between `main()` and the DOM Driver.
 
 <h2 id="displaying-data-from-http-requests">Displaying data from HTTP requests</h2>
 
@@ -126,26 +129,26 @@ One of the most obvious requirements web apps normally have is to fetch and rend
 
 Suppose we have a backend with a database containing ten users. We want to have a front-end with one button "get a random user", and to display the user's details, like name and email. This is what we want to achieve:
 
-<a class="jsbin-embed" href="http://jsbin.com/lacizewoki/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/numuladaqe/embed?output">JS Bin on jsbin.com</a>
 
 Essentially we just need to make a request for the endpoint `/user/:number` whenever the button is clicked. Where would this HTTP request fit in a Cycle.js app?
 
-Recall the dialogue abstraction, mentioned also in the previous "checkbox" example. The app generates VTree Observables as "requests to the DOM". But our apps should also be able to generate different kinds of requests. The most typical type of request is an HTTP *request*. Since these are not in any way related to the DOM, we need a different driver to handle them.
+*Sinks* are intructions from `main()` to drivers to perform side effects, and *sources* are readable side effects. HTTP requests are sinks, and HTTP responses are sources.
 
-The [HTTP Driver](https://github.com/cyclejs/cycle-http-driver) is similar in style to the DOM Driver: it expects a request Observable, and gives you a response Observable. Instead of studying the details of how the HTTP Driver works, let's see what a basic HTTP example looks like.
+The [HTTP Driver](https://github.com/cyclejs/cycle-http-driver) is similar in style to the DOM Driver: it expects a sink Observable (for requests), and gives you a source Observable (for responses). Instead of studying the details of how the HTTP Driver works, let's see what a basic HTTP example looks like.
 
 If HTTP requests are sent when the button is clicked, then the HTTP request Observable should depend directly on the button click Observable. Roughly, this:
 
 {% highlight js %}
-function main(responses) {
+function main(sources) {
   // ...
 
-  let click$ = responses.DOM.select('.get-random').events('click');
+  const click$ = sources.DOM.select('.get-random').events('click');
 
   const USERS_URL = 'http://jsonplaceholder.typicode.com/users/';
   // This is the HTTP request Observable
-  let getRandomUser$ = click$.map(() => {
-    let randomNum = Math.round(Math.random()*9)+1;
+  const getRandomUser$ = click$.map(() => {
+    const randomNum = Math.round(Math.random()*9)+1;
     return {
       url: USERS_URL + String(randomNum),
       method: 'GET'
@@ -159,7 +162,7 @@ function main(responses) {
 `getRandomUser$` is the Observable we give to the HTTP Driver, by returning it from the `main()` function:
 
 {% highlight js %}
-function main(responses) {
+function main(sources) {
   // ...
 
   return {
@@ -169,13 +172,13 @@ function main(responses) {
 }
 {% endhighlight %}
 
-We still need to display data for the current user, and this comes only when we get an HTTP response. For that purpose, we need the Observable of user data to depend directly on the HTTP response Observable. This is available from `main`'s input: `responses.HTTP` (the name `HTTP` needs to match the driver name you gave for the HTTP driver when calling `Cycle.run()`).
+We still need to display data for the current user, and this comes only when we get an HTTP response. For that purpose, we need the Observable of user data to depend directly on the HTTP response Observable. This is available from `main`'s input: `sources.HTTP` (the name `HTTP` needs to match the driver name you gave for the HTTP driver when calling `Cycle.run()`).
 
 {% highlight js %}
-function main(responses) {
+function main(sources) {
   // ...
 
-  let user$ = responses.HTTP
+  const user$ = sources.HTTP
     .filter(res$ => res$.request.url.indexOf(USERS_URL) === 0)
     .mergeAll()
     .map(res => res.body);
@@ -184,21 +187,21 @@ function main(responses) {
 }
 {% endhighlight %}
 
-`responses.HTTP` is an Observable of all the network responses this app is observing. Because it could potentially include responses unrelated to user details, we need to `filter()` it. We also `mergeAll()`, to flatten the Observable of Observables. This might feel like magic right now, so read the [HTTP Driver docs](https://github.com/cyclejs/cycle-http-driver) if you're curious about the details. We map each response `res` to `res.body` in order to get the JSON data from the response and ignore other fields like HTTP status.
+`sources.HTTP` is an Observable of all the network responses this app is observing. Because it could potentially include responses unrelated to user details, we need to `filter()` it. We also `mergeAll()`, to flatten the Observable of Observables. This might feel like magic right now, so read the [HTTP Driver docs](https://github.com/cyclejs/cycle-http-driver) if you're curious about the details. We map each response `res` to `res.body` in order to get the JSON data from the response and ignore other fields like HTTP status.
 
 We still haven't specified how to render our app. We should display to the DOM whatever data we have from the current user in `user$`. So the VTree Observable `vtree$` should depend directly on `user$`, like this:
 
 {% highlight js %}
-function main(responses) {
+function main(sources) {
   // ...
 
-  let vtree$ = user$.map(user =>
-    h('div.users', [
-      h('button.get-random', 'Get random user'),
-      h('div.user-details', [
-        h('h1.user-name', user.name),
-        h('h4.user-email', user.email),
-        h('a.user-website', {href: user.website}, user.website)
+  const vtree$ = user$.map(user =>
+    div('.users', [
+      button('.get-random', 'Get random user'),
+      div('.user-details', [
+        h1('.user-name', user.name),
+        h4('.user-email', user.email),
+        a('.user-website', {href: user.website}, user.website)
       ])
     ])
   );
@@ -209,71 +212,73 @@ function main(responses) {
 
 However, initially, there won't be any `user$` event, because those only happen when the user clicks. This is the same "conversation initiative" problem we saw in the previous "checkbox" example. So we need to make `user$` start with a `null` user, and in case `vtree$` sees a null user, it renders just the button. Unless, if we have real user data, we display the name, the email, and the website:
 
-{% highlight js %}
-function main(responses) {
-  // ...
+{% highlight diff %}
+ function main(sources) {
+   // ...
 
-  let user$ = responses.HTTP
-    .filter(res$ => res$.request.url.indexOf(USERS_URL) === 0)
-    .mergeAll()
-    .map(res => res.body)
-    .startWith(null); // NEW!
+   const user$ = sources.HTTP
+     .filter(res$ => res$.request.url.indexOf(USERS_URL) === 0)
+     .mergeAll()
+     .map(res => res.body)
++    .startWith(null);
 
-  let vtree$ = user$.map(user =>
-    h('div.users', [
-      h('button.get-random', 'Get random user'),
-      user === null ? null : h('div.user-details', [ // NEW!
-        h('h1.user-name', user.name),
-        h('h4.user-email', user.email),
-        h('a.user-website', {href: user.website}, user.website)
-      ])
-    ])
-  );
+   const vtree$ = user$.map(user =>
+     div('.users', [
+       button('.get-random', 'Get random user'),
+-      div('.user-details', [
++      user === null ? null : div('.user-details', [
+         h1('.user-name', user.name),
+         h4('.user-email', user.email),
+         a('.user-website', {href: user.website}, user.website)
+       ])
+     ])
+   );
 
-  // ...
-}
+   // ...
+ }
 {% endhighlight %}
 
-We give `vtree$` to the DOM Driver, and it renders those for us.  
+We give `vtree$` to the DOM Driver, and it renders those for us.
 When done, the whole code looks like this:
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/dom';
+import {div, button, h1, h4, a, makeDOMDriver} from '@cycle/dom';
 import {makeHTTPDriver} from '@cycle/http';
 
-function main(responses) {
+function main(sources) {
   const USERS_URL = 'http://jsonplaceholder.typicode.com/users/';
-  let getRandomUser$ = responses.DOM.select('.get-random').events('click')
+  const getRandomUser$ = sources.DOM.select('.get-random').events('click')
     .map(() => {
-      let randomNum = Math.round(Math.random()*9)+1;
+      const randomNum = Math.round(Math.random()*9)+1;
       return {
         url: USERS_URL + String(randomNum),
         method: 'GET'
       };
     });
 
-  let user$ = responses.HTTP
+  const user$ = sources.HTTP
     .filter(res$ => res$.request.url.indexOf(USERS_URL) === 0)
     .mergeAll()
     .map(res => res.body)
     .startWith(null);
 
-  let vtree$ = user$.map(user =>
-    h('div.users', [
-      h('button.get-random', 'Get random user'),
-      user === null ? null : h('div.user-details', [
-        h('h1.user-name', user.name),
-        h('h4.user-email', user.email),
-        h('a.user-website', {href: user.website}, user.website)
+  const vtree$ = user$.map(user =>
+    div('.users', [
+      button('.get-random', 'Get random user'),
+      user === null ? null : div('.user-details', [
+        h1('.user-name', user.name),
+        h4('.user-email', user.email),
+        a('.user-website', {href: user.website}, user.website)
       ])
     ])
   );
 
-  return {
+  const sinks = {
     DOM: vtree$,
     HTTP: getRandomUser$
   };
+  return sinks;
 }
 
 Cycle.run(main, {
@@ -282,7 +287,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/lacizewoki/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/numuladaqe/embed?output">JS Bin on jsbin.com</a>
 
 <h2 id="increment-and-decrement-a-counter">Increment and decrement a counter</h2>
 
@@ -292,10 +297,10 @@ If we have a counter Observable (emitting events to tell the current counter val
 
 {% highlight js %}
 count$.map(count =>
-  h('div', [
-    h('button.increment', 'Increment'),
-    h('button.decrement', 'Decrement'),
-    h('p', 'Counter: ' + count)
+  div([
+    button('.increment', 'Increment'),
+    button('.decrement', 'Decrement'),
+    p('Counter: ' + count)
   ])
 )
 {% endhighlight %}
@@ -305,14 +310,15 @@ count$.map(count =>
 > Notice we used the name `count$` for the Observable of current counter values. The dollar sign `$` *suffixed* to a name is a soft convention to indicate that the variable is an Observable. It is a naming helper to indicate types.
 >
 > Suppose you have an Observable of VTree depending on an Observable of "name" string
-> {% highlight js %} let vtree$ = name$.map(name => h('h1', name)); {% endhighlight %}
+>
+> `const vtree$ = name$.map(name => h1(name));`
 >
 > Notice that the function inside `map` takes `name` as an argument, while the Observable is named `name$`. The naming convention indicates that `name` is the value being emitted by `name$`. In general, `foobar$` emits `foobar`. Without this convention, if `name$` would be named simply `name`, it would confuse readers about the types involved. Also, `name$` is succinct compared to alternatives like `nameObservable`, `nameStream`, or `nameObs`. This convention can also be extended to arrays: use plurality to indicate the type is an array. Example: `vtrees` is an array of `vtree` but `vtree$` is an Observable of `vtree`.
 
 But how do we create a `count$`? Clearly it must depend on increment clicks and decrement clicks. The former should mean a "+1" operation, and the latter a "-1" operation.
 
 {% highlight js %}
-let action$ = Rx.Observable.merge(
+const action$ = Rx.Observable.merge(
   DOM.select('.decrement').events('click').map(ev => -1),
   DOM.select('.increment').events('click').map(ev => +1)
 );
@@ -323,7 +329,7 @@ The [`merge`](http://reactivex.io/documentation/operators/merge.html) operator a
 `count$` should begin with zero, which justifies the use of a `startWith(0)` operator, but beside that, we need a [`scan()`](http://reactivex.io/documentation/operators/scan.html) as well:
 
 {% highlight js %}
-let count$ = action$.startWith(0).scan((x,y) => x+y);
+const count$ = action$.startWith(0).scan((x,y) => x+y);
 {% endhighlight %}
 
 What does `scan` do? It is similar to [`reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce), allowing us to accumulate values over the sequence. In functional programming languages, it is often called "fold". For instance, in [Elm](http://elm-lang.org/), [`foldp`](http://package.elm-lang.org/packages/elm-lang/core/2.1.0/Signal#foldp) is equivalent to `scan`. The name "*foldp*" indicates we are "folding the sequence from the *past*".
@@ -337,22 +343,22 @@ If we put `action$` and `count$` together in our `main()`, we can implement the 
 {% highlight js %}
 import Rx from 'rx';
 import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/dom';
+import {div, button, p, makeDOMDriver} from '@cycle/dom';
 
 function main({DOM}) {
-  let action$ = Rx.Observable.merge(
+  const action$ = Rx.Observable.merge(
     DOM.select('.decrement').events('click').map(ev => -1),
     DOM.select('.increment').events('click').map(ev => +1)
   );
-  let count$ = action$.startWith(0).scan((x,y) => x+y);
+  const count$ = action$.startWith(0).scan((x,y) => x+y);
   return {
     DOM: count$.map(count =>
-        h('div', [
-          h('button.decrement', 'Decrement'),
-          h('button.increment', 'Increment'),
-          h('p', 'Counter: ' + count)
-        ])
-      )
+      div([
+        button('.decrement', 'Decrement'),
+        button('.increment', 'Increment'),
+        p('Counter: ' + count)
+      ])
+    )
   };
 }
 
@@ -361,31 +367,33 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/fegezoweni/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/mafetitece/embed?output">JS Bin on jsbin.com</a>
 
 <h2 id="body-mass-index-calculator">Body mass index calculator</h2>
 
 Now that we've got the hang of Cycle.js apps with state, let's tackle something a bit larger. Consider the following [BMI](https://en.wikipedia.org/wiki/Body_mass_index) calculator: it has a slider to select the weight, a slider to select the height, and the text indicates the calculated BMI from the weight and height values selected.
 
-<a class="jsbin-embed" href="http://jsbin.com/nepotiqoqo/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/bemorurodo/embed?output">JS Bin on jsbin.com</a>
 
 In the previous example, we had the actions *decrement* and *increment*. In this example, we have "change weight" and "change height". These seem straightforward to implement.
 
 {% highlight js %}
-let changeWeight$ = DOM.select('#weight').events('input')
+const changeWeight$ = DOM.select('#weight')
+  .events('input')
   .map(ev => ev.target.value);
-let changeHeight$ = DOM.select('#height').events('input')
+const changeHeight$ = DOM.select('#height')
+  .events('input')
   .map(ev => ev.target.value);
 {% endhighlight %}
 
 To combine these two actions and use their values to compute the BMI, we use the RxJS [`combineLatest`](http://reactivex.io/documentation/operators/combinelatest.html) operator. We saw in the previous example that `merge` had *OR* semantics. `combineLatest` has, on the other hand, *AND* semantics. For instance, to compute the BMI, we need a `weight` value *and* and a `height` value.
 
 {% highlight js %}
-let bmi$ = Rx.Observable.combineLatest(
+const bmi$ = Rx.Observable.combineLatest(
   changeWeight$.startWith(70),
   changeHeight$.startWith(170),
   (weight, height) => {
-    let heightMeters = height * 0.01;
+    const heightMeters = height * 0.01;
     return weight / (heightMeters * heightMeters);
   }
 );
@@ -399,31 +407,33 @@ import Cycle from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/dom';
 
 function main({DOM}) {
-  let changeWeight$ = DOM.select('#weight').events('input')
+  const changeWeight$ = DOM.select('#weight')
+    .events('input')
     .map(ev => ev.target.value);
-  let changeHeight$ = DOM.select('#height').events('input')
+  const changeHeight$ = DOM.select('#height')
+    .events('input')
     .map(ev => ev.target.value);
-  let bmi$ = Rx.Observable.combineLatest(
+  const bmi$ = Rx.Observable.combineLatest(
     changeWeight$.startWith(70),
     changeHeight$.startWith(170),
     (weight, height) => {
-      let heightMeters = height * 0.01;
+      const heightMeters = height * 0.01;
       return Math.round(weight / (heightMeters * heightMeters));
     }
   );
 
   return {
     DOM: bmi$.map(bmi =>
-      h('div', [
-        h('div', [
+      div([
+        div([
           'Weight ___kg',
-          h('input#weight', {type: 'range', min: 40, max: 140})
+          input('#weight', {type: 'range', min: 40, max: 140})
         ]),
-        h('div', [
+        div([
           'Height ___cm',
-          h('input#height', {type: 'range', min: 140, max: 210})
+          input('#height', {type: 'range', min: 140, max: 210})
         ]),
-        h('h2', 'BMI is ' + bmi)
+        h2('BMI is ' + bmi)
       ])
     )
   };
@@ -434,19 +444,19 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/mukexewexu/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/rixeduqipu/embed?output">JS Bin on jsbin.com</a>
 
 This code works. We can get the calculated BMI when we move the slider. However, maybe you noticed, the labels for weight and height do not show what the slider is selecting. Instead, they just show e.g. `Weight ___kg`, which is useless since we do not know what value we are choosing for the weight.
 
 The problem happens because when we map on `bmi$`, we do not have the `weight` and `height` values anymore. Therefore, for the function which renders the VTree, we need to use an Observable which emits a complete amount of data instead of just BMI data. We need a `state$` Observable.
 
 {% highlight js %}
-let state$ = Rx.Observable.combineLatest(
+const state$ = Rx.Observable.combineLatest(
   changeWeight$.startWith(70),
   changeHeight$.startWith(170),
   (weight, height) => {
-    let heightMeters = height * 0.01;
-    let bmi = Math.round(weight / (heightMeters * heightMeters));
+    const heightMeters = height * 0.01;
+    const bmi = Math.round(weight / (heightMeters * heightMeters));
     return {weight, height, bmi};
   }
 );
@@ -460,32 +470,34 @@ import Cycle from '@cycle/core';
 import {h, makeDOMDriver} from '@cycle/dom';
 
 function main({DOM}) {
-  let changeWeight$ = DOM.select('#weight').events('input')
+  const changeWeight$ = DOM.select('#weight')
+    .events('input')
     .map(ev => ev.target.value);
-  let changeHeight$ = DOM.select('#height').events('input')
+  const changeHeight$ = DOM.select('#height')
+    .events('input')
     .map(ev => ev.target.value);
-  let state$ = Rx.Observable.combineLatest(
+  const state$ = Rx.Observable.combineLatest(
     changeWeight$.startWith(70),
     changeHeight$.startWith(170),
     (weight, height) => {
-      let heightMeters = height * 0.01;
-      let bmi = Math.round(weight / (heightMeters * heightMeters));
+      const heightMeters = height * 0.01;
+      const bmi = Math.round(weight / (heightMeters * heightMeters));
       return {weight, height, bmi};
     }
   );
 
   return {
     DOM: state$.map(({weight, height, bmi}) =>
-      h('div', [
-        h('div', [
+      div([
+        div([
           'Weight ' + weight + 'kg',
-          h('input#weight', {type: 'range', min: 40, max: 140, value: weight})
+          input('#weight', {type: 'range', min: 40, max: 140, value: weight})
         ]),
-        h('div', [
+        div([
           'Height ' + height + 'cm',
-          h('input#height', {type: 'range', min: 140, max: 210, value: height})
+          input('#height', {type: 'range', min: 140, max: 210, value: height})
         ]),
-        h('h2', 'BMI is ' + bmi)
+        h2('BMI is ' + bmi)
       ])
     )
   };
@@ -496,7 +508,7 @@ Cycle.run(main, {
 });
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/nepotiqoqo/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/bemorurodo/embed?output">JS Bin on jsbin.com</a>
 
 Great, this program functions exactly like we want it to. Weight and height labels react to the sliders being dragged, and the BMI result gets recalculated as well.
 

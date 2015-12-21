@@ -14,21 +14,21 @@
             <text id="equivalent-to…" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="36" font-weight="normal" fill="#727481">
                 <tspan x="277" y="181">equivalent to…</tspan>
             </text>
-            <text id="DOM-response" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" sketch:alignment="middle" fill="#67AB83">
+            <text id="DOM-source" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" sketch:alignment="middle" fill="#67AB83">
                 <tspan x="44.928" y="60">DOM</tspan>
-                <tspan x="23.268" y="91">response</tspan>
+                <tspan x="35.268" y="91">source</tspan>
             </text>
-            <text id="DOM-request" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" sketch:alignment="middle" fill="#409B9E">
+            <text id="DOM-sink" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" sketch:alignment="middle" fill="#409B9E">
                 <tspan x="672.928" y="60">DOM</tspan>
-                <tspan x="658.84" y="91">request</tspan>
+                <tspan x="675.84" y="91">sink</tspan>
             </text>
-            <text id="DOM-response-Copy" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" sketch:alignment="middle" fill="#67AB83">
+            <text id="DOM-source-Copy" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" sketch:alignment="middle" fill="#67AB83">
                 <tspan x="44.928" y="260">DOM</tspan>
-                <tspan x="23.268" y="291">response</tspan>
+                <tspan x="35.268" y="291">source</tspan>
             </text>
-            <text id="DOM-request-Copy" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" sketch:alignment="middle" fill="#409B9E">
+            <text id="DOM-sink-Copy" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" sketch:alignment="middle" fill="#409B9E">
                 <tspan x="672.928" y="260">DOM</tspan>
-                <tspan x="658.84" y="291">request</tspan>
+                <tspan x="675.84" y="291">sink</tspan>
             </text>
             <text id="intent" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="36" font-weight="normal" fill="#727481">
                 <tspan x="177" y="280">intent</tspan>
