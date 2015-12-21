@@ -43,31 +43,58 @@
     margin: $normal-space 0
 
 .features
+    text-align: justify
     ul
         width: 50%
         margin: 0 auto
     h1, h2, h3
         text-align: center
+        margin-top: $normal-space
         a
             display: inline-block
             +box_link()
             letter-spacing: 0
+    .first-feature
+        margin-top: 0
 
-table.homepage-features
+
+.homepage-features
     margin-top: $normal-space
-    td
-        vertical-align: top
-        border: none
+    display: flex
+    h2
+        flex-grow: 1
+    p
+        flex-grow: 5
+        text-align: justify
 
-.dataflow-minimap svg
-    width: inherit
-    height: 340px
-    margin: 0 auto
-    min-width: inherit
-    max-width: inherit
-    max-height: inherit
-.dataflow-minimap-code
-    font-size: 14px
+.homepage-features:nth-child(even)
+    h2
+        order: 1
+        margin-right: $normal-space
+    p
+        order: 2
+
+.homepage-features:nth-child(odd)
+    h2
+        order: 2
+        margin-left: $normal-space
+    p
+        order: 1
+
+.explicit-dataflow
+    margin-top: $normal-space
+    display: flex
+    justify-content: center
+    align-items: center
+    .dataflow-minimap svg
+        width: inherit
+        height: 18em
+        margin: 0 auto
+        min-width: inherit
+        max-width: inherit
+        max-height: inherit
+    .dataflow-minimap-code
+        font-size: 0.8em
 
 @media only screen and (max-width: 680px)
     .hero
@@ -84,3 +111,20 @@ table.homepage-features
                 top: 0.75em
         h2
             font-size: 1.2em
+    .features
+        ul
+            width: 100%
+    .homepage-features
+        display: block
+    .homepage-features:nth-child(even)
+        h2
+            margin-right: 0
+    .homepage-features:nth-child(odd)
+        h2
+            margin-left: 0
+    .explicit-dataflow
+        .dataflow-minimap svg
+            height: 44vw // 11.5em
+        .dataflow-minimap-code
+            font-size: 2vw // 0.55em
+
