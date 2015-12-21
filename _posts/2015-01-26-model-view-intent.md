@@ -77,7 +77,7 @@ We have plenty of anonymous functions which could be refactored away from `main`
 +}
 
 +function calculateBMI(weight, height) {
-+  let heightMeters = height * 0.01;
++  const heightMeters = height * 0.01;
 +  return Math.round(weight / (heightMeters * heightMeters));
 +}
 
@@ -145,7 +145,7 @@ We have plenty of anonymous functions which could be refactored away from `main`
  }
 
  function calculateBMI(weight, height) {
-   let heightMeters = height * 0.01;
+   const heightMeters = height * 0.01;
    return Math.round(weight / (heightMeters * heightMeters));
  }
 
