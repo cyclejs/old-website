@@ -3,95 +3,79 @@ title:  "Documentation"
 tags: chapters
 ---
 
-## Cycle *Core* [v3.1.0](https://github.com/cyclejs/cycle-core/releases/tag/v1.0.1) API: `Cycle` object
+## Cycle *Core* [v6.0.0](https://github.com/cyclejs/cycle-core/releases/tag/v6.0.0) API: `Cycle` object
 
 - [`run`](#run)
-- [`Rx`](#Rx)
 
 ### <a id="run"></a> `run(main, drivers)`
 
 Takes an `main` function and circularly connects it to the given collection
 of driver functions.
 
-The `main` function expects a collection of "driver response" Observables
-as input, and should return a collection of "driver request" Observables.
+The `main` function expects a collection of "driver source" Observables
+as input, and should return a collection of "driver sink" Observables.
 A "collection of Observables" is a JavaScript object where
 keys match the driver names registered by the `drivers` object, and values
 are Observables or a collection of Observables.
 
-#### Arguments:
+##### Arguments:
 
-- `main :: Function` a function that takes `responses` as input and outputs a collection of `requests` Observables.
+- `main :: Function` a function that takes `sources` as input and outputs a collection of `sinks` Observables.
 - `drivers :: Object` an object where keys are driver names and values are driver functions.
 
-#### Return:
+##### Return:
 
-*(Array)* an array where the first object is the collection of driver requests, and the second object is the collection of driver responses, that
-can be used for debugging or testing.
+*(Object)* an object with two properties: `sources` and `sinks`. `sinks` is the collection of driver sinks, and `sources` is the collection
+of driver sources, that can be used for debugging or testing.
 
 - - -
 
-### <a id="Rx"></a> `Rx`
-
-A shortcut to the root object of
-[RxJS](https://github.com/Reactive-Extensions/RxJS).
-
-## Cycle *DOM* [v5.3.0](https://github.com/cyclejs/cycle-dom/releases/tag/v5.3.0) API: `CycleDOM` object
+## Cycle *DOM* [v8.0.0](https://github.com/cyclejs/cycle-dom/releases/tag/v8.0.0) API: `CycleDOM` object
 
 - [`makeDOMDriver`](#makeDOMDriver)
 - [`makeHTMLDriver`](#makeHTMLDriver)
 - [`h`](#h)
+- [`hyperscript-helpers`](#hyperscript-helpers)
 - [`hJSX`](#hJSX)
 - [`svg`](#svg)
-- [`mockDOMResponse`](#mockDOMResponse)
+- [`mockDOMSource`](#mockDOMSource)
 
-### <a id="makeDOMDriver"></a> `makeDOMDriver(container, customElements)`
+### <a id="makeDOMDriver"></a> `makeDOMDriver(container, options)`
 
 A factory for the DOM driver function. Takes a `container` to define the
-target on the existing DOM which this driver will operate on. All custom
-elements which this driver can detect should be given as the second
-parameter. The output of this driver is a collection of Observables queried
-with: `domDriverOutput.select(selector).events(eventType)` returns an
-Observable of events of `eventType` happening on the element determined by
-`selector`. Just `domDriverOutput.select(selector).observable` returns
-an Observable of the DOM element matched by the given selector. Also,
-`domDriverOutput.select(':root').observable` returns an Observable of
-DOM element corresponding to the root (or container) of the app on the DOM.
-The `events()` function also allows you to specify the `useCapture`
-parameter of event listener. That is, the full function signature is
+target on the existing DOM which this driver will operate on. The output
+("source") of this driver is a collection of Observables queried with:
+`DOMSource.select(selector).events(eventType)` returns an Observable of
+events of `eventType` happening on the element determined by `selector`.
+Just `DOMSource.select(selector).observable` returns an Observable of the
+DOM element matched by the given selector. Also,
+`DOMSource.select(':root').observable` returns an Observable of DOM element
+corresponding to the root (or container) of the app on the DOM. The
+`events()` function also allows you to specify the `useCapture` parameter
+of the event listener. That is, the full function signature is
 `events(eventType, useCapture)` where `useCapture` is by default `false`.
 
-#### Arguments:
+##### Arguments:
 
 - `container :: String|HTMLElement` the DOM selector for the element (or the element itself) to contain the rendering of the VTrees.
-- `customElements :: Object` a collection of custom element definitions. The key of each property should be the tag name of the custom element, and
-the value should be a function defining the implementation of the custom
-element. This function follows the same contract as the top-most `main`
-function: input are driver responses, output are requests to drivers.
+- `options :: Object` an options object containing additional configurations. The options object is optional. These are the parameters
+that may be specified:
+  - `onError`: a callback function to handle errors. By default it is
+  `console.error`.
 
-#### Return:
+##### Return:
 
-*(Function)* the DOM driver function. The function expects an Observable of VTree as input, and outputs the response object for this
+*(Function)* the DOM driver function. The function expects an Observable of VTree as input, and outputs the source object for this
 driver, containing functions `select()` and `dispose()` that can be used
 for debugging and testing.
 
 - - -
 
-### <a id="makeHTMLDriver"></a> `makeHTMLDriver(customElements)`
+### <a id="makeHTMLDriver"></a> `makeHTMLDriver()`
 
-A factory for the HTML driver function. Takes the registry object of all
-custom elements as the only parameter. The HTML driver function will use
-the custom element registry to detect custom element on the VTree and apply
-their implementations.
+A factory for the HTML driver function.
 
-#### Arguments:
-
-- `customElements :: Object` a collection of custom element definitions. The key of each property should be the tag name of the custom element, and
-the value should be a function defining the implementation of the custom
-element. This function follows the same contract as the top-most `main`
-function: input are driver responses, output are requests to drivers.
-
-#### Return:
+##### Return:
 
 *(Function)* the HTML driver function. The function expects an Observable of Virtual DOM elements as input, and outputs an Observable of
 strings as the HTML renderization of the virtual DOM elements.
@@ -103,6 +87,16 @@ strings as the HTML renderization of the virtual DOM elements.
 A shortcut to [virtual-hyperscript](
 https://github.com/Matt-Esch/virtual-dom/tree/master/virtual-hyperscript).
 This is a helper for creating VTrees in Views.
+
+- - -
+
+### <a id="hyperscript-helpers"></a> `hyperscript-helpers`
+
+Shortcuts to
+[hyperscript-helpers](https://github.com/ohanhi/hyperscript-helpers).
+This is a helper for writing virtual-hyperscript. Create virtual DOM
+elements with `div('.wrapper', [ h1('Header') ])` instead of
+`h('div.wrapper', [ h('h1', 'Header') ])`.
 
 - - -
 
@@ -123,15 +117,15 @@ A shortcut to the svg hyperscript function.
 
 - - -
 
-### <a id="mockDOMResponse"></a> `mockDOMResponse(mockedSelectors)`
+### <a id="mockDOMSource"></a> `mockDOMSource(mockedSelectors)`
 
 A testing utility which aids in creating a queryable collection of
-Observables. Call mockDOMResponse giving it an object specifying selectors,
-eventTypes and their Observabls, and get as output an object following the
-same format as the DOM Driver's response. Example:
+Observables. Call mockDOMSource giving it an object specifying selectors,
+eventTypes and their Observables, and get as output an object following the
+same format as the DOM Driver's source. Example:
 
 {% highlight js %}
-const userEvents = mockDOMResponse({
+const userEvents = mockDOMSource({
   '.foo': {
     'click': Rx.Observable.just({target: {}}),
     'mouseover': Rx.Observable.just({target: {}})
@@ -145,13 +139,72 @@ const userEvents = mockDOMResponse({
 const click$ = userEvents.select('.foo').events('click');
 {% endhighlight %}
 
-#### Arguments:
+##### Arguments:
 
 - `mockedSelectors :: Object` an object where keys are selector strings and values are objects. Those nested objects have eventType strings as keys
 and values are Observables you created.
 
-#### Return:
+##### Return:
 
-*(Object)* fake DOM response object, containin a function `select()` which can be used just like the DOM Driver's response. Call
-`select(selector).events(eventType)` on the response object to get the
-Observable you defined in the input of `mockDOMResponse`.
+*(Object)* fake DOM source object, containing a function `select()` which can be used just like the DOM Driver's source. Call
+`select(selector).events(eventType)` on the source object to get the
+Observable you defined in the input of `mockDOMSource`.
+
+- - -
+
+## Cycle *HTTP* Driver [v7.0.0](https://github.com/cyclejs/cycle-http-driver/releases/tag/v7.0.0) API: `CycleHTTPDriver` object
+
+- [`makeHTTPDriver`](#makeHTTPDriver)
+
+### <a id="makeHTTPDriver"></a> `makeHTTPDriver(options)`
+
+HTTP Driver factory.
+
+This is a function which, when called, returns a HTTP Driver for Cycle.js
+apps. The driver is also a function, and it takes an Observable of requests
+as input, and generates a metastream of responses.
+
+**Requests**. The Observable of requests should emit either strings or
+objects. If the Observable emits strings, those should be the URL of the
+remote resource over HTTP. If the Observable emits objects, these should be
+instructions how superagent should execute the request. These objects
+follow a structure similar to superagent's request API itself.
+`request` object properties:
+
+- `url` *(String)*: the remote resource path. **required**
+- `method` *(String)*: HTTP Method for the request (GET, POST, PUT, etc).
+- `query` *(Object)*: an object with the payload for `GET` or `POST`.
+- `send` *(Object)*: an object with the payload for `POST`.
+- `headers` *(Object)*: object specifying HTTP headers.
+- `accept` *(String)*: the Accept header.
+- `type` *(String)*: a short-hand for setting Content-Type.
+- `user` *(String)*: username for authentication.
+- `password` *(String)*: password for authentication.
+- `field` *(Object)*: object where key/values are Form fields.
+- `attach` *(Array)*: array of objects, where each object specifies `name`,
+`path`, and `filename` of a resource to upload.
+- `withCredentials` *(Boolean)*: enables the ability to send cookies from
+the origin.
+- `redirects` *(Number)*: number of redirects to follow.
+- `eager` *(Boolean)*: whether or not to execute the request regardless of
+  usage of its corresponding response. Default value is `false` (i.e.,
+  the request is lazy). Main use case is: set this option to `true` if you
+  send POST requests and you are not interested in its response.
+
+**Responses**. A metastream is an Observable of Observables. The response
+metastream emits Observables of responses. These Observables of responses
+have a `request` field attached to them (to the Observable object itself)
+indicating which request (from the driver input) generated this response
+Observable. The response Observables themselves emit the response object
+received through superagent.
+
+##### Arguments:
+
+- `options :: Object` an object with settings options that apply globally for all requests processed by the returned HTTP Driver function. The
+options are:
+- `eager` *(Boolean)*: execute the HTTP eagerly, even if its
+  response Observable is not subscribed to. Default: **false**.
+
+##### Return:
+
+*(Function)* the HTTP Driver function
