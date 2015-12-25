@@ -334,7 +334,7 @@ We can achieve that by narrowing down the DOM source before it is given to the c
 >
 > `select('.foo').select('.bar').events('click')` returns an Observable of click events happening on `'.foo .bar'` elements. In other words, these are all clicks happening on `'.bar'` elements descendants of `'.foo'` elements. The first call, `select('.foo')`, allows us to "narrow down" the DOM source.
 
-The code we wrote for isolating sources and sinks looks like boilerplate. Ideally we don't want to manually managing scopes for each component instance using classNames:
+The code we wrote for isolating sources and sinks looks like boilerplate. Ideally we want to avoid manually managing scopes for each component instance using classNames:
 
 {% highlight js %}
 function main(sources) {
