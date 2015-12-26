@@ -59,9 +59,7 @@ import CycleDOM from '@cycle/dom';
 function main() {
   return {
     DOM: Rx.Observable.interval(1000)
-      .map(i => CycleDOM.h(
-        'h1', '' + i + ' seconds elapsed'
-      ))
+      .map(i => CycleDOM.h1('' + i + ' seconds elapsed'))
   };
 }
 
@@ -72,13 +70,13 @@ const drivers = {
 Cycle.run(main, drivers);
 {% endhighlight %}
 
-We have filled the `main()` function with some code: returns an object which has an RxJS Observable defined under the name `DOM`. This indicates `main()` is sending the Observable as messages to the DOM driver. The Observable emits Virtual DOM elements displaying `${i} seconds elapsed` changing over time every second, where `${i}` is replaced by `0`, `1`, `2`, etc.
+We have filled the `main()` function with some code: returns an object which has an RxJS Observable defined under the name `DOM`. This indicates `main()` is sending the Observable as messages to the DOM driver. The Observable emits Virtual DOM `<h1>` elements displaying `${i} seconds elapsed` changing over time every second, where `${i}` is replaced by `0`, `1`, `2`, etc.
 
 **Catch messages from `DOM` into `main` and vice-versa:**
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import {makeDOMDriver, h} from '@cycle/dom';
+import {makeDOMDriver, div, input, p} from '@cycle/dom';
 
 function main(drivers) {
   return {
@@ -86,9 +84,9 @@ function main(drivers) {
       .map(ev => ev.target.checked)
       .startWith(false)
       .map(toggled =>
-        h('div', [
-          h('input', {type: 'checkbox'}), 'Toggle me',
-          h('p', toggled ? 'ON' : 'off')
+        div([
+          input({type: 'checkbox'}), 'Toggle me',
+          p(toggled ? 'ON' : 'off')
         ])
       )
   };
@@ -103,9 +101,10 @@ Cycle.run(main, drivers);
 
 Function `main()` now takes `drivers` as input. Just like the output `main()` produces, the input `drivers` follow the same structure: an object containing `DOM` as a property. `drivers.DOM` is a queryable collection of Observables. Use `drivers.DOM.select(selector).events(eventType)` to get an Observable of `eventType` DOM events happening on the element(s) specified by `selector`. This `main()` function takes the Observable of clicks happening on `input` elements, and maps those toggling events to Virtual DOM elements displaying a togglable checkbox.
 
-We used the `h()` helper function to create virtual DOM elements, but you can also use JSX with Babel. The following only works if you are building with Babel: (1) install the [babel-plugin-transform-react-jsx](http://babeljs.io/docs/plugins/transform-react-jsx/) npm package and specify a pragma for jsx as shown in the following example:, (2) import hJSX as `import {hJSX} from '@cycle/dom';`, and then you can utilize JSX instead of `h()`:
+We used the `div()`, `input()`, `p()` helper functions to create virtual DOM elements for the respective `<div>`, `<input>`, `<p>` DOM elements, but you can also use JSX with Babel. The following only works if you are building with Babel: (1) install the [babel-plugin-transform-react-jsx](http://babeljs.io/docs/plugins/transform-react-jsx/) npm package and specify a pragma for jsx as shown in the following example:, (2) import hJSX as `import {hJSX} from '@cycle/dom';`, and then you can utilize JSX:
 
-{% highlight json %}
+{% highlight js %}
+// in package.json
 {
   "plugins": [
     ["transform-react-jsx", { "pragma": "hJSX" }]
