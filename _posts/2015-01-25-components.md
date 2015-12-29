@@ -566,6 +566,23 @@ The takeaway is: **when creating multiple instances of the same type of componen
 
 <a class="jsbin-embed" href="http://jsbin.com/bicoziniqu/embed?output">JS Bin on jsbin.com</a>
 
+> <h4 id="Should-I-always-call-isolate-manually">Should I always call <code>isolate()</code> manually?</h4>
+>
+> While it seems that you need to manually call `isolate()` every time you want to instantiate a component, in practice you can automate it.
+>
+> Instead of exporting the original non-isolated component, like this:
+>
+> `export function OriginalComponent(sources)`<br />
+> `  // ...`<br />
+> `}`<br />
+>
+> just export a function that calls `isolate()`:
+>
+> `export Component = sources =>`<br />
+> `  isolate(OriginalComponent)(sources)`
+>
+> Doing this gives the consumer automatic isolation without having to think about it.
+
 ## Recap
 
 To achieve reusability, ***any* Cycle.js app is simply a function that can be reused as a component in larger Cycle.js app**. Sources and sinks are the interface between the application and the drivers, but they are also the interface between a child component and its parent.
