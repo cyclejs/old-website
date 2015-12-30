@@ -13,33 +13,9 @@
             <text id="Sinks" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="8" font-weight="normal" sketch:alignment="middle" fill="#67AB83">
                 <tspan x="136.036" y="38">Sinks</tspan>
             </text>
-            <g id="Triangle-1-+-Rectangle-2" sketch:type="MSLayerGroup" transform="translate(133.500000, 44.000000) scale(-1, 1) rotate(-270.000000) translate(-133.500000, -44.000000) translate(130.500000, 36.500000)" fill="#9AC572">
-                <polygon id="Triangle-1" sketch:type="MSShapeGroup" transform="translate(3.000000, 12.500000) scale(1, -1) translate(-3.000000, -12.500000) " points="3 10 6 15 0 15 "></polygon>
-                <rect id="Rectangle-1" sketch:type="MSShapeGroup" x="2" y="0" width="2" height="10"></rect>
-            </g>
-            <g id="Triangle-1-+-Rectangle-1" sketch:type="MSLayerGroup" transform="translate(35.500000, 33.000000) scale(-1, 1) rotate(-270.000000) translate(-35.500000, -33.000000) translate(32.500000, 25.500000)" fill="#409B9E">
-                <polygon id="Triangle-1" sketch:type="MSShapeGroup" transform="translate(3.000000, 12.500000) scale(1, -1) translate(-3.000000, -12.500000) " points="3 10 6 15 0 15 "></polygon>
-                <rect id="Rectangle-1" sketch:type="MSShapeGroup" x="2" y="0" width="2" height="10"></rect>
-            </g>
             <text id="main()" sketch:type="MSTextLayer" font-family="Courier" font-size="8" font-weight="normal" sketch:alignment="middle" fill="#333333">
                 <tspan x="71.0976562" y="10">main()</tspan>
             </text>
-            <g id="Triangle-1-+-Rectangle-1" sketch:type="MSLayerGroup" transform="translate(35.500000, 84.000000) rotate(-270.000000) translate(-35.500000, -84.000000) translate(32.500000, 76.500000)" fill="#409B9E">
-                <polygon id="Triangle-1" sketch:type="MSShapeGroup" transform="translate(3.000000, 12.500000) scale(1, -1) translate(-3.000000, -12.500000) " points="3 10 6 15 0 15 "></polygon>
-                <rect id="Rectangle-1" sketch:type="MSShapeGroup" x="2" y="0" width="2" height="10"></rect>
-            </g>
-            <g id="Triangle-1-+-Rectangle-2" sketch:type="MSLayerGroup" transform="translate(133.500000, 95.000000) rotate(-270.000000) translate(-133.500000, -95.000000) translate(130.500000, 87.500000)" fill="#9AC572">
-                <polygon id="Triangle-1" sketch:type="MSShapeGroup" transform="translate(3.000000, 12.500000) scale(1, -1) translate(-3.000000, -12.500000) " points="3 10 6 15 0 15 "></polygon>
-                <rect id="Rectangle-1" sketch:type="MSShapeGroup" x="2" y="0" width="2" height="10"></rect>
-            </g>
-            <g id="Triangle-1-+-Rectangle-2" sketch:type="MSLayerGroup" transform="translate(145.000000, 69.500000) scale(-1, 1) translate(-145.000000, -69.500000) translate(142.000000, 47.000000)" fill="#9AC572">
-                <polygon id="Triangle-1" sketch:type="MSShapeGroup" transform="translate(3.000000, 42.500000) scale(1, -1) translate(-3.000000, -42.500000) " points="3 40 6 45 0 45 "></polygon>
-                <rect id="Rectangle-1" sketch:type="MSShapeGroup" x="2" y="0" width="2" height="40"></rect>
-            </g>
-            <g id="Triangle-1-+-Rectangle-2" sketch:type="MSLayerGroup" transform="translate(24.000000, 58.500000) scale(-1, -1) translate(-24.000000, -58.500000) translate(21.000000, 36.000000)" fill="#409B9E">
-                <polygon id="Triangle-1" sketch:type="MSShapeGroup" transform="translate(3.000000, 42.500000) scale(1, -1) translate(-3.000000, -42.500000) " points="3 40 6 45 0 45 "></polygon>
-                <rect id="Rectangle-1" sketch:type="MSShapeGroup" x="2" y="0" width="2" height="40"></rect>
-            </g>
             <path d="M117.680004,103.970001 L117.680004,69.9700012 L52.0600014,69.9700012 L52.0600014,103.970001 L117.680004,103.970001 Z M47.1500382,92.3017698 L41.7446744,97.7616238 L39,97.7616238 L39,95.0352795 L47.1500382,86.9317434 L52.0643573,86.9317434 L52.0643573,81.3517338 L47.1500382,81.3517338 L39,73.2095275 L39,70.4646865 L41.7446744,70.4646865 L47.1500382,75.7828537 L47.1500382,69.9639581 C47.1500382,67.2089614 49.33691,65 52.0643568,65 L117.671686,65 C120.385789,65 122.586005,67.2224398 122.586005,69.9639581 L122.586006,86.9317436 L128.062756,81.3517342 L130.711781,81.3517342 L130.711781,83.9328308 L122.586006,92.3017693 L117.671684,92.3017693 L117.671684,97.7616234 L122.586006,97.7616234 L130.711781,105.804741 L130.711781,108.802666 L128.062756,108.802666 L122.586006,103.299297 C122.586006,106.040816 120.385787,108.802666 117.671684,108.802666 L52.0643568,108.802666 C49.33691,108.802666 47.1500378,106.029474 47.1500378,103.299297 L47.1500382,92.3017698 Z" id="Shape" fill="#9B9B9B" sketch:type="MSShapeGroup"></path>
             <g id="Rectangle-7-+-DOM-side-effects" sketch:type="MSLayerGroup" transform="translate(53.000000, 71.000000)">
                 <path d="M0,0 L63.7000008,0 L63.7000008,32 L26.3717738,32 L0,32 L0,0 Z" id="Rectangle-7" stroke="#4A4A4A" sketch:type="MSShapeGroup"></path>
@@ -105,8 +81,16 @@
                 <rect id="Rectangle-10" stroke="#333333" fill="#50E3C2" sketch:type="MSShapeGroup" x="49.5" y="14" width="4" height="4"></rect>
             </g>
             <g id="Triangle-1-+-Rectangle-2" sketch:type="MSLayerGroup" transform="translate(57.000000, 35.000000) scale(-1, 1) rotate(-270.000000) translate(-57.000000, -35.000000) translate(56.000000, 33.000000)" fill="#9B9B9B">
-                <polygon id="Triangle-1" sketch:type="MSShapeGroup" transform="translate(1.000000, 3.166667) scale(1, -1) translate(-1.000000, -3.166667) " points="1 2.33333333 2 4 2.22044605e-16 4 "></polygon>
-                <rect id="Rectangle-1" sketch:type="MSShapeGroup" x="0.666666667" y="0" width="0.666666667" height="3"></rect>
+                <polygon id="Triangle-1" sketch:type="MSShapeGroup" transform="translate(1.000000, 3.166667) scale(1, -1) translate(-1.000000, -3.166667) " points="1 2.33333333 2 4 0 4 "></polygon>
+                <rect id="Rectangle-1" sketch:type="MSShapeGroup" x="0.666666667" y="-7.10542736e-15" width="0.666666667" height="3"></rect>
+            </g>
+            <g id="Path-7-+-Triangle-1" sketch:type="MSLayerGroup" transform="translate(19.000000, 30.000000)">
+                <path d="M21.7893716,2.81984856 C-6.09711823,2.81984856 -6.29587223,54.1473073 21.7893725,54.1473067" id="Path-7" stroke="#409B9E" stroke-width="2" sketch:type="MSShapeGroup"></path>
+                <path d="M19.5,0 L19.5,6 L24.5,3 L19.5,0 Z" id="Triangle-1" fill="#409B9E" sketch:type="MSShapeGroup"></path>
+            </g>
+            <g id="Path-7-+-Triangle-1" sketch:type="MSLayerGroup" transform="translate(138.062923, 70.678550) rotate(-180.000000) translate(-138.062923, -70.678550) translate(125.562923, 43.178550)">
+                <path d="M21.7893716,2.81984856 C-6.09711823,2.81984856 -6.29587223,54.1473073 21.7893725,54.1473067" id="Path-7" stroke="#9AC572" stroke-width="2" sketch:type="MSShapeGroup"></path>
+                <path d="M19.5,-1.42108547e-14 L19.5,6 L24.5,3 L19.5,-1.42108547e-14 Z" id="Triangle-1" fill="#9AC572" sketch:type="MSShapeGroup"></path>
             </g>
         </g>
     </g>
