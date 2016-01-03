@@ -386,7 +386,7 @@ const changeHeight$ = DOM.select('#height')
   .map(ev => ev.target.value);
 {% endhighlight %}
 
-To combine these two actions and use their values to compute the BMI, we use the RxJS [`combineLatest`](http://reactivex.io/documentation/operators/combinelatest.html) operator. We saw in the previous example that `merge` had *OR* semantics. `combineLatest` has, on the other hand, *AND* semantics. For instance, to compute the BMI, we need a `weight` value *and* and a `height` value.
+To combine these two actions and use their values to compute the BMI, we use the RxJS [`combineLatest`](http://reactivex.io/documentation/operators/combinelatest.html) operator. We saw in the previous example that `merge` had *OR* semantics. `combineLatest` has, on the other hand, *AND* semantics. For instance, to compute the BMI, we need a `weight` value *and* a `height` value.
 
 {% highlight js %}
 const bmi$ = Rx.Observable.combineLatest(
@@ -404,7 +404,7 @@ Now we just need a function to visualize the BMI result and the sliders. We do t
 {% highlight js %}
 import Rx from 'rx';
 import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/dom';
+import {div, input, h2, makeDOMDriver} from '@cycle/dom';
 
 function main({DOM}) {
   const changeWeight$ = DOM.select('#weight')
@@ -467,7 +467,7 @@ Below is the program that uses `state$` to render all dynamic values correctly t
 {% highlight js %}
 import Rx from 'rx';
 import Cycle from '@cycle/core';
-import {h, makeDOMDriver} from '@cycle/dom';
+import {div, input, h2, makeDOMDriver} from '@cycle/dom';
 
 function main({DOM}) {
   const changeWeight$ = DOM.select('#weight')
