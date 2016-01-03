@@ -3,7 +3,7 @@ title: "Model-View-Intent"
 tags: chapters
 ---
 
-We can write our an entire Cycle.js program inside the `main()` function, like we did in the [previous chapter](/basic-examples.html#body-mass-index-calculator). However, any programmer knows this isn't a good idea. Once `main()` grows too large, it becomes hard to maintain.
+We can write our entire Cycle.js program inside the `main()` function, like we did in the [previous chapter](/basic-examples.html#body-mass-index-calculator). However, any programmer knows this isn't a good idea. Once `main()` grows too large, it becomes hard to maintain.
 
 #### MVI is a simple pattern to refactor the main() function into three parts: Intent (to listen to the user), Model (to process information), and View (to output back to the user).
 
