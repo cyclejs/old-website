@@ -65,7 +65,7 @@ The other input to this labeled slider program is the DOM source representing us
  }
 {% endhighlight %}
 
-The remaining of the program is rather easy given that we've written the same labeled slider in the two previous chapters. However, this time we take props as the initial value.
+The remainder of the program is rather easy given that we've written the same labeled slider in the two previous chapters. However, this time we take props as the initial value.
 
 {% highlight js %}
 function main(sources) {
