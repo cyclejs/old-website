@@ -275,14 +275,14 @@ For the DOM source and DOM sink, we can use a unique identifier string as namesp
 
    const weightVTree$ = weightSlider.DOM
 +    .map(vtree => {
-+      vtree.className += ' weight';
++      vtree.properties.className += ' weight';
 +      return vtree;
 +    });
    const weightValue$ = weightSlider.value$;
 
    const heightVTree$ = heightSlider.DOM
 +    .map(vtree => {
-+      vtree.className += ' height';
++      vtree.properties.className += ' height';
 +      return vtree;
 +    });
    const heightValue$ = heightSlider.value$;
@@ -348,13 +348,13 @@ function main(sources) {
   // ...
   const weightVTree$ = weightSlider.DOM
     .map(vtree => {
-      vtree.className += ' weight';
+      vtree.properties.className += ' weight';
       return vtree;
     });
   // ...
   const heightVTree$ = heightSlider.DOM
     .map(vtree => {
-      vtree.className += ' height';
+      vtree.properties.className += ' height';
       return vtree;
     });
   // ...
@@ -377,14 +377,14 @@ To avoid repeating code, such as the `.map(vtree => ...)` which patches the VTre
    // ...
 -  const weightVTree$ = weightSlider.DOM
 -    .map(vtree => {
--      vtree.className += ' weight';
+-      vtree.properties.className += ' weight';
 -      return vtree;
 -    });
 +  const weightVTree$ = isolateDOMSink(weightSlider.DOM, 'weight');
    // ...
 -  const heightVTree$ = heightSlider.DOM
 -    .map(vtree => {
--      vtree.className += ' height';
+-      vtree.properties.className += ' height';
 -      return vtree;
 -    });
 +  const heightVTree$ = isolateDOMSink(heightSlider.DOM, 'height');
