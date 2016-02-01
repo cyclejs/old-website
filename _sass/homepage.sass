@@ -69,14 +69,14 @@
         flex-grow: 5
         text-align: justify
 
-.homepage-features:nth-child(even)
+.homepage-features:nth-child(odd)
     h2
         order: 1
         margin-right: $normal-space
     p
         order: 2
 
-.homepage-features:nth-child(odd)
+.homepage-features:nth-child(even)
     h2
         order: 2
         margin-left: $normal-space
@@ -97,6 +97,23 @@
         max-height: inherit
     .dataflow-minimap-code
         font-size: 0.8em
+
+.example-hello-world-container
+    box-sizing: border-box
+    margin: 20px 40px
+    background-color: #EEE
+    padding: 8px 12px
+    label
+        font-size: 1.3em
+    input
+        font-size: 1.2em
+        margin-left: 0.5em
+    hr
+        border-color: #d3d3d3
+    h1
+        text-align: left
+        margin: 20px 0 10px
+        font-size: 2em
 
 img.egghead-logo
     width: 200px
@@ -126,10 +143,10 @@ img.egghead-logo
             width: 100%
     .homepage-features
         display: block
-    .homepage-features:nth-child(even)
+    .homepage-features:nth-child(odd)
         h2
             margin-right: 0
-    .homepage-features:nth-child(odd)
+    .homepage-features:nth-child(even)
         h2
             margin-left: 0
     .explicit-dataflow

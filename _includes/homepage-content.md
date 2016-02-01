@@ -16,7 +16,7 @@ npm install rx @cycle/core @cycle/dom
 
 {% highlight js %}
 import Cycle from '@cycle/core';
-import {div, label, input, h1, makeDOMDriver} from '@cycle/dom';
+import {div, label, input, hr, h1, makeDOMDriver} from '@cycle/dom';
 
 function main(sources) {
   const sinks = {
@@ -27,7 +27,8 @@ function main(sources) {
         div([
           label('Name:'),
           input('.field', {attributes: {type: 'text'}}),
-          h1('Hello ' + name)
+          hr(),
+          h1('Hello ' + name),
         ])
       )
   };
@@ -36,6 +37,8 @@ function main(sources) {
 
 Cycle.run(main, { DOM: makeDOMDriver('#app-container') });
 {% endhighlight %}
+
+<div class="example-hello-world-container"></div>
 
 <div class="homepage-features" markdown="1">
 ## Functional and Reactive
