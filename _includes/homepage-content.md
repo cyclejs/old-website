@@ -4,7 +4,7 @@
   {% include /img/cycle-nested-frontpage.svg %}
 </p>
 
-Cycle's core abstraction is your application as a pure function `main()` where inputs are observable side effects (*sources*) from the external world and outputs (*sinks*) are commands or updates to affect the external world. These side effects in the external world are managed by *drivers*: plugins that handle DOM effects, HTTP effects, etc.
+Cycle's core abstraction is your application as a pure function `main()` where inputs are read effects (*sources*) from the external world and outputs (*sinks*) are write effects to affect the external world. These side effects in the external world are managed by *drivers*: plugins that handle DOM effects, HTTP effects, etc.
 
 The internals of `main()` are built using Reactive programming primitives, which maximizes separation of concerns, providing a clean and fully declarative way of organizing your code. The *dataflow* is plainly visible, making it easy to read and understand the code.
 
