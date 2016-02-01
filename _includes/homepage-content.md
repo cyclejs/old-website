@@ -102,6 +102,14 @@ Cycle.js has components, but unlike other frameworks, every single Cycle.js app,
 
 Sources and sinks are the interface between the application and the drivers, but they are also the interface between a child component and its parent. Cycle.js components can be simply GUI widgets like in other frameworks, but they are not limited to GUIs only. You can make Web Audio components, network requests components, and others, since the sources/sinks interface is not exclusive to the DOM.
 
+## Learn it in 1h 37min
+
+<p>
+  <img src="/img/egghead.png" class="egghead-logo" alt="Egghead.io logo" />
+</p>
+
+Got 1 hour and 37 minutes? That is all it takes to learn the essentials of Cycle.js. Watch [**this free Egghead.io video course**](https://egghead.io/series/cycle-js-fundamentals) given by the creator of Cycle.js. Understand Cycle.js from within by following how it is built from scratch, then learn how to transform your ideas into applications.
+
 ## Supports...
 
 - [**Virtual DOM rendering**](https://github.com/cyclejs/cycle-dom)
