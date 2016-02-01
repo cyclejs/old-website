@@ -65,7 +65,7 @@ The other input to this labeled slider program is the DOM source representing us
  }
 {% endhighlight %}
 
-The remaining of the program is rather easy given that we've written the same labeled slider in the two previous chapters. However, this time we take props as the initial value.
+The remainder of the program is rather easy given that we've written the same labeled slider in the two previous chapters. However, this time we take props as the initial value.
 
 {% highlight js %}
 function main(sources) {
@@ -257,7 +257,7 @@ function LabeledSlider(sources) {
 
 Suppose we just ran this function for the weight labeled slider. The line `sources.DOM.select('.slider')` **will attempt to select all** `.slider` **elements on the entire DOM tree managed by this app**. This means both the `.slider` in the weight component and the `.slider` in the height component. As a result, the weight component will detect changes to both the height slider and the weight slider, which is a bug.
 
-A component should not leak its output to other components, and it should not be able to detect outputs from other sibling components. In order keep the nice property of "a component is just a Cycle.js app", we want two properties:
+A component should not leak its output to other components, and it should not be able to detect outputs from other sibling components. In order to keep the nice property of "a component is just a Cycle.js app", we want two properties:
 
 - A component's **sources** are not affected by other components' sources.
 - A component's **sinks** do not affect other components' sinks.
@@ -275,14 +275,14 @@ For the DOM source and DOM sink, we can use a unique identifier string as namesp
 
    const weightVTree$ = weightSlider.DOM
 +    .map(vtree => {
-+      vtree.className += ' weight';
++      vtree.properties.className += ' weight';
 +      return vtree;
 +    });
    const weightValue$ = weightSlider.value$;
 
    const heightVTree$ = heightSlider.DOM
 +    .map(vtree => {
-+      vtree.className += ' height';
++      vtree.properties.className += ' height';
 +      return vtree;
 +    });
    const heightValue$ = heightSlider.value$;
@@ -348,13 +348,13 @@ function main(sources) {
   // ...
   const weightVTree$ = weightSlider.DOM
     .map(vtree => {
-      vtree.className += ' weight';
+      vtree.properties.className += ' weight';
       return vtree;
     });
   // ...
   const heightVTree$ = heightSlider.DOM
     .map(vtree => {
-      vtree.className += ' height';
+      vtree.properties.className += ' height';
       return vtree;
     });
   // ...
@@ -377,14 +377,14 @@ To avoid repeating code, such as the `.map(vtree => ...)` which patches the VTre
    // ...
 -  const weightVTree$ = weightSlider.DOM
 -    .map(vtree => {
--      vtree.className += ' weight';
+-      vtree.properties.className += ' weight';
 -      return vtree;
 -    });
 +  const weightVTree$ = isolateDOMSink(weightSlider.DOM, 'weight');
    // ...
 -  const heightVTree$ = heightSlider.DOM
 -    .map(vtree => {
--      vtree.className += ' height';
+-      vtree.properties.className += ' height';
 -      return vtree;
 -    });
 +  const heightVTree$ = isolateDOMSink(heightSlider.DOM, 'height');
