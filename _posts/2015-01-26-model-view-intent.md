@@ -24,7 +24,7 @@ function main({DOM}) {
   const changeHeight$ = DOM.select('#height')
     .events('input')
     .map(ev => ev.target.value);
-  const state$ = Cycle.Rx.Observable.combineLatest(
+  const state$ = Rx.Observable.combineLatest(
     changeWeight$.startWith(70),
     changeHeight$.startWith(170),
     (weight, height) => {
@@ -88,7 +88,7 @@ We have plenty of anonymous functions which could be refactored away from `main`
    const changeHeight$ = DOM.select('#height')
      .events('input')
      .map(ev => ev.target.value);
-   const state$ = Cycle.Rx.Observable.combineLatest(
+   const state$ = Rx.Observable.combineLatest(
      changeWeight$.startWith(70),
      changeHeight$.startWith(170),
 -    (weight, height) => {
@@ -166,7 +166,7 @@ We have plenty of anonymous functions which could be refactored away from `main`
    const changeHeight$ = DOM.select('#height')
      .events('input')
      .map(ev => ev.target.value);
-   const state$ = Cycle.Rx.Observable.combineLatest(
+   const state$ = Rx.Observable.combineLatest(
      changeWeight$.startWith(70),
      changeHeight$.startWith(170),
      (weight, height) =>
@@ -199,7 +199,7 @@ Now, `main` is much smaller. But is it doing *one thing*? We have `changeWeight$
  // ...
 
 +function model(changeWeight$, changeHeight$) {
-+  return Cycle.Rx.Observable.combineLatest(
++  return Rx.Observable.combineLatest(
 +    changeWeight$.startWith(70),
 +    changeHeight$.startWith(170),
 +    (weight, height) =>
@@ -224,7 +224,7 @@ Now, `main` is much smaller. But is it doing *one thing*? We have `changeWeight$
    const changeHeight$ = DOM.select('#height')
      .events('input')
      .map(ev => ev.target.value);
--  const state$ = Cycle.Rx.Observable.combineLatest(
+-  const state$ = Rx.Observable.combineLatest(
 -    changeWeight$.startWith(70),
 -    changeHeight$.startWith(170),
 -    (weight, height) =>
@@ -261,7 +261,7 @@ Now, `main` is much smaller. But is it doing *one thing*? We have `changeWeight$
 
 -function model(changeWeight$, changeHeight$) {
 +function model(actions) {
-   return Cycle.Rx.Observable.combineLatest(
+   return Rx.Observable.combineLatest(
 -    changeWeight$.startWith(70),
 -    changeHeight$.startWith(170),
 +    actions.changeWeight$.startWith(70),
