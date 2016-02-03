@@ -14,6 +14,7 @@ We can write our entire Cycle.js program inside the `main()` function, like we d
 Let's see how we can refactor the `main()` function we wrote for calculating BMI:
 
 {% highlight js %}
+import Rx from 'rx';
 import Cycle from '@cycle/core';
 import {div, input, h2, makeDOMDriver} from '@cycle/dom';
 
@@ -59,6 +60,7 @@ Cycle.run(main, {
 We have plenty of anonymous functions which could be refactored away from `main`, such as the BMI calculation, VTree rendering, etc.
 
 {% highlight diff %}
+ import Rx from 'rx';
  import Cycle from '@cycle/core';
  import {div, input, h2, makeDOMDriver} from '@cycle/dom';
 
@@ -127,6 +129,7 @@ We have plenty of anonymous functions which could be refactored away from `main`
 `main` still has to handle too many concerns. Can we do better? Yes, we can, by using the insight that `state$.map(state => someVTree)` is a *View* function: renders visual elements as a transformation of state. Let's introduce `function view(state$)`.
 
 {% highlight diff %}
+ import Rx from 'rx';
  import Cycle from '@cycle/core';
  import {div, input, h2, makeDOMDriver} from '@cycle/dom';
 
@@ -193,6 +196,7 @@ We have plenty of anonymous functions which could be refactored away from `main`
 Now, `main` is much smaller. But is it doing *one thing*? We have `changeWeight$`, `changeHeight$`, `state$`, and the return using `view(state$)`. Normally when we work with a *View*, we also have a *Model*. What Models normally do is **manage state**. In our case, however, we have `state$` which is self-responsible for its own changes, because it is [reactive](/observables.html#reactive-programming). But anyway we have code that defines how `state$` depends on `changeWeight$` and `changeHeight$`. We can put that code inside a `model()` function.
 
 {% highlight diff %}
+ import Rx from 'rx';
  import Cycle from '@cycle/core';
  import {div, input, h2, makeDOMDriver} from '@cycle/dom';
 
@@ -245,6 +249,7 @@ Now, `main` is much smaller. But is it doing *one thing*? We have `changeWeight$
 `main` still defines `changeWeight$` and `changeHeight$`. What are these Observables? They are event streams of *Actions*. In the [previous chapter about basic examples](/basic-examples.html#increment-and-decrement-a-counter) we had an `action$` Observable for incrementing and decrementing a counter. These Actions are deduced or interpreted from DOM events. Their names indicate the user's *intentions*. We can group these Observable definitions in an `intent()` function:
 
 {% highlight diff %}
+ import Rx from 'rx';
  import Cycle from '@cycle/core';
  import {div, input, h2, makeDOMDriver} from '@cycle/dom';
 
