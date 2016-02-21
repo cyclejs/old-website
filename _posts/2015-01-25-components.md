@@ -236,9 +236,9 @@ function main(sources) {
 }
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/xobuyesezo/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/sajewalehu/embed?output">JS Bin on jsbin.com</a>
 
-However, this creates a bug. At least one of the labeled sliders does not work: its label does not change when the slider moves. Can you see why? Pay attention to the implementation of `LabeledSlider` with this piece of code:
+However, this creates a bug. Both labeled sliders change when any slider is moved. Can you see why? Pay attention to the implementation of `LabeledSlider` with this piece of code:
 
 {% highlight js %}
 function LabeledSlider(sources) {
