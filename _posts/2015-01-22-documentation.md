@@ -3,7 +3,7 @@ title:  "Documentation"
 tags: chapters
 ---
 
-## Cycle *Core* [v6.0.0](https://github.com/cyclejs/cycle-core/releases/tag/v6.0.0) API: `Cycle` object
+## Cycle *Core* [v6.0.0](https://github.com/cyclejs/cycle/releases/tag/v6.0.0) API: `Cycle` object
 
 - [`run`](#run)
 
