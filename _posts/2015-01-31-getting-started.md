@@ -141,7 +141,7 @@ This example portrays the most common problem-solving pattern in Cycle.js: formu
 
 <h2 id="cyclejs-as-a-script">Cycle.js as a script</h2>
 
-In the rare occasion you need Cycle.js as a standalone JavaScript file, you can download them on the [Releases](https://github.com/cyclejs/cycle/releases) page at GitHub.
+In the rare occasion you need Cycle.js as a standalone JavaScript file, you can download them on the [Releases](https://github.com/cyclejs/core/releases) page at GitHub.
 
-- Download the latest [Cycle Core](https://github.com/cyclejs/cycle/releases)
-- Download the latest [Cycle DOM](https://github.com/cyclejs/cycle-dom/releases)
+- Download the latest [Cycle Core](https://github.com/cyclejs/core/releases)
+- Download the latest [Cycle DOM](https://github.com/cyclejs/dom/releases)

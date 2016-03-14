@@ -3,7 +3,7 @@ title:  "Documentation"
 tags: chapters
 ---
 
-## Cycle *Core* [v6.0.0](https://github.com/cyclejs/cycle/releases/tag/v6.0.0) API: `Cycle` object
+## Cycle *Core* [v6.0.0](https://github.com/cyclejs/core/releases/tag/v6.0.0) API: `Cycle` object
 
 - [`run`](#run)
 
@@ -30,7 +30,7 @@ of driver sources, that can be used for debugging or testing.
 
 - - -
 
-## Cycle *DOM* [v8.0.0](https://github.com/cyclejs/cycle-dom/releases/tag/v8.0.0) API: `CycleDOM` object
+## Cycle *DOM* [v8.0.0](https://github.com/cyclejs/dom/releases/tag/v8.0.0) API: `CycleDOM` object
 
 - [`makeDOMDriver`](#makeDOMDriver)
 - [`makeHTMLDriver`](#makeHTMLDriver)
@@ -152,7 +152,7 @@ Observable you defined in the input of `mockDOMSource`.
 
 - - -
 
-## Cycle *HTTP* Driver [v7.0.0](https://github.com/cyclejs/cycle-http-driver/releases/tag/v7.0.0) API: `CycleHTTPDriver` object
+## Cycle *HTTP* Driver [v7.0.0](https://github.com/cyclejs/http/releases/tag/v7.0.0) API: `CycleHTTPDriver` object
 
 - [`makeHTTPDriver`](#makeHTTPDriver)
 
