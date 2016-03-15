@@ -8,4 +8,4 @@ Built with Jekyll
 
 ## Why are Issues unavailable?
 
-We use only one repository for issues. [**Open the issue at Cycle Core repo.**](https://github.com/cyclejs/cycle-core/issues)
+We use only one repository for issues. [**Open the issue at Cycle Core repo.**](https://github.com/cyclejs/core/issues)

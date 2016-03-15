@@ -5,7 +5,7 @@ tags: chapters
 
 Cycle.js apps will always include at least three important components: `main()`, **drivers**, and `run()`. In `main()`, we listen to driver sources (the input to `main`), and we speak to drivers (sinks, the output of `main`).
 
-#### You can find the source code for these examples, and others, at [cyclejs/cycle-examples](https://github.com/cyclejs/cycle-examples).
+#### You can find the source code for these examples, and others, at [cyclejs/examples](https://github.com/cyclejs/examples).
 
 `Cycle.run()` ties `main()` and drivers together, as we saw in the last chapter.
 
@@ -135,7 +135,7 @@ Essentially we just need to make a request for the endpoint `/user/:number` when
 
 *Sinks* are instructions from `main()` to drivers to perform side effects, and *sources* are readable side effects. HTTP requests are sinks, and HTTP responses are sources.
 
-The [HTTP Driver](https://github.com/cyclejs/cycle-http-driver) is similar in style to the DOM Driver: it expects a sink Observable (for requests), and gives you a source Observable (for responses). Instead of studying the details of how the HTTP Driver works, let's see what a basic HTTP example looks like.
+The [HTTP Driver](https://github.com/cyclejs/http) is similar in style to the DOM Driver: it expects a sink Observable (for requests), and gives you a source Observable (for responses). Instead of studying the details of how the HTTP Driver works, let's see what a basic HTTP example looks like.
 
 If HTTP requests are sent when the button is clicked, then the HTTP request Observable should depend directly on the button click Observable. Roughly, this:
 
@@ -187,7 +187,7 @@ function main(sources) {
 }
 {% endhighlight %}
 
-`sources.HTTP` is an Observable of all the network responses this app is observing. Because it could potentially include responses unrelated to user details, we need to `filter()` it. We also `mergeAll()`, to flatten the Observable of Observables. This might feel like magic right now, so read the [HTTP Driver docs](https://github.com/cyclejs/cycle-http-driver) if you're curious about the details. We map each response `res` to `res.body` in order to get the JSON data from the response and ignore other fields like HTTP status.
+`sources.HTTP` is an Observable of all the network responses this app is observing. Because it could potentially include responses unrelated to user details, we need to `filter()` it. We also `mergeAll()`, to flatten the Observable of Observables. This might feel like magic right now, so read the [HTTP Driver docs](https://github.com/cyclejs/http) if you're curious about the details. We map each response `res` to `res.body` in order to get the JSON data from the response and ignore other fields like HTTP status.
 
 We still haven't specified how to render our app. We should display to the DOM whatever data we have from the current user in `user$`. So the VTree Observable `vtree$` should depend directly on `user$`, like this:
 
