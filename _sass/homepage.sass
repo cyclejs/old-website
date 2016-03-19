@@ -2,7 +2,6 @@
     background-color: $black
     color: $white
     margin: 0 calc(0px - #{$normal-space})
-    padding: 0 $normal-space 1px
     position: relative
     .hero-title
         img.hero-logo
@@ -37,7 +36,7 @@
     .hero-gh-star
         position: absolute
         top: $large-space
-        right: 0
+        right: $large-space
 
 .homepage-bottom-cta
     margin: $normal-space 0
@@ -100,7 +99,6 @@
 
 .example-hello-world-container
     box-sizing: border-box
-    margin: 20px 40px
     background-color: #EEE
     padding: 8px 12px
     label
@@ -125,11 +123,10 @@ img.egghead-logo
 
 @media only screen and (max-width: 680px)
     .hero
+        margin: 0
         .hero-gh-star
+            right: $small-space
             top: $small-space
-            right: calc(0px - #{$normal-space})
-        .page-body
-            padding-top: $normal-space
         .hero-title
             img.hero-logo
                 width: 3em
