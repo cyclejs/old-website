@@ -4,3 +4,5 @@ _site/
 
 # Editors
 .idea/
+
+.jekyll-metadata

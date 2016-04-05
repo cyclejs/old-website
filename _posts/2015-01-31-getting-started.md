@@ -139,6 +139,12 @@ Cycle.run(main, drivers);
 
 This example portrays the most common problem-solving pattern in Cycle.js: formulate the computer's behavior as a function of Observables: continuously listen to driver events and continuously provide messages (in our case, Virtual DOM elements) to the drivers. Read the next chapter to get familiar with this pattern.
 
+<h2 id="quick-start">Quick Start</h2>
+
+In the future, you can quickly set up a development and production ready Cycle.js project using the [cyc](https://github.com/edge/cyc) boilerplate.
+
+It comes with babel transpilation, hot-reloading, and an isomorphic server.
+
 <h2 id="cyclejs-as-a-script">Cycle.js as a script</h2>
 
 In the rare occasion you need Cycle.js as a standalone JavaScript file, you can download them on the [Releases](https://github.com/cyclejs/core/releases) page at GitHub.
