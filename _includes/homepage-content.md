@@ -11,11 +11,11 @@ The internals of `main()` are built using Reactive programming primitives, which
 ## Example
 
 {% highlight text %}
-npm install rx @cycle/core @cycle/dom
+npm install xstream @cycle/xstream-run @cycle/dom
 {% endhighlight %}
 
 {% highlight js %}
-import Cycle from '@cycle/core';
+import {run} from '@cycle/xstream-run';
 import {div, label, input, hr, h1, makeDOMDriver} from '@cycle/dom';
 
 function main(sources) {
@@ -26,7 +26,7 @@ function main(sources) {
       .map(name =>
         div([
           label('Name:'),
-          input('.field', {attributes: {type: 'text'}}),
+          input('.field', {attrs: {type: 'text'}}),
           hr(),
           h1('Hello ' + name),
         ])
@@ -35,7 +35,7 @@ function main(sources) {
   return sinks;
 }
 
-Cycle.run(main, { DOM: makeDOMDriver('#app-container') });
+run(main, { DOM: makeDOMDriver('#app-container') });
 {% endhighlight %}
 
 <div class="example-hello-world-container"></div>
@@ -43,13 +43,13 @@ Cycle.run(main, { DOM: makeDOMDriver('#app-container') });
 <div class="homepage-features" markdown="1">
 ## Functional and Reactive
 
-Functional means "clean", and Reactive means "separated". Cycle.js apps are made of pure functions, which means you know they simply take inputs and generate outputs, without performing any side effects. The building blocks are Observables from [RxJS](https://github.com/Reactive-Extensions/RxJS), a Reactive programming library which simplifies code related to events, asynchrony, and errors. Structuring the application with RxJS also separates concerns, because all [dynamic updates to a piece of data are co-located](/observables.html#reactive-programming) and impossible to change from outside. As a result, apps in Cycle are entirely `this`-less and have nothing comparable to imperative calls such as `setState()` or `foo.update()`.
+Functional means "clean", and Reactive means "separated". Cycle.js apps are made of pure functions, which means you know they simply take inputs and generate outputs, without performing any side effects. The building blocks are reactive streams from libraries like [RxJS](http://reactivex.io/rxjs) or [xstream](http://staltz.com/xstream), which greatly simplify code related to events, asynchrony, and errors. Structuring the application with streams also separates concerns, because all [dynamic updates to a piece of data are co-located](/observables.html#reactive-programming) and impossible to change from outside. As a result, apps in Cycle are entirely `this`-less and have nothing comparable to imperative calls such as `setState()` or `foo.update()`.
 </div>
 
 <div class="homepage-features" markdown="1">
 ## Simple and Concise
 
-Cycle.js is a framework with very few concepts to learn. The core API has just one function: `run(app, drivers)`. Besides that, there are **Observables**, **functions**, **drivers** (plugins for different types of side effects), and a helper function to isolate scoped components. This is a framework with very little amount of "magic". Most of the building blocks are just JavaScript functions. Usually the lack of "magic" leads to very verbose code, but since RxJS Observables are able to build complex dataflows with a few operations, you will come to see how apps in Cycle.js are small and readable.
+Cycle.js is a framework with very few concepts to learn. The core API has just one function: `run(app, drivers)`. Besides that, there are **streams**, **functions**, **drivers** (plugins for different types of side effects), and a helper function to isolate scoped components. This is a framework with very little amount of "magic". Most of the building blocks are just JavaScript functions. Usually the lack of "magic" leads to very verbose code, but since functional reactive streams are able to build complex dataflows with a few operations, you will come to see how apps in Cycle.js are small and readable.
 </div>
 
 <div class="homepage-features" markdown="1">
@@ -60,7 +60,7 @@ Drivers are plugin-like simple functions that take messages from sinks and call 
 
 ## Explicit dataflow
 
-In every Cycle.js app, each of the Observable declarations is a node in a dataflow graph, and the dependencies between declarations are arrows. This means there is a one-to-one correspondence between your code and *minimap*-like graph of the dataflow between external inputs and external outputs.
+In every Cycle.js app, each of the stream declarations is a node in a dataflow graph, and the dependencies between declarations are arrows. This means there is a one-to-one correspondence between your code and *minimap*-like graph of the dataflow between external inputs and external outputs.
 
 <div class="explicit-dataflow">
 <div>
@@ -72,13 +72,13 @@ In every Cycle.js app, each of the Observable declarations is a node in a datafl
 {% highlight js %}
 function main(sources) {
   const decrement$ = sources.DOM
-    .select('.decrement').events('click').map(ev => -1);
+    .select('.decrement').events('click').mapTo(-1);
 
   const increment$ = sources.DOM
-    .select('.increment').events('click').map(ev => +1);
+    .select('.increment').events('click').mapTo(+1);
 
-  const action$ = Observable.merge(decrement$, increment$);
-  const count$ = action$.startWith(0).scan((x,y) => x+y);
+  const action$ = xs.merge(decrement$, increment$);
+  const count$ = action$.fold((x, y) => x + y, 0);
 
   const vtree$ = count$.map(count =>
     div([
@@ -108,7 +108,7 @@ Sources and sinks are the interface between the application and the drivers, but
 ## Learn it in 1h 37min
 
 <p>
-  <img src="/img/egghead.png" class="egghead-logo" alt="Egghead.io logo" />
+  {% include /img/egghead.svg %}
 </p>
 
 Got 1 hour and 37 minutes? That is all it takes to learn the essentials of Cycle.js. Watch [**this free Egghead.io video course**](https://egghead.io/series/cycle-js-fundamentals) given by the creator of Cycle.js. Understand Cycle.js from within by following how it is built from scratch, then learn how to transform your ideas into applications.
@@ -119,6 +119,6 @@ Got 1 hour and 37 minutes? That is all it takes to learn the essentials of Cycle
 - [**Server-side rendering**](https://github.com/cyclejs/examples/tree/master/isomorphic)
 - [**JSX**](http://cycle.js.org/getting-started.html)
 - [**React Native**](https://github.com/cyclejs/cycle-react-native)
-- [**Time travelling**](https://github.com/cyclejs/cycle-time-travel)
+- [**Time traveling**](https://github.com/cyclejs/cycle-time-travel)
 - [**Routing with the History API**](https://github.com/cyclejs/history)
 - [**And more...**](https://github.com/vic/awesome-cyclejs)
