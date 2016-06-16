@@ -10,3 +10,6 @@ defaults: [{scope: {path: ""}, values: {layout: "default"}}, {scope: {path: "", 
 gems:
   - octopress-autoprefixer
   - kramdown
+  - jekyll-redirect-from
+whitelist:
+  - jekyll-redirect-from
