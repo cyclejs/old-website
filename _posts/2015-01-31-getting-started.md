@@ -8,10 +8,15 @@ tags: chapters
 The recommended channel for downloading Cycle.js as a package is through [npm](http://npmjs.org/), which follows the [CommonJS](http://wiki.commonjs.org/wiki/CommonJS) spec. Create a new directory and run this inside that directory:
 
 {% highlight text %}
-npm install rx @cycle/core @cycle/dom
+npm install xstream @cycle/xstream-run @cycle/dom
 {% endhighlight %}
 
-This installs RxJS, Cycle *Core*, and Cycle *DOM*. RxJS and *Core* are the minimum required API to work with Cycle.js. *Core* includes a single function `run()`, and Cycle *DOM* is the standard DOM Driver providing a way to interface with the DOM. **RxJS is a peer dependency of Cycle *Core***.
+This installs [xstream](http://staltz.com/xstream), Cycle *Run* using *xstream*, and Cycle *DOM*. Packages *xstream* and *Run* are the minimum required API to work with Cycle.js. The *Run* package includes a single function `run()`, and Cycle *DOM* is the standard DOM Driver providing a way to interface with the DOM. You can also use Cycle.js with other stream libraries like RxJS. Your options are:
+
+- `npm install xstream @cycle/xstream-run` (recommended if you don't know what to choose)
+- `npm install rx @cycle/rx-run` (for [RxJS v4](https://github.com/Reactive-Extensions/RxJS))
+- `npm install rxjs @cycle/rxjs-run` (for [RxJS v5+](http://reactivex.io/rxjs))
+- `npm install most @cycle/most-run` (for cujo.js [most.js](https://github.com/cujojs/most))
 
 Packages of the type `@org/package` are [npm scoped packages](https://docs.npmjs.com/getting-started/scoped-packages), supported if your npm installation is version 2.11 or higher. Check your npm version with `npm --version` and upgrade in order to install Cycle.js.
 
@@ -19,32 +24,34 @@ In case you are not dealing with a DOM-interfacing web application, you can omit
 
 <h2 id="first-steps">First steps</h2>
 
-We recommend the use of a bundling tool such as [browserify](http://browserify.org/) or [webpack](http://webpack.github.io/), in combination with ES6 (a.k.a. ES2015) through a transpiler (e.g. [Babel](http://babeljs.io/)). Most of the code examples in this documentation assume some basic familiarity with ES6. Once your build system is set up, **write your main JavaScript source file like**:
+We recommend the use of a bundling tool such as [browserify](http://browserify.org/) or [webpack](http://webpack.github.io/), in combination with ES6 (a.k.a. ES2015) through a transpiler (e.g. [Babel](http://babeljs.io/) or [TypeScript](http://typescriptlang.org/)). Most of the code examples in this documentation assume some basic familiarity with ES6. Once your build system is set up, **write your main JavaScript source file like**:
 
 {% highlight js %}
-import Cycle from '@cycle/core';
-import CycleDOM from '@cycle/dom';
+import xs from 'xstream';
+import {run} from '@cycle/xstream-run';
+import {makeDOMDriver} from '@cycle/dom';
 
 // ...
 {% endhighlight %}
 
-The imported `Cycle` object on the first line contains one important function: `run(main, drivers)`, where `main` is the entry point for our whole application, and `drivers` is a record of driver functions labeled by some name.
+The second line imports the function `run(main, drivers)`, where `main` is the entry point for our whole application, and `drivers` is a record of driver functions labeled by some name.
 
 **Create the `main` function and the `drivers` record:**
 
 {% highlight js %}
-import Cycle from '@cycle/core';
-import CycleDOM from '@cycle/dom';
+import xs from 'xstream';
+import {run} from '@cycle/xstream-run';
+import {makeDOMDriver} from '@cycle/dom';
 
 function main() {
   // ...
 }
 
 const drivers = {
-  DOM: CycleDOM.makeDOMDriver('#app')
+  DOM: makeDOMDriver('#app')
 };
 
-Cycle.run(main, drivers);
+run(main, drivers);
 {% endhighlight %}
 
 `makeDOMDriver(container)` from Cycle *DOM* returns a driver function to interact with the DOM. This function is registered under the key `DOM` in the `drivers` object above.
@@ -52,73 +59,84 @@ Cycle.run(main, drivers);
 **Send messages from `main` to the `DOM` driver:**
 
 {% highlight js %}
-import Rx from 'rx';
-import Cycle from '@cycle/core';
-import CycleDOM from '@cycle/dom';
+import xs from 'xstream';
+import {run} from '@cycle/xstream-run';
+import {makeDOMDriver, h1} from '@cycle/dom';
 
 function main() {
-  return {
-    DOM: Rx.Observable.interval(1000)
-      .map(i => CycleDOM.h1('' + i + ' seconds elapsed'))
+  const sinks = {
+    DOM: xs.periodic(1000).map(i =>
+      h1('' + i + ' seconds elapsed')
+    )
   };
-}
-
-const drivers = {
-  DOM: CycleDOM.makeDOMDriver('#app')
-};
-
-Cycle.run(main, drivers);
-{% endhighlight %}
-
-We have filled the `main()` function with some code: returns an object which has an RxJS Observable defined under the name `DOM`. This indicates `main()` is sending the Observable as messages to the DOM driver. The Observable emits Virtual DOM `<h1>` elements displaying `${i} seconds elapsed` changing over time every second, where `${i}` is replaced by `0`, `1`, `2`, etc.
-
-**Catch messages from `DOM` into `main` and vice-versa:**
-
-{% highlight js %}
-import Cycle from '@cycle/core';
-import {makeDOMDriver, div, input, p} from '@cycle/dom';
-
-function main(drivers) {
-  return {
-    DOM: drivers.DOM.select('input').events('click')
-      .map(ev => ev.target.checked)
-      .startWith(false)
-      .map(toggled =>
-        div([
-          input({type: 'checkbox'}), 'Toggle me',
-          p(toggled ? 'ON' : 'off')
-        ])
-      )
-  };
+  return sinks;
 }
 
 const drivers = {
   DOM: makeDOMDriver('#app')
 };
 
-Cycle.run(main, drivers);
+run(main, drivers);
 {% endhighlight %}
 
-Function `main()` now takes `drivers` as input. Just like the output `main()` produces, the input `drivers` follow the same structure: an object containing `DOM` as a property. `drivers.DOM` is a queryable collection of Observables. Use `drivers.DOM.select(selector).events(eventType)` to get an Observable of `eventType` DOM events happening on the element(s) specified by `selector`. This `main()` function takes the Observable of clicks happening on `input` elements, and maps those toggling events to Virtual DOM elements displaying a togglable checkbox.
+We have filled the `main()` function with some code: returns an object `sinks` which has an `xstream` stream defined under the name `DOM`. This indicates `main()` is sending the stream as messages to the DOM driver. Sinks are outgoing messages. The stream emits Virtual DOM `<h1>` elements displaying `${i} seconds elapsed` changing over time every second, where `${i}` is replaced by `0`, `1`, `2`, etc.
 
-We used the `div()`, `input()`, `p()` helper functions to create virtual DOM elements for the respective `<div>`, `<input>`, `<p>` DOM elements, but you can also use JSX with Babel. The following only works if you are building with Babel: (1) install the [babel-plugin-transform-react-jsx](http://babeljs.io/docs/plugins/transform-react-jsx/) npm package and specify a pragma for jsx as shown in the following example:, (2) import hJSX as `import {hJSX} from '@cycle/dom';`, and then you can utilize JSX:
+**Catch messages from `DOM` into `main` and vice-versa:**
 
 {% highlight js %}
-// in package.json
+import xs from 'xstream';
+import {run} from '@cycle/xstream-run';
+import {makeDOMDriver, div, input, p} from '@cycle/dom';
+
+function main(sources) {
+  const sinks = {
+    DOM: sources.DOM.select('input').events('click')
+      .map(ev => ev.target.checked)
+      .startWith(false)
+      .map(toggled =>
+        div([
+          input({attrs {type: 'checkbox'}}), 'Toggle me',
+          p(toggled ? 'ON' : 'off')
+        ])
+      )
+  };
+  return sinks;
+}
+
+const drivers = {
+  DOM: makeDOMDriver('#app')
+};
+
+run(main, drivers);
+{% endhighlight %}
+
+Function `main()` now takes `sources` as input. Just like the output `sinks`, the input `sources` follow the same structure: an object containing `DOM` as a property. `sources.DOM` is an object with a queryable API to get streams. Use `sources.DOM.select(selector).events(eventType)` to get a stream of `eventType` DOM events happening on the element(s) specified by `selector`. This `main()` function takes the stream of clicks happening on `input` elements, and maps those toggling events to Virtual DOM elements displaying a togglable checkbox.
+
+We used the `div()`, `input()`, `p()` helper functions to create virtual DOM elements for the respective `<div>`, `<input>`, `<p>` DOM elements, but you can also use JSX with Babel. The following only works if you are building with Babel: (1) install the npm packages  [babel-plugin-transform-react-jsx](http://babeljs.io/docs/plugins/transform-react-jsx/) and [snabbdom-jsx](https://www.npmjs.com/package/snabbdom-jsx); (2) specify a pragma for JSX as shown in the following example `.babelrc` file:
+
+{% highlight json %}
 {
+  "presets": [
+    "es2015"
+  ],
   "plugins": [
-    ["transform-react-jsx", { "pragma": "hJSX" }]
+    "syntax-jsx",
+    ["transform-react-jsx", {"pragma": "html"}]
   ]
 }
 {% endhighlight %}
 
-{% highlight html %}
-import Cycle from '@cycle/core';
-import {makeDOMDriver, hJSX} from '@cycle/dom';
+(3) import Snabbdom JSX as `import {html} from 'snabbdom-jsx';`, and then you can utilize JSX:
 
-function main(drivers) {
-  return {
-    DOM: drivers.DOM.select('input').events('click')
+{% highlight html %}
+import xs from 'xstream';
+import {run} from '@cycle/xstream-run';
+import {makeDOMDriver} from '@cycle/dom';
+import {html} from 'snabbdom-jsx';
+
+function main(sources) {
+  const sinks = {
+    DOM: sources.DOM.select('input').events('click')
       .map(ev => ev.target.checked)
       .startWith(false)
       .map(toggled =>
@@ -128,16 +146,17 @@ function main(drivers) {
         </div>
       )
   };
+  return sinks;
 }
 
 const drivers = {
   DOM: makeDOMDriver('#app')
 };
 
-Cycle.run(main, drivers);
+run(main, drivers);
 {% endhighlight %}
 
-This example portrays the most common problem-solving pattern in Cycle.js: formulate the computer's behavior as a function of Observables: continuously listen to driver events and continuously provide messages (in our case, Virtual DOM elements) to the drivers. Read the next chapter to get familiar with this pattern.
+This example portrays the most common problem-solving pattern in Cycle.js: formulate the computer's behavior as a function of streams: continuously listen to source messages from drivers and continuously provide sinks messages (in our case, Virtual DOM elements) to the drivers. Read the next chapter to get familiar with this pattern.
 
 <h2 id="quick-start">Quick Start</h2>
 
@@ -149,5 +168,5 @@ It comes with babel transpilation, hot-reloading, and an isomorphic server.
 
 In the rare occasion you need Cycle.js as a standalone JavaScript file, you can download them on the [Releases](https://github.com/cyclejs/core/releases) page at GitHub.
 
-- Download the latest [Cycle Core](https://github.com/cyclejs/core/releases)
+- Download the latest [Cycle xstream run](https://github.com/cyclejs/xstream-run/releases)
 - Download the latest [Cycle DOM](https://github.com/cyclejs/dom/releases)
