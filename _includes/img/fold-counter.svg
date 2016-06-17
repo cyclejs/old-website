@@ -8,7 +8,6 @@
         <g id="scan-counter" sketch:type="MSArtboardGroup">
             <path d="M24.5,77.5 L759.758484,77.5" id="Line" stroke="#727481" stroke-width="5" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
             <path id="Line-decoration-1" d="M759.758484,77.5 L748.958484,74.5 L748.958484,80.5 L759.758484,77.5 Z" stroke="#727481" stroke-width="5" stroke-linecap="square"></path>
-            <circle id="Oval-1" stroke="#67AB83" stroke-width="5" fill="#8FE8B4" sketch:type="MSShapeGroup" cx="85" cy="77" r="10"></circle>
             <circle id="Oval-1-Copy" stroke="#67AB83" stroke-width="5" fill="#8FE8B4" sketch:type="MSShapeGroup" cx="155" cy="77" r="10"></circle>
             <circle id="Oval-1-Copy-2" stroke="#67AB83" stroke-width="5" fill="#8FE8B4" sketch:type="MSShapeGroup" cx="325" cy="77" r="10"></circle>
             <circle id="Oval-1-Copy-3" stroke="#67AB83" stroke-width="5" fill="#8FE8B4" sketch:type="MSShapeGroup" cx="385" cy="77" r="10"></circle>
@@ -16,7 +15,7 @@
             <circle id="Oval-1-Copy-5" stroke="#67AB83" stroke-width="5" fill="#8FE8B4" sketch:type="MSShapeGroup" cx="585" cy="77" r="10"></circle>
             <path d="M24.5,327.5 L759.758484,327.5" id="Line-Copy" stroke="#727481" stroke-width="5" stroke-linecap="square" sketch:type="MSShapeGroup"></path>
             <path id="Line-Copy-decoration-1" d="M759.758484,327.5 L748.958484,324.5 L748.958484,330.5 L759.758484,327.5 Z" stroke="#727481" stroke-width="5" stroke-linecap="square"></path>
-            <circle id="Oval-1-Copy-6" stroke="#409B9E" stroke-width="5" fill="#58D3D8" sketch:type="MSShapeGroup" cx="85" cy="327" r="10"></circle>
+            <circle id="Oval-1-Copy-6" stroke="#409B9E" stroke-width="5" fill="#58D3D8" sketch:type="MSShapeGroup" cx="35" cy="327" r="10"></circle>
             <circle id="Oval-1-Copy-7" stroke="#409B9E" stroke-width="5" fill="#58D3D8" sketch:type="MSShapeGroup" cx="155" cy="327" r="10"></circle>
             <circle id="Oval-1-Copy-8" stroke="#409B9E" stroke-width="5" fill="#58D3D8" sketch:type="MSShapeGroup" cx="325" cy="327" r="10"></circle>
             <circle id="Oval-1-Copy-9" stroke="#409B9E" stroke-width="5" fill="#58D3D8" sketch:type="MSShapeGroup" cx="385" cy="327" r="10"></circle>
@@ -25,9 +24,6 @@
             <rect id="Rectangle-1" stroke="#727481" stroke-width="2" fill="#FFFFFF" sketch:type="MSShapeGroup" x="27" y="157" width="736" height="90"></rect>
             <text id="-1" sketch:type="MSTextLayer" font-family="Courier" font-size="36" font-weight="normal" fill="#67AB83">
                 <tspan x="131" y="45">-1</tspan>
-            </text>
-            <text id="0" sketch:type="MSTextLayer" font-family="Courier" font-size="36" font-weight="normal" fill="#67AB83">
-                <tspan x="74" y="45">0</tspan>
             </text>
             <text id="+1" sketch:type="MSTextLayer" font-family="Courier" font-size="36" font-weight="normal" fill="#67AB83">
                 <tspan x="301" y="45">+1</tspan>
@@ -45,10 +41,10 @@
                 <tspan x="131" y="377">-1</tspan>
             </text>
             <text id="scan((x,y)-=&gt;-x+y)" sketch:type="MSTextLayer" font-family="Courier" font-size="36" font-weight="normal" fill="#727481">
-                <tspan x="198" y="210">scan((x,y) =&gt; x+y)</tspan>
+                <tspan x="178" y="210">fold((x,y) =&gt; x+y, 0)</tspan>
             </text>
             <text id="0-copy" sketch:type="MSTextLayer" font-family="Courier" font-size="36" font-weight="normal" fill="#409B9E">
-                <tspan x="74" y="377">0</tspan>
+                <tspan x="24" y="377">0</tspan>
             </text>
             <text id="0" sketch:type="MSTextLayer" font-family="Courier" font-size="36" font-weight="normal" fill="#409B9E">
                 <tspan x="315" y="377">0</tspan>
