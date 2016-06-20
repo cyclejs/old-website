@@ -14,140 +14,148 @@ We can write our entire Cycle.js program inside the `main()` function, like we d
 Let's see how we can refactor the `main()` function we wrote for calculating BMI:
 
 {% highlight js %}
-import Rx from 'rx';
-import Cycle from '@cycle/core';
+import xs from 'xstream';
+import {run} from '@cycle/xstream-run';
 import {div, input, h2, makeDOMDriver} from '@cycle/dom';
 
-function main({DOM}) {
-  const changeWeight$ = DOM.select('#weight')
+function main(sources) {
+  const changeWeight$ = sources.DOM.select('.weight')
     .events('input')
     .map(ev => ev.target.value);
-  const changeHeight$ = DOM.select('#height')
+
+  const changeHeight$ = sources.DOM.select('.height')
     .events('input')
     .map(ev => ev.target.value);
-  const state$ = Rx.Observable.combineLatest(
-    changeWeight$.startWith(70),
-    changeHeight$.startWith(170),
-    (weight, height) => {
+
+  const weight$ = changeWeight$.startWith(70);
+  const height$ = changeHeight$.startWith(170);
+
+  const state$ = xs.combine(weight$, height$)
+    .map(([weight, height]) => {
       const heightMeters = height * 0.01;
       const bmi = Math.round(weight / (heightMeters * heightMeters));
       return {weight, height, bmi};
-    }
+    });
+
+  const vdom$ = state$.map(({weight, height, bmi}) =>
+    div([
+      div([
+        'Weight ' + weight + 'kg',
+        input('.weight', {type: 'range', min: 40, max: 140, value: weight})
+      ]),
+      div([
+        'Height ' + height + 'cm',
+        input('.height', {type: 'range', min: 140, max: 210, value: height})
+      ]),
+      h2('BMI is ' + bmi)
+    ])
   );
 
   return {
-    DOM: state$.map(({weight, height, bmi}) =>
-      div([
-        div([
-          'Weight ' + weight + 'kg',
-          input('#weight', {type: 'range', min: 40, max: 140, value: weight})
-        ]),
-        div([
-          'Height ' + height + 'cm',
-          input('#height', {type: 'range', min: 140, max: 210, value: height})
-        ]),
-        h2('BMI is ' + bmi)
-      ])
-    )
+    DOM: vdom$
   };
 }
 
-Cycle.run(main, {
+run(main, {
   DOM: makeDOMDriver('#app')
 });
 {% endhighlight %}
 
-We have plenty of anonymous functions which could be refactored away from `main`, such as the BMI calculation, VTree rendering, etc.
+We have plenty of anonymous functions which could be refactored away from `main`, such as the BMI calculation, VNode rendering, etc.
 
 {% highlight diff %}
- import Rx from 'rx';
- import Cycle from '@cycle/core';
+ import xs from 'xstream';
+ import {run} from '@cycle/xstream-run';
  import {div, input, h2, makeDOMDriver} from '@cycle/dom';
 
 +function renderWeightSlider(weight) {
 +  return div([
 +    'Weight ' + weight + 'kg',
-+    input('#weight', {type: 'range', min: 40, max: 140, value: weight})
++    input('.weight', {type: 'range', min: 40, max: 140, value: weight})
 +  ]);
 +}
 
 +function renderHeightSlider(height) {
 +  return div([
 +    'Height ' + height + 'cm',
-+    input('#height', {type: 'range', min: 140, max: 210, value: height})
++    input('.height', {type: 'range', min: 140, max: 210, value: height})
 +  ]);
 +}
 
-+function calculateBMI(weight, height) {
++function bmi(weight, height) {
 +  const heightMeters = height * 0.01;
 +  return Math.round(weight / (heightMeters * heightMeters));
 +}
 
- function main({DOM}) {
-   const changeWeight$ = DOM.select('#weight')
+ function main(sources) {
+   const changeWeight$ = sources.DOM.select('.weight')
      .events('input')
      .map(ev => ev.target.value);
-   const changeHeight$ = DOM.select('#height')
+
+   const changeHeight$ = sources.DOM.select('.height')
      .events('input')
      .map(ev => ev.target.value);
-   const state$ = Rx.Observable.combineLatest(
-     changeWeight$.startWith(70),
-     changeHeight$.startWith(170),
--    (weight, height) => {
+
+   const weight$ = changeWeight$.startWith(70);
+   const height$ = changeHeight$.startWith(170);
+
+   const state$ = xs.combine(weight$, height$)
+     .map(([weight, height]) => {
 -      const heightMeters = height * 0.01;
 -      const bmi = Math.round(weight / (heightMeters * heightMeters));
 -      return {weight, height, bmi};
--    }
-+    (weight, height) =>
-+      ({weight, height, bmi: calculateBMI(weight, height)})
++      return {weight, height, bmi: bmi(weight, height)};
+     });
+
+   const vdom$ = state$.map(({weight, height, bmi}) =>
+     div([
+-      div([
+-        'Weight ' + weight + 'kg',
+-        input('.weight', {type: 'range', min: 40, max: 140, value: weight})
+-      ]),
+-      div([
+-        'Height ' + height + 'cm',
+-        input('.height', {type: 'range', min: 140, max: 210, value: height})
+-      ]),
++      renderWeightSlider(weight),
++      renderHeightSlider(height),
+       h2('BMI is ' + bmi)
+     ])
    );
 
    return {
-     DOM: state$.map(({weight, height, bmi}) =>
-       div([
--        div([
--          'Weight ' + weight + 'kg',
--          input('#weight', {type: 'range', min: 40, max: 140, value: weight})
--        ]),
--        div([
--          'Height ' + height + 'cm',
--          input('#height', {type: 'range', min: 140, max: 210, value: height})
--        ]),
-+        renderWeightSlider(weight),
-+        renderHeightSlider(height),
-         h2('BMI is ' + bmi)
-       ])
-     )
+     DOM: vdom$
    };
  }
 
- Cycle.run(main, {
+ run(main, {
    DOM: makeDOMDriver('#app')
  });
+ 
 {% endhighlight %}
 
-`main` still has to handle too many concerns. Can we do better? Yes, we can, by using the insight that `state$.map(state => someVTree)` is a *View* function: renders visual elements as a transformation of state. Let's introduce `function view(state$)`.
+`main` still has to handle too many concerns. Can we do better? Yes, we can, by using the insight that `state$.map(state => someVNode)` is a *View* function: renders visual elements as a transformation of state. Let's introduce `function view(state$)`.
 
 {% highlight diff %}
- import Rx from 'rx';
- import Cycle from '@cycle/core';
+ import xs from 'xstream';
+ import {run} from '@cycle/xstream-run';
  import {div, input, h2, makeDOMDriver} from '@cycle/dom';
 
  function renderWeightSlider(weight) {
    return div([
      'Weight ' + weight + 'kg',
-     input('#weight', {type: 'range', min: 40, max: 140, value: weight})
+     input('.weight', {type: 'range', min: 40, max: 140, value: weight})
    ]);
  }
 
  function renderHeightSlider(height) {
    return div([
      'Height ' + height + 'cm',
-     input('#height', {type: 'range', min: 140, max: 210, value: height})
+     input('.height', {type: 'range', min: 140, max: 210, value: height})
    ]);
  }
 
- function calculateBMI(weight, height) {
+ function bmi(weight, height) {
    const heightMeters = height * 0.01;
    return Math.round(weight / (heightMeters * heightMeters));
  }
@@ -162,53 +170,60 @@ We have plenty of anonymous functions which could be refactored away from `main`
 +  );
 +}
 
- function main({DOM}) {
-   const changeWeight$ = DOM.select('#weight')
+ function main(sources) {
+   const changeWeight$ = sources.DOM.select('.weight')
      .events('input')
      .map(ev => ev.target.value);
-   const changeHeight$ = DOM.select('#height')
+
+   const changeHeight$ = sources.DOM.select('.height')
      .events('input')
      .map(ev => ev.target.value);
-   const state$ = Rx.Observable.combineLatest(
-     changeWeight$.startWith(70),
-     changeHeight$.startWith(170),
-     (weight, height) =>
-       ({weight, height, bmi: calculateBMI(weight, height)})
-   );
+
+   const weight$ = changeWeight$.startWith(70);
+   const height$ = changeHeight$.startWith(170);
+
+   const state$ = xs.combine(weight$, height$)
+     .map(([weight, height]) => {
+       return {weight, height, bmi: bmi(weight, height)};
+     });
+
+-  const vdom$ = state$.map(({weight, height, bmi}) =>
+-    div([
+-      renderWeightSlider(weight),
+-      renderHeightSlider(height),
+-      h2('BMI is ' + bmi)
+-    ])
+-  );
++  const vdom$ = view(state$);
 
    return {
--    DOM: state$.map(({weight, height, bmi}) =>
--      div([
--        renderWeightSlider(weight),
--        renderHeightSlider(height),
--        h2('BMI is ' + bmi)
--      ])
--    )
-+    DOM: view(state$)
+     DOM: vdom$
    };
  }
 
- Cycle.run(main, {
+ run(main, {
    DOM: makeDOMDriver('#app')
  });
+ 
 {% endhighlight %}
 
-Now, `main` is much smaller. But is it doing *one thing*? We have `changeWeight$`, `changeHeight$`, `state$`, and the return using `view(state$)`. Normally when we work with a *View*, we also have a *Model*. What Models normally do is **manage state**. In our case, however, we have `state$` which is self-responsible for its own changes, because it is [reactive](/observables.html#reactive-programming). But anyway we have code that defines how `state$` depends on `changeWeight$` and `changeHeight$`. We can put that code inside a `model()` function.
+Now, `main` is much smaller. But is it doing *one thing*? We still have `changeWeight$`, `changeHeight$`, `weight$`, `height$`, `state$`, and the return using `view(state$)`. Normally when we work with a *View*, we also have a *Model*. What Models normally do is **manage state**. In our case, however, we have `state$` which is self-responsible for its own changes, because it is [reactive](/observables.html#reactive-programming). But anyway we have code that defines how `state$` depends on `changeWeight$` and `changeHeight$`. We can put that code inside a `model()` function.
 
 {% highlight diff %}
- import Rx from 'rx';
- import Cycle from '@cycle/core';
+ import xs from 'xstream';
+ import {run} from '@cycle/xstream-run';
  import {div, input, h2, makeDOMDriver} from '@cycle/dom';
 
  // ...
 
 +function model(changeWeight$, changeHeight$) {
-+  return Rx.Observable.combineLatest(
-+    changeWeight$.startWith(70),
-+    changeHeight$.startWith(170),
-+    (weight, height) =>
-+      ({weight, height, bmi: calculateBMI(weight, height)})
-+  );
++  const weight$ = changeWeight$.startWith(70);
++  const height$ = changeHeight$.startWith(170);
++
++  return xs.combine(weight$, height$)
++    .map(([weight, height]) => {
++      return {weight, height, bmi: bmi(weight, height)};
++    });
 +}
 
  function view(state$) {
@@ -221,59 +236,66 @@ Now, `main` is much smaller. But is it doing *one thing*? We have `changeWeight$
    );
  }
 
- function main({DOM}) {
-   const changeWeight$ = DOM.select('#weight')
+ function main(sources) {
+   const changeWeight$ = sources.DOM.select('.weight')
      .events('input')
      .map(ev => ev.target.value);
-   const changeHeight$ = DOM.select('#height')
+
+   const changeHeight$ = sources.DOM.select('.height')
      .events('input')
      .map(ev => ev.target.value);
--  const state$ = Rx.Observable.combineLatest(
--    changeWeight$.startWith(70),
--    changeHeight$.startWith(170),
--    (weight, height) =>
--      ({weight, height, bmi: calculateBMI(weight, height)})
--  );
+
+-  const weight$ = changeWeight$.startWith(70);
+-  const height$ = changeHeight$.startWith(170);
+-
+-  const state$ = xs.combine(weight$, height$)
+-    .map(([weight, height]) => {
+-      return {weight, height, bmi: bmi(weight, height)};
+-    });
 +  const state$ = model(changeWeight$, changeHeight$);
+
+   const vdom$ = view(state$);
 
    return {
      DOM: view(state$)
    };
  }
 
- Cycle.run(main, {
+ run(main, {
    DOM: makeDOMDriver('#app')
  });
+ 
 {% endhighlight %}
 
-`main` still defines `changeWeight$` and `changeHeight$`. What are these Observables? They are event streams of *Actions*. In the [previous chapter about basic examples](/basic-examples.html#increment-and-decrement-a-counter) we had an `action$` Observable for incrementing and decrementing a counter. These Actions are deduced or interpreted from DOM events. Their names indicate the user's *intentions*. We can group these Observable definitions in an `intent()` function:
+`main` still defines `changeWeight$` and `changeHeight$`. What are these streams? They are event streams of *Actions*. In the [previous chapter about basic examples](/basic-examples.html#increment-and-decrement-a-counter) we had an `action$` stream for incrementing and decrementing a counter. These Actions are deduced or interpreted from DOM events. Their names indicate the user's *intentions*. We can group these stream definitions in an `intent()` function:
 
 {% highlight diff %}
- import Rx from 'rx';
- import Cycle from '@cycle/core';
+ import xs from 'xstream';
+ import {run} from '@cycle/xstream-run';
  import {div, input, h2, makeDOMDriver} from '@cycle/dom';
 
  // ...
 
-+function intent(DOM) {
++function intent(domSource) {
 +  return {
-+    changeWeight$: DOM.select('#weight').events('input')
++    changeWeight$: domSource.select('.weight').events('input')
 +      .map(ev => ev.target.value),
-+    changeHeight$: DOM.select('#height').events('input')
++    changeHeight$: domSource.select('.height').events('input')
 +      .map(ev => ev.target.value)
 +  };
 +}
 
 -function model(changeWeight$, changeHeight$) {
+-  const weight$ = changeWeight$.startWith(70);
+-  const height$ = changeHeight$.startWith(170);
 +function model(actions) {
-   return Rx.Observable.combineLatest(
--    changeWeight$.startWith(70),
--    changeHeight$.startWith(170),
-+    actions.changeWeight$.startWith(70),
-+    actions.changeHeight$.startWith(170),
-     (weight, height) =>
-       ({weight, height, bmi: calculateBMI(weight, height)})
-   );
++  const weight$ = actions.changeWeight$.startWith(70);
++  const height$ = actions.changeHeight$.startWith(170);
+
+   return xs.combine(weight$, height$)
+     .map(([weight, height]) => {
+       return {weight, height, bmi: bmi(weight, height)};
+     });
  }
 
  function view(state$) {
@@ -286,31 +308,37 @@ Now, `main` is much smaller. But is it doing *one thing*? We have `changeWeight$
    );
  }
 
- function main({DOM}) {
--  const changeWeight$ = DOM.select('#weight')
+ function main(sources) {
+-  const changeWeight$ = sources.DOM.select('.weight')
 -    .events('input')
 -    .map(ev => ev.target.value);
--  const changeHeight$ = DOM.select('#height')
+-
+-  const changeHeight$ = sources.DOM.select('.height')
 -    .events('input')
 -    .map(ev => ev.target.value);
-+  const actions = intent(DOM);
++  const actions = intent(sources.DOM);
+
 -  const state$ = model(changeWeight$, changeHeight$);
 +  const state$ = model(actions);
+
+   const vdom$ = view(state$);
+
    return {
-     DOM: view(state$)
+     DOM: vdom$
    };
  }
 
- Cycle.run(main, {
+ run(main, {
    DOM: makeDOMDriver('#app')
  });
+ 
 {% endhighlight %}
 
 `main` is finally small enough, and works on one level of abstraction, defining how actions are created from DOM events, flowing to model and then to view, and finally back to the DOM. Because these steps are a chain, we can refactor `main` to compose those three functions `intent`, `model`, and `view` together:
 
 {% highlight js %}
-function main({DOM}) {
-  return {DOM: view(model(intent(DOM)))};
+function main(sources) {
+  return {DOM: view(model(intent(sources.DOM)))};
 }
 {% endhighlight %}
 
@@ -320,16 +348,16 @@ Seems like we cannot achieve a simpler format for `main`.
 
 - `intent()` function
   - Purpose: interpret DOM events as user's intended actions
-  - Input: DOM Driver source
-  - Output: Action Observables
+  - Input: DOM source
+  - Output: Action Streams
 - `model()` function
   - Purpose: manage state
-  - Input: Action Observables
-  - Output: `state$` Observable
+  - Input: Action Streams
+  - Output: State Stream
 - `view()` function
   - Purpose: visually represent state from the Model
-  - Input: `state$` Observable
-  - Output: Observable of VTree as the DOM Driver sink
+  - Input: State Stream
+  - Output: Stream of Virtual DOM nodes as the DOM Driver sink
 
 **Is Model-View-Intent an architecture?** Is this a new architecture? If so, how is it different to Model-View-Controller?
 
@@ -359,7 +387,7 @@ The opposite direction should be also a straightforward translation from the use
   {% include img/intent-translation.svg %}
 </p>
 
-Model-View-Intent (MVI) is **reactive**, **functional**, and follows the **core idea in MVC**. It is reactive because Intent observes the User, Model observes the Intent, View observes the Model, and the User observes the View. It is functional because each of these components is expressed as a [referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency_%28computer_science%29) function over Observables. It follows the original MVC purpose because View and Intent bridge the gap between the user and the digital model, each in one direction.
+Model-View-Intent (MVI) is **reactive**, **functional**, and follows the **core idea in MVC**. It is reactive because Intent observes the User, Model observes the Intent, View observes the Model, and the User observes the View. It is functional because each of these components is expressed as a [referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency_%28computer_science%29) function over streams. It follows the original MVC purpose because View and Intent bridge the gap between the user and the digital model, each in one direction.
 
 > <h4 id="why-css-selectors-for-querying-dom-events">Why CSS selectors for querying DOM events?</h4>
 >
@@ -394,29 +422,29 @@ This is what it means to say Cycle.js is *sliceable*. MVI is just one way of sli
 
 As good programmers writing good codebases, we must follow [DRY: Don't Repeat Yourself](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself). The MVI code we wrote is not entirely DRY.
 
-For instance, the View rendering of the sliders share a significant amount of code. And in the Intent, we have some duplication of the `DOM.select()` Observables.
+For instance, the View rendering of the sliders share a significant amount of code. And in the Intent, we have some duplication of the `DOM.select().events()` streams.
 
 {% highlight js %}
 function renderWeightSlider(weight) {
   return div([
     'Weight ' + weight + 'kg',
-    input('#weight', {type: 'range', min: 40, max: 140, value: weight})
+    input('.weight', {type: 'range', min: 40, max: 140, value: weight})
   ]);
 }
 
 function renderHeightSlider(height) {
   return div([
     'Height ' + height + 'cm',
-    input('#height', {type: 'range', min: 140, max: 210, value: height})
+    input('.height', {type: 'range', min: 140, max: 210, value: height})
   ]);
 }
 
-function intent(DOM) {
+function intent(domSource) {
   return {
-    changeWeight$: DOM.select('#weight')
+    changeWeight$: domSource.select('.weight')
       .events('input')
       .map(ev => ev.target.value),
-    changeHeight$: DOM.select('#height')
+    changeHeight$: domSource.select('.height')
       .events('input')
       .map(ev => ev.target.value)
   };
@@ -426,10 +454,10 @@ function intent(DOM) {
 We could create functions to remove this duplication, as such:
 
 {% highlight js %}
-function renderSlider(label, value, unit, id, min, max) {
+function renderSlider(label, value, unit, className, min, max) {
   return div([
     '' + label + ' ' + value + unit,
-    input('#' + id, {type: 'range', min, max, value})
+    input('.' + className, {type: 'range', min, max, value})
   ]);
 }
 
@@ -441,14 +469,16 @@ function renderHeightSlider(height) {
   return renderSlider('Height', height, 'cm', 'height', 140, 210);
 }
 
-function getSliderEvent(DOM, id) {
-  return DOM.select('#' + id).events('input').map(ev => ev.target.value);
+function getSliderEvent(domSource, className) {
+  return domSource.select('.' + className)
+    .events('input')
+    .map(ev => ev.target.value);
 }
 
-function intent(DOM) {
+function intent(domSource) {
   return {
-    changeWeight$: getSliderEvent(DOM, 'weight'),
-    changeHeight$: getSliderEvent(DOM, 'height')
+    changeWeight$: getSliderEvent(domSource, 'weight'),
+    changeHeight$: getSliderEvent(domSource, 'height')
   };
 }
 {% endhighlight %}
