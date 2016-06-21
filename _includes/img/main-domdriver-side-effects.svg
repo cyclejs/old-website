@@ -32,11 +32,11 @@
             </text>
             <text id="Sink-Observables" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" fill="#727481">
                 <tspan x="146" y="149">Sink</tspan>
-                <tspan x="146" y="180">Observables</tspan>
+                <tspan x="146" y="180">Streams</tspan>
             </text>
             <text id="Source-Observables" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" sketch:alignment="right" fill="#727481">
                 <tspan x="532" y="220">Source</tspan>
-                <tspan x="477.584" y="251">Observables</tspan>
+                <tspan x="518" y="251">Streams</tspan>
             </text>
             <text id="framework-side" sketch:type="MSTextLayer" font-family="Source Sans Pro" font-size="24" font-weight="normal" fill="#727481">
                 <tspan x="300" y="220">framework side</tspan>
