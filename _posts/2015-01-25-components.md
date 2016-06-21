@@ -9,19 +9,19 @@ User interfaces are usually made up of many reusable pieces: buttons, charts, sl
 
 How is that so? In any framework you can build a program that just makes one slider. By now, we know how to make a Cycle.js `main()` that makes a smart slider widget. Then, since `main()` is just a function taking inputs from the external world and generating outputs in return, we can just call that function inside a larger Cycle.js app.
 
-Each of these "small Cycle.js `main()` functions" are called **dataflow components**. The sources which a dataflow component receives are Observables provided by its parent, and sinks are Observables given back to the parent. All along, we have been building dataflow components, because the `main()` given to `Cycle.run(main, drivers)` is also a dataflow component. Its parent are the drivers, because that is where its sources come from and where its sinks go to.
+Each of these "small Cycle.js `main()` functions" are called **dataflow components**. The sources which a dataflow component receives are streams provided by its parent, and sinks are streams given back to the parent. All along, we have been building dataflow components, because the `main()` given to `run(main, drivers)` is also a dataflow component. Its parent are the drivers, because that is where its sources come from and where its sinks go to.
 
 <p>
   {% include img/dataflow-component.svg %}
 </p>
 
-To learn by doing, let's just make a dataflow component for a single labeled slider. It should take user events as input, and generate a virtual DOM Observable of a slider element. Besides the virtual DOM, it might also output a value: the observable of slider values. It might also take attributes (from its parent) as input to customize some behavior or looks. These are sometimes called *props* ("properties") in other frameworks.
+To learn by doing, let's just make a dataflow component for a single labeled slider. It should take user events as input, and generate a virtual DOM stream of a slider element. Besides the virtual DOM, it might also output a value: the stream of slider values. It might also take attributes (from its parent) as input to customize some behavior or looks. These are sometimes called *props* ("properties") in other frameworks.
 
 <h2 id="a-labeled-slider-custom-element">A labeled slider component</h2>
 
 A labeled slider has two parts: a label and slider, side by side, where the label always displays the current dynamic value of the slider.
 
-<a class="jsbin-embed" href="http://jsbin.com/ritajuxele/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/napoke/embed?output">JS Bin on jsbin.com</a>
 
 Every labeled slider has some properties:
 
@@ -31,88 +31,111 @@ Every labeled slider has some properties:
  - Max value
  - Initial value
 
-These props can be encoded as an object, wrapped in an Observable, and passed to our `main()` function as a *source* input:
+These props can be encoded as an object, wrapped in a stream, and passed to our `main()` function as a *source* input:
 
 {% highlight js %}
 function main(sources) {
-  const props$ = sources.props$;
+  const props$ = sources.props;
   // ...
   return sinks;
 }
 {% endhighlight %}
 
-To use this main function, we call `Cycle.run`:
+To use this main function, we call `run`:
 
 {% highlight js %}
-Cycle.run(main, {
-  props$: () => Observable.of({
-    label: 'Weight', unit: 'kg', min: 40, initial: 70, max: 140
+run(main, {
+  props: () => xs.of({
+    label: 'Weight', unit: 'kg', min: 40, value: 70, max: 140
   }),
   DOM: makeDOMDriver('#app')
 });
 {% endhighlight %}
 
-Remember that even though we are building a component, we are assuming our labeled slider to be our main program. Then, because `props$` are an input given to the labeled slider from its parent, the only parent of `main()` in this case is `Cycle.run`. That is why we need to configure `props$` as a driver.
+Remember that even though we are building a component, we are assuming our labeled slider to be our main program. Then, because `props` are an input given to the labeled slider from its parent, the only parent of `main()` in this case is `run`. That is why we need to configure `props` as a fake driver.
 
 The other input to this labeled slider program is the DOM source representing user events:
 
 {% highlight diff %}
  function main(sources) {
-+  const DOMSource = sources.DOM;
-   const props$ = sources.props$;
++  const domSource = sources.DOM;
+   const props$ = sources.props;
    // ...
    return sinks;
  }
+ 
 {% endhighlight %}
 
 The remainder of the program is rather easy given that we've written the same labeled slider in the two previous chapters. However, this time we take props as the initial value.
 
 {% highlight js %}
 function main(sources) {
-  const initialValue$ = sources.props$
-    .map(props => props.initial)
-    .first();
+  const domSource = sources.DOM;
+  const props$ = sources.props;
 
-  const newValue$ = sources.DOM
+  const newValue$ = domSource
     .select('.slider')
     .events('input')
     .map(ev => ev.target.value);
 
-  const value$ = initialValue$.concat(newValue$);
+  const state$ = props$
+    .map(props => newValue$
+      .map(val => ({
+        label: props.label,
+        unit: props.unit,
+        min: props.min,
+        value: val,
+        max: props.max
+      }))
+      .startWith(props)
+    )
+    .flatten()
+    .remember();
 
-  const vtree$ = Observable.combineLatest(sources.props$, value$,
-    (props, value) =>
+  const vdom$ = state$
+    .map(state =>
       div('.labeled-slider', [
         span('.label',
-          props.label + ' ' + value + props.unit
+          state.label + ' ' + state.value + state.unit
         ),
         input('.slider', {
-          type: 'range', min: props.min, max: props.max, value
+          attrs: {type: 'range', min: state.min, max: state.max, value: state.value}
         })
       ])
-  );
+    );
 
   const sinks = {
-    DOM: vtree$,
-    value$,
+    DOM: vdom$,
+    value: state$.map(state => state.value),
   };
   return sinks;
 }
 {% endhighlight %}
 
-You might have noticed that besides the virtual DOM output, we also return the `value$` Observable as a sink:
+You might have noticed that besides the virtual DOM output, we also return the `value$` stream as a sink:
 
 {% highlight diff %}
    // ...
    const sinks = {
-     DOM: vtree$,
-+    value$,
+     DOM: vdom$,
++    value: value$,
    };
    return sinks;
  }
+ 
 {% endhighlight %}
 
-This value Observable is crucial to be sent to the parent if the parent wishes to use the numeric value for some calculations, such as that of BMI. In the program we wrote above, the parent of `main()` are the drivers. The drivers don't need to use `value$`, that's why we don't need a driver named `value$`. However, when the parent of the slider component is another dataflow component, like in the next section, then `value$` will be important.
+This value stream is important as a sink if the parent wishes to use the numeric value for some calculations, such as that of BMI. In the program we wrote above, the parent of `main()` are the drivers. The drivers don't need to use `value$`, that's why we don't need a driver named `value`. However, when the parent of the slider component is another dataflow component, like in the next section, then `value$` will be important.
+
+> <h4 id="how-to-name-sources-and-sinks">How to name sources and sinks?</h4>
+>
+> You may have noticed that we chose the name `value` as a sink, not `value$`. Does this contradict our convention that streams should always be suffixed with `$`? Not particularly.
+>
+> Sources and sinks are an exception because they are special sockets that connect the internals of your component with the external world. Their names are just "keys" used to put or get streams. In the case of `main`, those keys need to match the same keys you gave to the `drivers` object in `run(main, drivers)`. Notice how each driver indexed by a key in the `drivers` object *is not* a stream. They are functions, because drivers are functions.
+>
+> This is why we shouldn't give the name `DOM$`, because in the `drivers` object, the value behind that key is a function (the DOM Driver), and in the `main` function, `sources.DOM` is the DOM Source object with methods like `select()` and `events()`.
+>
+> Try to maintain the convention that source and sink names are just *keys* in the sources object and sinks object. You may then "pick" your stream from the sources, like we did with `const props$ = sources.props;` for instance.
 
 <h2 id="using-a-component">Using a component</h2>
 
@@ -121,9 +144,8 @@ Now that our dataflow component for a labeled slider is ready, we can use it in 
 {% highlight diff %}
 -function main(sources) {
 +function LabeledSlider(sources) {
-   const initialValue$ = sources.props$
-     .map(props => props.initial)
-     .first();
+   const domSource = sources.DOM;
+   const props$ = sources.props;
 
    // ...
 
@@ -133,19 +155,20 @@ Now that our dataflow component for a labeled slider is ready, we can use it in 
 +function main(sources) {
 +  // Call LabeledSlider() here...
 +}
+ 
 {% endhighlight %}
 
 Since `LabeledSlider` is just a function, we can call it with some sources to get its sinks as output.
 
 {% highlight js %}
 function main(sources) {
-  const props$ = Observable.of({
-    label: 'Radius', unit: '', min: 10, initial: 30, max: 100
+  const props$ = xs.of({
+    label: 'Radius', unit: '', min: 10, value: 30, max: 100
   });
-  const childSources = {DOM: sources.DOM, props$};
+  const childSources = {DOM: sources.DOM, props: props$};
   const labeledSlider = LabeledSlider(childSources);
-  const childVTree$ = labeledSlider.DOM;
-  const childValue$ = labeledSlider.value$;
+  const childVDom$ = labeledSlider.DOM;
+  const childValue$ = labeledSlider.value;
 
   // ...
 }
@@ -153,23 +176,23 @@ function main(sources) {
 
 > <h4 id="why-name-components-with-capitalcase">Why name components with CapitalCase?</h4>
 >
-> You probably noticed we named the dataflow component as `LabeledSlider`. Usually in JavaScript, capitalized names are used for classes and constructor functions. Since Cycle.js uses functional programming techniques heavily, Object-oriented programming conventions are irrelevant, there are rarely classes in Cycle.js apps.
+> You probably noticed we named the dataflow component as `LabeledSlider`. Usually in JavaScript, capitalized names are used for classes and constructor functions. Since Cycle.js uses functional programming techniques heavily, Object-oriented programming conventions are irrelevant, there are rarely (or never) classes in Cycle.js apps.
 >
 > For this reason, capitalized names become available in the functional programming flavor of JavaScript. We will follow the convention of capitalized names such as `FooButton` for dataflow components (in other words, small Cycle.js apps). Their camel-case counterpart such as `fooButton` will refer to the output of `FooButton` function when called, i.e., the sinks object.
 
-Now we have `childVTree$` and `childValue$` as sinks from the labeled slider, available for use as regular Observables in the context of the `main()` parent. We use `childValue$` to render a circle with radius equal to the slider's value, and use `childVTree$` to embed the slider's virtual DOM in the parent's virtual DOM:
+Now we have `childVDom$` and `childValue$` as sinks from the labeled slider, available for use as regular streams in the context of the `main()` parent. We use `childValue$` to render a circle with radius equal to the slider's value, and use `childVDom$` to embed the slider's virtual DOM in the parent's virtual DOM:
 
 {% highlight js %}
 function main(sources) {
   // ...
 
-  const childVTree$ = labeledSlider.DOM;
-  const childValue$ = labeledSlider.value$;
+  const childVDom$ = labeledSlider.DOM;
+  const childValue$ = labeledSlider.value;
 
-  const vtree$ = childVTree$.withLatestFrom(childValue$,
-    (childVTree, value) =>
+  const vdom$ = xs.combine(childValue$, childVDom$)
+    .map(([value, childVDom]) =>
       div([
-        childVTree,
+        childVDom,
         div({style: {
           backgroundColor: '#58D3D8',
           width: String(value) + 'px',
@@ -178,15 +201,16 @@ function main(sources) {
         }})
       ])
     );
+
   return {
-    DOM: vtree$
+    DOM: vdom$
   };
 }
 {% endhighlight %}
 
 As a result, we get a Cycle.js program where the labeled slider controls the size of a rendered circle.
 
-<a class="jsbin-embed" href="http://jsbin.com/lobigimovo/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/yojoho/embed?output">JS Bin on jsbin.com</a>
 
 <h2 id="multiple-instances-of-the-same-component">Multiple instances and isolation</h2>
 
@@ -196,47 +220,49 @@ The naïve approach is to simply call `LabeledSlider()` twice, once with props f
 
 {% highlight js %}
 function main(sources) {
-  const weightProps$ = Observable.of({
-    label: 'Weight', unit: 'kg', min: 40, initial: 70, max: 150
+  const weightProps$ = xs.of({
+    label: 'Weight', unit: 'kg', min: 40, value: 70, max: 150
   });
-  const heightProps$ = Observable.of({
-    label: 'Height', unit: 'cm', min: 140, initial: 170, max: 210
+  const heightProps$ = xs.of({
+    label: 'Height', unit: 'cm', min: 140, value: 170, max: 210
   });
 
-  const weightSources = {DOM: sources.DOM, props$: weightProps$};
-  const heightSources = {DOM: sources.DOM, props$: heightProps$};
+  const weightSources = {DOM: sources.DOM, props: weightProps$};
+  const heightSources = {DOM: sources.DOM, props: heightProps$};
 
   const weightSlider = LabeledSlider(weightSources);
   const heightSlider = LabeledSlider(heightSources);
 
-  const weightVTree$ = weightSlider.DOM;
-  const weightValue$ = weightSlider.value$;
+  const weightVDom$ = weightSlider.DOM;
+  const weightValue$ = weightSlider.value;
 
-  const heightVTree$ = heightSlider.DOM;
-  const heightValue$ = heightSlider.value$;
+  const heightVDom$ = heightSlider.DOM;
+  const heightValue$ = heightSlider.value;
 
-  const bmi$ = Observable.combineLatest(weightValue$, heightValue$,
-    (weight, height) => {
+  const bmi$ = xs.combine(weightValue$, heightValue$)
+    .map(([weight, height]) => {
       const heightMeters = height * 0.01;
       const bmi = Math.round(weight / (heightMeters * heightMeters));
       return bmi;
-    }
-  );
+    })
+    .remember();
+
+  const vdom$ = xs.combine(bmi$, weightVDom$, heightVDom$)
+    .map(([bmi, weightVDom, heightVDom]) =>
+      div([
+        weightVDom,
+        heightVDom,
+        h2('BMI is ' + bmi)
+      ])
+    );
 
   return {
-    DOM: bmi$.combineLatest(weightVTree$, heightVTree$,
-      (bmi, weightVTree, heightVTree) =>
-        div([
-          weightVTree,
-          heightVTree,
-          h2('BMI is ' + bmi)
-        ])
-      )
+    DOM: vdom$
   };
 }
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/sajewalehu/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/lagegax/embed?output">JS Bin on jsbin.com</a>
 
 However, this creates a bug. Both labeled sliders change when any slider is moved. Can you see why? Pay attention to the implementation of `LabeledSlider` with this piece of code:
 
@@ -244,12 +270,10 @@ However, this creates a bug. Both labeled sliders change when any slider is move
 function LabeledSlider(sources) {
   // ...
 
-  const newValue$ = sources.DOM
+  const newValue$ = domSource
     .select('.slider')
     .events('input')
     .map(ev => ev.target.value);
-
-  const value$ = initialValue$.concat(newValue$);
 
   // ...
 }
@@ -264,7 +288,7 @@ A component should not leak its output to other components, and it should not be
 
 In order to achieve these properties, we need to modify the sources when they enter the component, and also modify the sinks when they are returned from the component. To make sources and sinks isolated from influence of other components, we need to introduce a scope for the current component.
 
-For the DOM source and DOM sink, we can use a unique identifier string as namespace for the virtual DOM element. First, we patch the DOM sink, adding a className to the VTrees it emits.
+For the DOM source and DOM sink, we can use a unique identifier string as namespace for the virtual DOM element. First, we patch the DOM sink, adding a className to the VNodes it emits.
 
 {% highlight diff %}
  function main(sources) {
@@ -273,22 +297,23 @@ For the DOM source and DOM sink, we can use a unique identifier string as namesp
    const weightSlider = LabeledSlider(weightSources);
    const heightSlider = LabeledSlider(heightSources);
 
-   const weightVTree$ = weightSlider.DOM
-+    .map(vtree => {
-+      vtree.properties.className += ' weight';
-+      return vtree;
+   const weightVDom$ = weightSlider.DOM
++    .map(vnode => {
++      vnode.sel += '.weight';
++      return vnode;
 +    });
-   const weightValue$ = weightSlider.value$;
+   const weightValue$ = weightSlider.value;
 
-   const heightVTree$ = heightSlider.DOM
-+    .map(vtree => {
-+      vtree.properties.className += ' height';
-+      return vtree;
+   const heightVDom$ = heightSlider.DOM
++    .map(vnode => {
++      vnode.sel += '.height';
++      return vnode;
 +    });
-   const heightValue$ = heightSlider.value$;
+   const heightValue$ = heightSlider.value;
 
    // ...
  }
+ 
 {% endhighlight %}
 
 This will result in the following rendered HTML:
@@ -300,9 +325,9 @@ This will result in the following rendered HTML:
 </div>
 {% endhighlight %}
 
-For querying user events on these rendered sliders, the `weightSlider` dataflow component should detect user events *only* from the `<div class="labeled-slider weight">` element and its descendants when `sources.DOM.select('.slider').events('input')` is called.
+For querying user events on these rendered sliders, the `weightSlider` dataflow component should detect user events *only* from the `<div class="labeled-slider weight">` element and its descendants when the stream `sources.DOM.select('.slider').events('input')` is used.
 
-In the context of the labeled slider component, **`sources.DOM.select()` should refer only to the DOM that was created by the corresponding `vtree$` sink in that component**.
+In the context of the labeled slider component, **`sources.DOM.select()` should refer only to the elements that were created by the corresponding DOM sink in that component**.
 
 We can achieve that by narrowing down the DOM source before it is given to the component, using the same className we patched on the sink, like this:
 
@@ -312,27 +337,28 @@ We can achieve that by narrowing down the DOM source before it is given to the c
    const weightSources = {
 -    DOM: sources.DOM,
 +    DOM: sources.DOM.select('.weight'),
-     props$: weightProps$
+     props: weightProps$
    };
    const heightSources = {
 -    DOM: sources.DOM,
 +    DOM: sources.DOM.select('.height'),
-     props$: heightProps$
+     props: heightProps$
    };
 
    const weightSlider = LabeledSlider(weightSources);
    const heightSlider = LabeledSlider(heightSources);
    // ...
  }
+ 
 {% endhighlight %}
 
 > <h4 id="what-does-sources-dom-select-do">What does <code>sources.DOM.select()</code> do?</h4>
 >
-> We have used `.select(selector).events(eventType)` many times previously to get an Observable emitting DOM events of type `eventType` happening on the `selector` element(s).
+> We have used `.select(selector).events(eventType)` many times previously to get a stream emitting DOM events of type `eventType` happening on the `selector` element(s).
 >
-> In the code above, we called `sources.DOM.select(selector)` without `.events(eventType)`. It returns a **new** DOM source, on which we can call again `select()` or `events()`.
+> In the code above, `sources.DOM` is a so-called "DOM Source", an object with some functions attached that help us query for the correct event stream. We also called `sources.DOM.select(selector)` without `.events(eventType)`, which returns a **new** DOM source, on which we can call again `select()` or `events()`.
 >
-> `select('.foo').select('.bar').events('click')` returns an Observable of click events happening on `'.foo .bar'` elements. In other words, these are all clicks happening on `'.bar'` elements descendants of `'.foo'` elements. The first call, `select('.foo')`, allows us to "narrow down" the DOM source.
+> `select('.foo').select('.bar').events('click')` returns a stream of click events happening on `'.foo .bar'` elements. In other words, these are all clicks happening on `'.bar'` elements descendants of `'.foo'` elements. The first call, `select('.foo')`, allows us to "narrow down" the scope of the DOM source.
 
 The code we wrote for isolating sources and sinks looks like boilerplate. Ideally we want to avoid manually managing scopes for each component instance using classNames:
 
@@ -340,86 +366,87 @@ The code we wrote for isolating sources and sinks looks like boilerplate. Ideall
 function main(sources) {
   // ...
   const weightSources = {
-    DOM: sources.DOM.select('.weight'), props$: weightProps$
+    DOM: sources.DOM.select('.weight'), props: weightProps$
   };
   const heightSources = {
-    DOM: sources.DOM.select('.height'), props$: heightProps$
+    DOM: sources.DOM.select('.height'), props: heightProps$
   };
   // ...
-  const weightVTree$ = weightSlider.DOM
-    .map(vtree => {
-      vtree.properties.className += ' weight';
-      return vtree;
+  const weightVDom$ = weightSlider.DOM
+    .map(vnode => {
+      vnode.sel += '.weight';
+      return vnode;
     });
   // ...
-  const heightVTree$ = heightSlider.DOM
-    .map(vtree => {
-      vtree.properties.className += ' height';
-      return vtree;
+  const heightVDom$ = heightSlider.DOM
+    .map(vnode => {
+      vnode.sel += '.height';
+      return vnode;
     });
   // ...
 }
 {% endhighlight %}
 
-To avoid repeating code, such as the `.map(vtree => ...)` which patches the VTree, we could extract the functionality into functions: `isolateDOMSink()` and `isolateDOMSource()`.
+To avoid repeating code, such as the `.map(vnode => ...)` which patches the VNode, we could extract the functionality into functions: `isolateDOMSink()` and `isolateDOMSource()`.
 
 {% highlight diff %}
  function main(sources) {
    // ...
    const weightSources = {
--    DOM: sources.DOM.select('.weight'), props$: weightProps$
-+    DOM: isolateDOMSource(sources.DOM, 'weight'), props$: weightProps$
+-    DOM: sources.DOM.select('.weight'), props: weightProps$
++    DOM: isolateDOMSource(sources.DOM, 'weight'), props: weightProps$
    };
    const heightSources = {
--    DOM: sources.DOM.select('.height'), props$: heightProps$
-+    DOM: isolateDOMSource(sources.DOM, 'height'), props$: heightProps$
+-    DOM: sources.DOM.select('.height'), props: heightProps$
++    DOM: isolateDOMSource(sources.DOM, 'height'), props: heightProps$
    };
    // ...
--  const weightVTree$ = weightSlider.DOM
--    .map(vtree => {
--      vtree.properties.className += ' weight';
--      return vtree;
+-  const weightVDom$ = weightSlider.DOM
+-    .map(vnode => {
+-      vnode.sel += '.weight';
+-      return vnode;
 -    });
-+  const weightVTree$ = isolateDOMSink(weightSlider.DOM, 'weight');
++  const weightVDom$ = isolateDOMSink(weightSlider.DOM, 'weight');
    // ...
--  const heightVTree$ = heightSlider.DOM
--    .map(vtree => {
--      vtree.properties.className += ' height';
--      return vtree;
+-  const heightVDom$ = heightSlider.DOM
+-    .map(vnode => {
+-      vnode.sel += '.height';
+-      return vnode;
 -    });
-+  const heightVTree$ = isolateDOMSink(heightSlider.DOM, 'height');
++  const heightVDom$ = isolateDOMSink(heightSlider.DOM, 'height');
    // ...
  }
+ 
 {% endhighlight %}
 
 Since these are very useful helper functions, they are packaged in Cycle DOM. They are available as static functions under the DOM source: `sources.DOM.isolateSource` and `sources.DOM.isolateSink`. This is how the `main()` function looks like when we use those functions:
 
 {% highlight js %}
 function main(sources) {
-  const weightProps$ = Observable.of({
-    label: 'Weight', unit: 'kg', min: 40, initial: 70, max: 150
+  const weightProps$ = xs.of({
+    label: 'Weight', unit: 'kg', min: 40, value: 70, max: 150
   });
-  const heightProps$ = Observable.of({
-    label: 'Height', unit: 'cm', min: 140, initial: 170, max: 210
+  const heightProps$ = xs.of({
+    label: 'Height', unit: 'cm', min: 140, value: 170, max: 210
   });
 
   const {isolateSource, isolateSink} = sources.DOM;
 
   const weightSources = {
-    DOM: isolateSource(sources.DOM, 'weight'), props$: weightProps$
+    DOM: isolateSource(sources.DOM, 'weight'), props: weightProps$
   };
   const heightSources = {
-    DOM: isolateSource(sources.DOM, 'height'), props$: heightProps$
+    DOM: isolateSource(sources.DOM, 'height'), props: heightProps$
   };
 
   const weightSlider = LabeledSlider(weightSources);
   const heightSlider = LabeledSlider(heightSources);
 
-  const weightVTree$ = isolateSink(weightSlider.DOM, 'weight');
-  const weightValue$ = weightSlider.value$;
+  const weightVDom$ = isolateSink(weightSlider.DOM, 'weight');
+  const weightValue$ = weightSlider.value;
 
-  const heightVTree$ = isolateSink(heightSlider.DOM, 'height');
-  const heightValue$ = heightSlider.value$;
+  const heightVDom$ = isolateSink(heightSlider.DOM, 'height');
+  const heightValue$ = heightSlider.value;
 
   // ...
 }
@@ -447,21 +474,21 @@ This allows us to simplify the `main()` function with two labeled slider compone
 
 {% highlight diff %}
  function main(sources) {
-   const weightProps$ = Observable.of({
-     label: 'Weight', unit: 'kg', min: 40, initial: 70, max: 150
+   const weightProps$ = xs.of({
+     label: 'Weight', unit: 'kg', min: 40, value: 70, max: 150
    });
-   const heightProps$ = Observable.of({
-     label: 'Height', unit: 'cm', min: 140, initial: 170, max: 210
+   const heightProps$ = xs.of({
+     label: 'Height', unit: 'cm', min: 140, value: 170, max: 210
    });
 
 -  const {isolateSource, isolateSink} = sources.DOM;
    const weightSources = {
--    DOM: isolateSource(sources.DOM, 'weight'), props$: weightProps$
-+    DOM: sources.DOM, props$: weightProps$
+-    DOM: isolateSource(sources.DOM, 'weight'), props: weightProps$
++    DOM: sources.DOM, props: weightProps$
    };
    const heightSources = {
--    DOM: isolateSource(sources.DOM, 'height'), props$: heightProps$
-+    DOM: sources.DOM, props$: heightProps$
+-    DOM: isolateSource(sources.DOM, 'height'), props: heightProps$
++    DOM: sources.DOM, props: heightProps$
    };
 
 +  const WeightSlider = isolate(LabeledSlider, 'weight');
@@ -472,16 +499,17 @@ This allows us to simplify the `main()` function with two labeled slider compone
 -  const heightSlider = LabeledSlider(heightSources);
 +  const heightSlider = HeightSlider(heightSources);
 
--  const weightVTree$ = isolateSink(weightSlider.DOM, 'weight');
-+  const weightVTree$ = weightSlider.DOM;
-   const weightValue$ = weightSlider.value$;
+-  const weightVDom$ = isolateSink(weightSlider.DOM, 'weight');
++  const weightVDom$ = weightSlider.DOM;
+   const weightValue$ = weightSlider.value;
 
--  const heightVTree$ = isolateSink(heightSlider.DOM, 'height');
-+  const heightVTree$ = heightSlider.DOM;
-   const heightValue$ = heightSlider.value$;
+-  const heightVDom$ = isolateSink(heightSlider.DOM, 'height');
++  const heightVDom$ = heightSlider.DOM;
+   const heightValue$ = heightSlider.value;
 
    // ...
  }
+ 
 {% endhighlight %}
 
 Notice the line which creates the `WeightSlider` component:
@@ -520,51 +548,54 @@ If we compare our last code with the code we initially started out naïvely for 
 
 {% highlight diff %}
  function main(sources) {
-   const weightProps$ = Observable.of({
-     label: 'Weight', unit: 'kg', min: 40, initial: 70, max: 150
+   const weightProps$ = xs.of({
+     label: 'Weight', unit: 'kg', min: 40, value: 70, max: 150
    });
-   const heightProps$ = Observable.of({
-     label: 'Height', unit: 'cm', min: 140, initial: 170, max: 210
+   const heightProps$ = xs.of({
+     label: 'Height', unit: 'cm', min: 140, value: 170, max: 210
    });
 
-   const weightSources = {DOM: sources.DOM, props$: weightProps$};
-   const heightSources = {DOM: sources.DOM, props$: heightProps$};
+   const weightSources = {DOM: sources.DOM, props: weightProps$};
+   const heightSources = {DOM: sources.DOM, props: heightProps$};
 
 -  const weightSlider =         LabeledSlider(weightSources);
 +  const weightSlider = isolate(LabeledSlider)(weightSources);
 -  const heightSlider =         LabeledSlider(heightSources);
 +  const heightSlider = isolate(LabeledSlider)(heightSources);
 
-   const weightVTree$ = weightSlider.DOM;
-   const weightValue$ = weightSlider.value$;
+   const weightVDom$ = weightSlider.DOM;
+   const weightValue$ = weightSlider.value;
 
-   const heightVTree$ = heightSlider.DOM;
-   const heightValue$ = heightSlider.value$;
+   const heightVDom$ = heightSlider.DOM;
+   const heightValue$ = heightSlider.value;
 
-   const bmi$ = Observable.combineLatest(weightValue$, heightValue$,
-     (weight, height) => {
+   const bmi$ = xs.combine(weightValue$, heightValue$)
+     .map(([weight, height]) => {
        const heightMeters = height * 0.01;
        const bmi = Math.round(weight / (heightMeters * heightMeters));
        return bmi;
-     }
-   );
+     })
+     .remember();
+
+   const vdom$ = xs.combine(bmi$, weightVDom$, heightVDom$)
+    .map(([bmi, weightVDom, heightVDom]) =>
+      div([
+        weightVDom,
+        heightVDom,
+        h2('BMI is ' + bmi)
+      ])
+    );
 
    return {
-     DOM: bmi$.combineLatest(weightVTree$, heightVTree$,
-       (bmi, weightVTree, heightVTree) =>
-         div([
-           weightVTree,
-           heightVTree,
-           h2('BMI is ' + bmi)
-         ])
-       )
+     DOM: vdom$
    };
  }
+ 
 {% endhighlight %}
 
 The takeaway is: **when creating multiple instances of the same type of component, just remember to `isolate` each.**
 
-<a class="jsbin-embed" href="http://jsbin.com/bicoziniqu/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="http://jsbin.com/seqehat/embed?output">JS Bin on jsbin.com</a>
 
 > <h4 id="Should-I-always-call-isolate-manually">Should I always call <code>isolate()</code> manually?</h4>
 >
