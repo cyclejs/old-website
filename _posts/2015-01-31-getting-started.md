@@ -95,7 +95,7 @@ function main(sources) {
       .startWith(false)
       .map(toggled =>
         div([
-          input({attrs {type: 'checkbox'}}), 'Toggle me',
+          input({attrs: {type: 'checkbox'}}), 'Toggle me',
           p(toggled ? 'ON' : 'off')
         ])
       )
