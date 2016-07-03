@@ -62,7 +62,7 @@ run(main, {
 });
 {% endhighlight %}
 
-Cycle *DOM* is a package containing two drivers and some helpers to use those libraries. A DOM Driver is created with `makeDOMDriver()` and an HTML Driver (for server-side rendering) is created with `makeHTMLDriver()`. Cycle DOM also includes `div()`, `h1()`, `h2()`, `input()`, `ul()`, `li()`, `svg()`, etc. These functions output virtual elements (also known as [*Virtual Nodes*](https://github.com/paldepind/snabbdom/#virtual-node) or *VNodes*). See [`snabbdom`](https://github.com/palpeping/snabbdom) docs for details.
+Cycle *DOM* is a package containing two drivers and some helpers to use those libraries. A DOM Driver is created with `makeDOMDriver()` and an HTML Driver (for server-side rendering) is created with `makeHTMLDriver()`. Cycle DOM also includes `div()`, `h1()`, `h2()`, `input()`, `ul()`, `li()`, `svg()`, etc. These functions output virtual elements (also known as [*Virtual Nodes*](https://github.com/paldepind/snabbdom/#virtual-node) or *VNodes*). See [`snabbdom`](https://github.com/paldepind/snabbdom) docs for details.
 
 Our `main()`, for now, does nothing. It takes driver `sources` and outputs driver `sinks`. To make something appear on the screen, we need to output a stream of VNode in `sinks.DOM`. The name `DOM` in `sinks` must match the name we gave in the drivers object given to `run()`. This is how Cycle.js knows which drivers to match with which sink streams. This is also true for sources: we listen to DOM events by using `sources.DOM`.
 
