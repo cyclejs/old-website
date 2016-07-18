@@ -166,7 +166,12 @@ It comes with babel transpilation, hot-reloading, and an isomorphic server.
 
 <h2 id="cyclejs-as-a-script">Cycle.js as a script</h2>
 
-In the rare occasion you need Cycle.js as a standalone JavaScript file, you can download them on the [Releases](https://github.com/cyclejs/core/releases) page at GitHub.
+In the rare occasion you need Cycle.js scripts as standalone JavaScript files, you can download them from [npmcdn](https://npmcdn.com):
 
-- Download the latest [Cycle xstream run](https://github.com/cyclejs/xstream-run/releases)
-- Download the latest [Cycle DOM](https://github.com/cyclejs/dom/releases)
+- Latest Cycle.js [xstream run](https://npmcdn.com/@cycle/xstream-run/dist/cycle.js)
+- Latest Cycle.js [most.js run](https://npmcdn.com/@cycle/most-run/dist/cycle-most-run.js)
+- Latest Cycle.js [RxJS v5 run](https://npmcdn.com/@cycle/rxjs-run/dist/cycle.js)
+- Latest Cycle.js [RxJS v4 run](https://npmcdn.com/@cycle/rx-run/dist/cycle.js)
+- Latest Cycle.js [DOM](https://npmcdn.com/@cycle/dom/dist/cycle-dom.js)
+- Latest Cycle.js [HTTP](https://npmcdn.com/@cycle/http/dist/cycle-http-driver.js)
+- Latest Cycle.js [Isolate](https://npmcdn.com/@cycle/isolate/dist/cycle-isolate.js)

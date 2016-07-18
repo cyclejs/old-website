@@ -6,8 +6,8 @@ tags: chapters
 To engage with the community around Cycle.js, follow these resources:
 
 * The GitHub organization, [cyclejs](https://github.com/cyclejs), is the default location for finding most of the packages you'll need.
-* Ask, "_How do I...?_" questions in Gitter: [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/staltz/cycle)
-* Report bugs, discuss, and propose significant changes as a [GitHub issue](https://github.com/cyclejs/core/issues).
+* Ask, "_How do I...?_" questions in Gitter: [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/cyclejs/cyclejs)
+* Report bugs, discuss, and propose significant changes as a [GitHub issue](https://github.com/cyclejs/cyclejs/issues).
 
 ### Resources
 

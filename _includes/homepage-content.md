@@ -115,10 +115,10 @@ Got 1 hour and 37 minutes? That is all it takes to learn the essentials of Cycle
 
 ## Supports...
 
-- [**Virtual DOM rendering**](https://github.com/cyclejs/dom)
-- [**Server-side rendering**](https://github.com/cyclejs/examples/tree/master/isomorphic)
+- [**Virtual DOM rendering**](https://github.com/cyclejs/cyclejs/tree/master/dom)
+- [**Server-side rendering**](https://github.com/cyclejs/cyclejs/tree/master/examples/isomorphic)
 - [**JSX**](http://cycle.js.org/getting-started.html)
-- [**TypeScript**](https://github.com/cyclejs/examples/tree/master/bmi-typescript)
+- [**TypeScript**](https://github.com/cyclejs/cyclejs/tree/master/examples/bmi-typescript)
 - [**React Native**](https://github.com/cyclejs/cycle-react-native)
 - [**Time traveling**](https://github.com/cyclejs/cycle-time-travel)
 - [**Routing with the History API**](https://github.com/cyclejs/history)

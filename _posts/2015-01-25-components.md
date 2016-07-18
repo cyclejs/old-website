@@ -454,7 +454,7 @@ function main(sources) {
 
 The code above shows how we need to manually process the sources and sinks of a child component to make sure each child is run in an isolated context. It would be better, however, if we could just "isolate" a component and make source and sink isolation happen under the hood.
 
-Such is the purpose of [`isolate()`](https://github.com/cyclejs/isolate) (`npm install @cycle/isolate`), a helper function which handles calls to `isolateSource` and `isolateSink` for us. `isolate(Component, scope)` takes a dataflow component function `Component` as input, and outputs a dataflow component function which isolates the sources to `scope`, runs `Component`, then isolates its sinks to `scope` as well. Here is a heavily simplified implementation of `isolate()`:
+Such is the purpose of [`isolate()`](https://github.com/cyclejs/cyclejs/tree/master/isolate) (`npm install @cycle/isolate`), a helper function which handles calls to `isolateSource` and `isolateSink` for us. `isolate(Component, scope)` takes a dataflow component function `Component` as input, and outputs a dataflow component function which isolates the sources to `scope`, runs `Component`, then isolates its sinks to `scope` as well. Here is a heavily simplified implementation of `isolate()`:
 
 {% highlight js %}
 function isolate(Component, scope) {
