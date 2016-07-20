@@ -189,7 +189,7 @@ function main(sources) {
 }
 {% endhighlight %}
 
-`sources.HTTP` is an "HTTP Source", representing all the network responses for this app. `select(category)` is an API specific to the HTTP Source that returns a stream of all response streams that are related to the `category` given. Because that output is a stream-of-streams, we apply `flatten()`, to get a flattened stream of responses. Check above for the declaration of ` getRandomUser$` where we returned a request object with a `category: users` field. This might feel like magic right now, so read the [HTTP Driver docs](https://github.com/cyclejs/cyclejs/tree/master/http) if you're curious about the details. We map each response `res` to `res.body` in order to get the JSON data from the response and ignore other fields like HTTP status.
+`sources.HTTP` is an "HTTP Source", representing all the network responses for this app. `select(category)` is an API specific to the HTTP Source that returns a stream of all response streams that are related to the `category` given. Because that output is a stream-of-streams, we apply `flatten()`, to get a flattened stream of responses. Check above for the declaration of `getRandomUser$` where we returned a request object with a `category: users` field. This might feel like magic right now, so read the [HTTP Driver docs](https://github.com/cyclejs/cyclejs/tree/master/http) if you're curious about the details. We map each response `res` to `res.body` in order to get the JSON data from the response and ignore other fields like HTTP status.
 
 We still haven't specified how to render our app. We should display to the DOM whatever data we have from the current user in `user$`. So the VNode stream called `vdom$` should depend directly on `user$`, like this:
 
