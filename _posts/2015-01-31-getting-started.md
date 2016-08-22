@@ -5,7 +5,7 @@ tags: chapters
 
 <h2 id="npm">npm</h2>
 
-The recommended channel for downloading Cycle.js as a package is through [npm](http://npmjs.org/), which follows the [CommonJS](http://wiki.commonjs.org/wiki/CommonJS) spec. Create a new directory and run this inside that directory:
+The recommended channel for downloading Cycle.js as a package is through [npm](http://npmjs.org/). Create a new directory and run this inside that directory:
 
 {% highlight text %}
 npm install xstream @cycle/xstream-run @cycle/dom
