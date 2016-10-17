@@ -12,7 +12,7 @@ npm install --global create-cycle-app
 create-cycle-app my-awesome-app
 {% endhighlight %}
 
-This will create a project called *my-awesome-app* (or the name you choosed) with Cycle *Run* and Cycle *DOM*.
+This will create a project called *my-awesome-app* (or the name you choose) with Cycle *Run* and Cycle *DOM*.
 
 <h2 id="npm">npm</h2>
 
