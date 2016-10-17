@@ -3,6 +3,19 @@ title:  "Getting Started"
 tags: chapters
 ---
 
+<h2 id="create-cycle-app">Using create-cycle-app</h2>
+
+The quickest way to create a new project with cycle, is by using [create-cycle-app](https://github.com/cyclejs-community/create-cycle-app), giving you the choice ES6 and TypeScript, using Browserify or Webpack as bundler tool.
+
+{% highlight text %}
+npm install --global create-cycle-app
+create-cycle-app my-awesome-app
+{% endhighlight %}
+
+This create a project called *my-awesome-app* (or the name you choosed) with Cycle *Run* and Cycle *DOM*.
+
+Click on the link above to learn more.
+
 <h2 id="npm">npm</h2>
 
 The recommended channel for downloading Cycle.js as a package is through [npm](http://npmjs.org/). Create a new directory and run this inside that directory:
