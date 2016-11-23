@@ -195,9 +195,9 @@ function main(sources) {
         childVDom,
         div({style: {
           backgroundColor: '#58D3D8',
-          width: String(value) + 'px',
-          height: String(value) + 'px',
-          borderRadius: String(value * 0.5) + 'px'
+          width: String(2 * value) + 'px',
+          height: String(2 * value) + 'px',
+          borderRadius: String(value) + 'px'
         }})
       ])
     );
