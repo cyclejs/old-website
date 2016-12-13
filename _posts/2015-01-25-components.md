@@ -21,7 +21,7 @@ To learn by doing, let's just make a dataflow component for a single labeled sli
 
 A labeled slider has two parts: a label and slider, side by side, where the label always displays the current dynamic value of the slider.
 
-<a class="jsbin-embed" href="http://jsbin.com/napoke/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="//jsbin.com/napoke/embed?output">JS Bin on jsbin.com</a>
 
 Every labeled slider has some properties:
 
@@ -210,7 +210,7 @@ function main(sources) {
 
 As a result, we get a Cycle.js program where the labeled slider controls the size of a rendered circle.
 
-<a class="jsbin-embed" href="http://jsbin.com/yojoho/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="//jsbin.com/yojoho/embed?output">JS Bin on jsbin.com</a>
 
 <h2 id="multiple-instances-of-the-same-component">Multiple instances and isolation</h2>
 
@@ -262,7 +262,7 @@ function main(sources) {
 }
 {% endhighlight %}
 
-<a class="jsbin-embed" href="http://jsbin.com/lagegax/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="//jsbin.com/lagegax/embed?output">JS Bin on jsbin.com</a>
 
 However, this creates a bug. Both labeled sliders change when any slider is moved. Can you see why? Pay attention to the implementation of `LabeledSlider` with this piece of code:
 
@@ -595,7 +595,7 @@ If we compare our last code with the code we initially started out naïvely for 
 
 The takeaway is: **when creating multiple instances of the same type of component, just remember to `isolate` each.**
 
-<a class="jsbin-embed" href="http://jsbin.com/seqehat/embed?output">JS Bin on jsbin.com</a>
+<a class="jsbin-embed" href="//jsbin.com/seqehat/embed?output">JS Bin on jsbin.com</a>
 
 > <h4 id="Should-I-always-call-isolate-manually">Should I always call <code>isolate()</code> manually?</h4>
 >
