@@ -609,8 +609,9 @@ The takeaway is: **when creating multiple instances of the same type of componen
 >
 > just export a function that calls `isolate()`:
 >
-> `export Component = sources =>`<br />
-> `  isolate(OriginalComponent)(sources)`
+> `export function Component(sources) {`<br />
+> `  return isolate(OriginalComponent)(sources);`<br />
+> `  }`
 >
 > Doing this gives the consumer automatic isolation without having to think about it.
 
