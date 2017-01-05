@@ -375,7 +375,7 @@ The Controller in MVC is incompatible with our reactive ideals, because it is a 
 
 > *The essential purpose of MVC is to bridge the gap between the human user's mental model and the digital model that exists in the computer.* <br />&#8211; [Trygve Reenskaug](http://heim.ifi.uio.no/~trygver/themes/mvc/mvc-index.html), inventor of MVC
 
-We can keep the MVC ideal while avoiding a proactive Controller. In fact, if you observe our `view()` function, it does nothing else than transform state (digital model in the computer) to a visual representation useful for the user. View is a translation from one language to another: from binary data to English and other human-friendly languages.
+We can keep the MVC idea while avoiding a proactive Controller. In fact, if you observe our `view()` function, it does nothing else than transform state (digital model in the computer) to a visual representation useful for the user. View is a translation from one language to another: from binary data to English and other human-friendly languages.
 
 <p>
   {% include img/view-translation.svg %}
