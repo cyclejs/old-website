@@ -611,7 +611,7 @@ The takeaway is: **when creating multiple instances of the same type of componen
 >
 > `export function Component(sources) {`<br />
 > `  return isolate(OriginalComponent)(sources);`<br />
-> `}`
+> `}`<br />
 >
 > Doing this gives the consumer automatic isolation without having to think about it.
 
