@@ -603,14 +603,14 @@ The takeaway is: **when creating multiple instances of the same type of componen
 >
 > Instead of exporting the original non-isolated component, like this:
 >
-> `export function OriginalComponent(sources)`<br />
+> `export function OriginalComponent(sources) {`<br />
 > `  // ...`<br />
 > `}`<br />
 >
 > just export a function that calls `isolate()`:
 >
 > `export function Component(sources) {`<br />
-> `  return isolate(OriginalComponent)(sources);`<br />
+> `  return isolate(OriginalComponent)(sources);`<br />
 > `}`<br />
 >
 > Doing this gives the consumer automatic isolation without having to think about it.
