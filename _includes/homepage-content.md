@@ -4,9 +4,9 @@
   {% include /img/cycle-nested-frontpage.svg %}
 </p>
 
-Cycle's core abstraction is your application as a pure function `main()` where inputs are read effects (*sources*) from the external world and outputs (*sinks*) are write effects to affect the external world. These side effects in the external world are managed by *drivers*: plugins that handle DOM effects, HTTP effects, etc.
+Cycle's core abstraction is your application as a pure function `main()` where inputs are read effects (*sources*) from the external world and outputs (*sinks*) are write effects to affect the external world. These I/O effects in the external world are managed by *drivers*: plugins that handle DOM effects, HTTP effects, etc.
 
-The internals of `main()` are built using Reactive programming primitives, which maximizes separation of concerns, providing a clean and fully declarative way of organizing your code. The *dataflow* is plainly visible, making it easy to read and understand the code.
+The internals of `main()` are built using Reactive Programming primitives, which maximizes separation of concerns and provides a fully declarative way of organizing your code. The *dataflow* is plainly visible in the code, making it readable and traceable.
 
 ## Example
 
@@ -43,19 +43,19 @@ run(main, { DOM: makeDOMDriver('#app-container') });
 <div class="homepage-features" markdown="1">
 ## Functional and Reactive
 
-Functional means "clean", and Reactive means "separated". Cycle.js apps are made of pure functions, which means you know they simply take inputs and generate outputs, without performing any side effects. The building blocks are reactive streams from libraries like [RxJS](http://reactivex.io/rxjs) or [xstream](http://staltz.com/xstream), which greatly simplify code related to events, asynchrony, and errors. Structuring the application with streams also separates concerns, because all [dynamic updates to a piece of data are co-located](/observables.html#reactive-programming) and impossible to change from outside. As a result, apps in Cycle are entirely `this`-less and have nothing comparable to imperative calls such as `setState()` or `foo.update()`.
+Functional enables "predictable" code, and Reactive enables "separated" code. Cycle.js apps are made of pure functions, which means you know they only take inputs and generate predictable outputs, without performing any I/O effects. The building blocks are reactive streams from libraries like [xstream](http://staltz.com/xstream), [RxJS](http://reactivex.io/rxjs) or [Most.js](https://github.com/cujojs/most/), which greatly simplify code related to events, asynchrony, and errors. Structuring the application with streams also separates concerns, because all [dynamic updates to a piece of data are co-located](/observables.html#reactive-programming) and impossible to change from outside. As a result, apps in Cycle are entirely `this`-less and have nothing comparable to imperative calls such as `setState()` or `update()`.
 </div>
 
 <div class="homepage-features" markdown="1">
 ## Simple and Concise
 
-Cycle.js is a framework with very few concepts to learn. The core API has just one function: `run(app, drivers)`. Besides that, there are **streams**, **functions**, **drivers** (plugins for different types of side effects), and a helper function to isolate scoped components. This is a framework with very little "magic". Most of the building blocks are just JavaScript functions. Usually the lack of "magic" leads to very verbose code, but since functional reactive streams are able to build complex dataflows with a few operations, you will come to see how apps in Cycle.js are small and readable.
+Cycle.js is a framework with very few concepts to learn. The core API has just one function: `run(app, drivers)`. Besides that, there are **streams**, **functions**, **drivers** (plugins for different types of I/O effects), and a helper function to isolate scoped components. This is a framework with very little "magic". Most of the building blocks are just JavaScript functions. Usually the lack of "magic" leads to very verbose code, but since functional reactive streams are able to build complex dataflows with a few operations, you will come to see how apps in Cycle.js are small and readable.
 </div>
 
 <div class="homepage-features" markdown="1">
 ## Extensible and Testable
 
-Drivers are plugin-like simple functions that take messages from sinks and call imperative functions. All side effects are contained in drivers. This means your application is just a pure function, and it becomes easy to swap drivers around. The community has built drivers for [React Native](https://github.com/cyclejs/cycle-react-native), [HTML5 Notification](https://github.com/cyclejs/cycle-notification-driver), [Socket.io](https://github.com/cgeorg/cycle-socket.io), etc. Sources and sinks can be easily used as [Adapters and Ports](https://iancooper.github.io/Paramore/ControlBus.html). This also means testing is mostly a matter of feeding inputs and inspecting the output. No deep mocking needed. Your application is just a pure transformation of data.
+Drivers are plugin-like simple functions that take messages from sinks and call imperative functions. All I/O effects are contained in drivers. This means your application is just a pure function, and it becomes easy to swap drivers around. The community has built drivers for [React Native](https://github.com/cyclejs/cycle-react-native), [HTML5 Notification](https://github.com/cyclejs/cycle-notification-driver), [Socket.io](https://github.com/cgeorg/cycle-socket.io), etc. Sources and sinks can be easily used as [Adapters and Ports](https://iancooper.github.io/Paramore/ControlBus.html). This also means testing is mostly a matter of feeding inputs and inspecting the output. No deep mocking needed. Your application is just a pure transformation of data.
 </div>
 
 ## Explicit dataflow
