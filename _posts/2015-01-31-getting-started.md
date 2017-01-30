@@ -5,7 +5,7 @@ tags: chapters
 
 <h2 id="create-cycle-app">Using create-cycle-app</h2>
 
-The quickest way to create a new project with Cycle.js is by using [create-cycle-app](https://github.com/cyclejs-community/create-cycle-app), giving you the choice between ES6 or TypeScript, Browserify or Webpack.
+The quickest way to create a new project with Cycle.js is by using [create-cycle-app](https://github.com/cyclejs-community/create-cycle-app).
 
 {% highlight text %}
 npm install --global create-cycle-app
